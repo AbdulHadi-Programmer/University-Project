@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Academic Task Manager{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FFFFFF; /* Primary */
+            color: #333;
+            margin: 0;
+            padding: 0;
+
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Sticky footer */
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #2E7D32; /* Secondary */
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: #fff !important;
+        }
+        .navbar-nav .nav-link {
+            color: #fff !important;
+            font-weight: 500;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #FFB300 !important; /* Accent */
+        }
+
+        /* Modern toggler */
+        .navbar-toggler {
+            border: none;
+        }
+        .navbar-toggler-icon {
+            background-image: none;
+            position: relative;
+            width: 24px;
+            height: 2px;
+            background-color: #fff;
+            display: inline-block;
+        }
+        .navbar-toggler-icon::before,
+        .navbar-toggler-icon::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            width: 24px;
+            height: 2px;
+            background-color: #fff;
+        }
+        .navbar-toggler-icon::before {
+            top: -7px;
+        }
+        .navbar-toggler-icon::after {
+            top: 7px;
+        }
+
+        /* Accent Buttons */
+        .btn-accent {
+            background-color: #FFB300;
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+        .btn-accent:hover {
+            background-color: #e6a100;
+            color: #fff;
+        }
+
+        /* Page container */
+        main {
+            flex: 1; /* Push footer down */
+            padding: 2rem;
+        }
+
+        /* Flash messages */
+        .messages {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2E7D32; /* Secondary */
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto; /* Sticky */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Classic Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <!-- <a class="navbar-brand" href="{% url 'home' %}">🎓 Task Manager</a> -->
+             <a class="navbar-brand fw-bold text-success" href="{% url 'home' %}">
+                <i class="fa-solid fa-graduation-cap me-2"></i> StudyMate
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'student_dashboard' %}">Dashboard</a></li>
+                        <!-- <li class="nav-item"><a class="nav-link" href="{% url 'student_dashboard' %}">Tasks</a></li> -->
+                        <li class="nav-item"><a class="nav-link" href="{% url 'timetable' %}">Time Table</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Django Flash Messages -->
+        <div class="messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+
+    
+    <!-- Footer -->
+    <footer>
+        <p>&copy; {{ year|default:"2025" }} Academic Task Manager | Stay productive 📚</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

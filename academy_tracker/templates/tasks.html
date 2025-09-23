@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Tasks - {{ subject.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold mb-4"><i class="fa-solid fa-list-check text-success me-2"></i>
+ Tasks for {{ subject.name }}</h2>
+
+    {% if tasks %}
+        <ul class="list-group shadow-sm rounded-3">
+            {% for task in tasks %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <!-- Task details -->
+                    <div>
+                        <strong class="text-success">{{ task.title }}</strong> 
+                        <span class="text-muted">({{ task.get_task_type_display }})</span>
+                        <br>
+                        <small class="text-muted">📅 Due: {{ task.due_date }}</small>
+                        <br>
+                        Status: 
+                        {% if task.status == "Completed" %}
+                            <span class="badge bg-success">{{ task.status }}</span>
+                        {% elif task.status == "On Going" %}
+                            <span class="badge bg-warning text-dark">{{ task.status }}</span>
+                        {% else %}
+                            <span class="badge bg-danger">{{ task.status }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="d-flex">
+                        <!-- Edit button -->
+                        <a href="{% url 'update_task' task.id %}" class="btn btn-sm btn-outline-primary me-2">
+                            ✏️ Edit
+                        </a>
+                    
+                        <!-- Delete button -->
+                        <form method="post" action="{% url 'delete_task' task.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                🗑 Delete
+                            </button>
+                        </form>
+                    </div>
+
+
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">No tasks yet.</p>
+    {% endif %}
+
+    <!-- Back & Add Task Buttons -->
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary">
+            ⬅ Back to Dashboard
+        </a>
+        <a href="{% url 'add_task' %}" class="btn btn-success">
+             Add Task
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% block title %}Class Timetable{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-success">
+            {{ current_icon }} Class Timetable ({{ current_day }})
+        </h2>
+        <p class="text-muted">Arranged by Day &amp; Time</p>
+    </div>
+
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-success text-center">
+                <tr>
+                    <th>Day</th>
+                    <th>Time</th>
+                    <th>Course</th>
+                    <th>Instructor</th>
+                    <th>Room</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="{% if current_day == 'Monday' %}today-row{% endif %}">
+                    <td>Monday</td>
+                    <td>11:00 AM - 12:00 PM</td>
+                    <td>Digital Logic Design - Lab</td>
+                    <td>Syed Hasnain Rizvi</td>
+                    <td>Elec-Lab</td>
+                </tr>
+                <tr class="{% if current_day == 'Monday' %}today-row{% endif %}">
+                    <td>Monday</td>
+                    <td>12:00 PM - 2:00 PM</td>
+                    <td>Digital Logic Design</td>
+                    <td>Syed Hasnain Rizvi</td>
+                    <td>CR-101</td>
+                </tr>
+
+                <tr class="{% if current_day == 'Tuesday' %}today-row{% endif %}">
+                    <td>Tuesday</td>
+                    <td>2:00 PM - 5:00 PM</td>
+                    <td>Database Systems</td>
+                    <td>Dr. Basit Hassan</td>
+                    <td>IT-502</td>
+                </tr>
+
+                <tr class="{% if current_day == 'Wednesday' %}today-row{% endif %}">
+                    <td>Wednesday</td>
+                    <td>9:00 AM - 12:00 PM</td>
+                    <td>Linear Algebra</td>
+                    <td>Mr. Hassan Hashim</td>
+                    <td>IT-304</td>
+                </tr>
+                <tr class="{% if current_day == 'Wednesday' %}today-row{% endif %}">
+                    <td>Wednesday</td>
+                    <td>12:00 PM - 1:00 PM</td>
+                    <td>Database Systems - Lab</td>
+                    <td>Dr. Arshad Arain</td>
+                    <td>Lab-102</td>
+                </tr>
+
+                <tr class="{% if current_day == 'Thursday' %}today-row{% endif %}">
+                    <td>Thursday</td>
+                    <td>11:00 AM - 12:00 PM</td>
+                    <td>Object Oriented Programming - Lab</td>
+                    <td>Ms. Asqa</td>
+                    <td>IT-Lab-202</td>
+                </tr>
+                <tr class="{% if current_day == 'Thursday' %}today-row{% endif %}">
+                    <td>Thursday</td>
+                    <td>2:00 PM - 5:00 PM</td>
+                    <td>Multivariable Calculus</td>
+                    <td>Dr. Muhammad Ali</td>
+                    <td>IT-304</td>
+                </tr>
+
+                <tr class="{% if current_day == 'Friday' %}today-row{% endif %}">
+                    <td>Friday</td>
+                    <td>2:00 PM - 5:00 PM</td>
+                    <td>Object Oriented Programming</td>
+                    <td>Ms. Saima Sipy Nangraj</td>
+                    <td>IT-501</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .today-row {
+        background: #d4edda !important; /* light green */
+        font-weight: bold;
+        box-shadow: 0 0 10px rgba(40, 167, 69, 0.4);
+        transition: background 0.3s ease-in-out;
+    }
+</style>
+{% endblock %}
+
+
+{% comment %}
+
+{% extends "base.html" %}
+{% block title %}Class Timetable{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-success">{{ current_icon }} Class Timetable ({{ current_day }})
+</h2>
+        <p class="text-muted">Arranged by Day &amp; Time</p>
+    </div>
+
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-success text-center">
+                <tr>
+                    <th>Day</th>
+                    <th>Time</th>
+                    <th>Course</th>
+                    <th>Instructor</th>
+                    <th>Room</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Monday</td>
+                    <td>11:00 AM - 12:00 PM</td>
+                    <td>Digital Logic Design - Lab</td>
+                    <td>Syed Hasnain Rizvi</td>
+                    <td>Elec-Lab</td>
+                </tr>
+                <tr>
+                    <td>Monday</td>
+                    <td>12:00 PM - 2:00 PM</td>
+                    <td>Digital Logic Design</td>
+                    <td>Syed Hasnain Rizvi</td>
+                    <td>CR-101</td>
+                </tr>
+                <tr>
+                    <td>Tuesday</td>
+                    <td>2:00 PM - 5:00 PM</td>
+                    <td>Database Systems</td>
+                    <td>Dr. Basit Hassan</td>
+                    <td>IT-502</td>
+                </tr>
+                <tr>
+                    <td>Wednesday</td>
+                    <td>9:00 AM - 12:00 PM</td>
+                    <td>Linear Algebra</td>
+                    <td>Mr. Hassan Hashim</td>
+                    <td>IT-304</td>
+                </tr>
+                <tr>
+                    <td>Wednesday</td>
+                    <td>12:00 PM - 1:00 PM</td>
+                    <td>Database Systems - Lab</td>
+                    <td>Dr. Arshad Arain</td>
+                    <td>Lab-102</td>
+                </tr>
+                <tr>
+                    <td>Thursday</td>
+                    <td>11:00 AM - 12:00 PM</td>
+                    <td>Object Oriented Programming - Lab</td>
+                    <td>Ms. Asqa</td>
+                    <td>IT-Lab-202</td>
+                </tr>
+                <tr>
+                    <td>Thursday</td>
+                    <td>2:00 PM - 5:00 PM</td>
+                    <td>Multivariable Calculus</td>
+                    <td>Dr. Muhammad Ali</td>
+                    <td>IT-304</td>
+                </tr>
+                <tr>
+                    <td>Friday</td>
+                    <td>2:00 PM - 5:00 PM</td>
+                    <td>Object Oriented Programming</td>
+                    <td>Ms. Saima Sipy Nangraj</td>
+                    <td>IT-501</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    table th, table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+    table tbody tr:hover {
+        background-color: #f8f9fa;
+        transition: 0.2s;
+    }
+</style>
+{% endblock %}
+
+{% endcomment %}

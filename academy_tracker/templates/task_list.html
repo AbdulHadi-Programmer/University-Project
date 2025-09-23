@@ -1,0 +1,48 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Add Task</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <!-- Title Field -->
+    <div class="form-group">
+        <label for="{{ form.title.id_for_label }}">Title</label>
+        {{ form.title }}
+        {% if form.title.errors %}
+            <div class="text-danger">{{ form.title.errors }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Task Type Field -->
+    <div class="form-group">
+        <label for="{{ form.task_type.id_for_label }}">Task Type</label>
+        {{ form.task_type }}
+        {% if form.task_type.errors %}
+            <div class="text-danger">{{ form.task_type.errors }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Subject Field (Filtered by user semester) -->
+    <div class="form-group">
+        <label for="{{ form.subject.id_for_label }}">Subject</label>
+        {{ form.subject }}
+        {% if form.subject.errors %}
+            <div class="text-danger">{{ form.subject.errors }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Due Date Field -->
+    <div class="form-group">
+        <label for="{{ form.due_date.id_for_label }}">Due Date</label>
+        {{ form.due_date }}
+        {% if form.due_date.errors %}
+            <div class="text-danger">{{ form.due_date.errors }}</div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Task</button>
+</form>
+{% endblock %}

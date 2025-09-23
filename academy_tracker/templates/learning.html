@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Learning Items - {{ subject.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="fw-bold mb-4">📖 Learning Items for {{ subject.name }}</h2>
+
+    {% if learning_items %}
+        <ul class="list-group">
+            {% for item in learning_items %}
+                <li class="list-group-item">
+                    <strong>{{ item.title }}</strong>
+                    {% if item.description %}<br><small>{{ item.description }}</small>{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">No learning items yet.</p>
+    {% endif %}
+
+    <a href="{% url 'student_dashboard' %}" class="btn btn-outline-success mt-3">⬅ Back to Dashboard</a>
+</div>
+{% endblock %}

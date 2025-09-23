@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+{% block title %}Welcome to StudyMate{% endblock %}
+
+{% block content %}
+<style>
+    /* Hero Section */
+    /* .hero {
+        background: linear-gradient(135deg, #28a745 60%, #f8f9fa 40%);
+        color: white;
+        padding: 80px 20px;
+        border-radius: 1rem;
+        text-align: center;
+        margin: 0 20px;
+        border: linear-gradient(135deg,#f8f9fa 60%, #28a745 40%);
+        } */
+/* .hero {
+    position: relative;
+    background: linear-gradient(135deg, #28a745 60%, #f8f9fa 40%);
+    color: white;
+    padding: 80px 20px;
+    border-radius: 1rem;
+    text-align: center;
+    margin: 0 20px;
+    overflow: hidden;
+} */
+
+/* Add border simulation using pseudo-element */
+/* .hero::before {
+    content: "";
+    position: absolute;
+    top: -4px; left: -4px; right: -4px; bottom: -4px;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, #d3d3d3 60%, #28a745 40%);
+    z-index: -1; behind the content
+} */
+.hero {
+    background: linear-gradient(135deg, #28a745 60%, #f8f9fa 40%);
+    padding: 80px 20px;
+    border-radius: 1rem;
+    text-align: center;
+    color: white;
+
+    /* Split-color border */
+    border: 4px solid; /* Adjust thickness */
+    border-image: linear-gradient(135deg, #28a745 60%, #f8f9fa 40%) 1;
+}
+.hero {
+    /* border-radius: 100px;  */
+    border: 4px solid transparent;
+    border-image: linear-gradient(135deg, #28a745 60%, #f8f9fa 40%) 1 stretch;
+}
+
+
+    .hero p {
+        font-size: 1.2rem;
+        margin: 15px 0 25px;
+        color: #fff; /* Keep text white for contrast */
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.35); /* Subtle shadow for readability */
+        font-weight: 500; /* Slightly bolder for better visibility */
+    }
+
+    .hero h1 {
+        font-weight: 700;
+        font-size: 2.5rem;
+    }
+
+      /* text-shadow: 1px 1px 4px rgba(0,0,0,0.3); */
+      /* color: #ffffff; */
+
+    .btn-cta {
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        border-radius: 30px;
+    }
+
+    /* Features */
+    .feature-card {
+        border: none;
+        border-radius: 1rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
+    }
+    .feature-icon {
+        font-size: 2rem;
+        color: #28a745;
+        margin-bottom: 15px;
+    }
+
+    /* Call-to-action */
+    .cta-section {
+        background: #f8f9fa;
+        border-radius: 1rem;
+        padding: 50px 20px;
+        text-align: center;
+        margin-top: 60px;
+    }
+
+    .btn-register {
+    background-color: #ffffff;
+    color: #28a745;
+    border: 2px solid #28a745;
+    transition: all 0.3s ease;
+}
+
+.btn-register:hover {
+    background-color: #28a745;
+    color: #ffffff;
+}
+
+/* FAQ Section Enhancements */
+.faq-section {
+    margin: 4rem 0;
+}
+
+.faq-section h2 {
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.faq-section p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 2rem;
+}
+
+.accordion-button {
+    background-color: #f8f9fa;
+    color: #2E7D32;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #2E7D32;
+    color: #fff;
+}
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.2rem rgba(46,125,50,0.25);
+}
+
+.accordion-body {
+    padding: 1rem 1.25rem;
+    background-color: #fff;
+    border-left: 3px solid #2E7D32;
+    border-radius: 0 0.5rem 0.5rem 0;
+    color: #333;
+}
+
+.accordion-item {
+    border: none;
+    margin-bottom: 1rem;
+}
+
+.accordion-item:last-child {
+    margin-bottom: 0;
+}
+
+
+</style>
+
+<!-- Hero Section -->
+<div class="hero mb-5">
+    <h1>🎓 Welcome to <span class="text-warning">StudyMate</span></h1>
+    <p>Your all-in-one academic companion. Manage subjects, track tasks, and stay ahead! </p>
+    
+{% if user.is_authenticated %}
+    <!-- If user is logged in -->
+    <a href="{% url 'student_dashboard' %}" class="btn btn-light btn-cta shadow-sm me-2" style="margin-bottom: 20px; margin-top: 20px;">
+        <i class="fa-solid fa-user-graduate me-2"></i> Dashboard
+    </a>
+    <a href="{% url 'logout' %}" class="btn btn-danger btn-cta" style="margin-bottom: 10px;">
+        <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+    </a>
+{% else %}
+    <!-- If user is not logged in -->
+    <a href="{% url 'login' %}" class="btn btn-light btn-cta shadow-sm me-2" style="margin-bottom: 10px;">
+        <i class="fa-solid fa-right-to-bracket me-2"></i> Login
+    </a>
+    <a href="{% url 'register' %}" class="btn btn-register btn-cta" style="margin-bottom: 10px;">
+        <i class="fa-solid fa-user-plus me-2"></i> Register
+    </a>
+{% endif %}
+
+</div>
+<br>
+<!-- Features Section -->
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">✨ Why Choose StudyMate?</h2>
+        <p class="text-muted">Simplify your academic life with powerful tools, all in one place.</p>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card feature-card shadow-sm p-4 text-center h-100">
+                <i class="fa-solid fa-book-open-reader feature-icon"></i>
+                <h5 class="fw-bold">Subjects & Learning</h5>
+                <p class="text-muted">Organize all your subjects and related learning items with ease.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card shadow-sm p-4 text-center h-100">
+                <i class="fa-solid fa-clipboard-check feature-icon"></i>
+                <h5 class="fw-bold">Task Manager</h5>
+                <p class="text-muted">Stay on top of assignments, quizzes, and exams with smart tracking.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card shadow-sm p-4 text-center h-100">
+                <i class="fa-solid fa-calendar-days feature-icon"></i>
+                <h5 class="fw-bold">Timetable</h5>
+                <p class="text-muted">View your schedule and highlight today's classes automatically.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Call-to-action Section -->
+<div class="container cta-section shadow-sm">
+    <h3 class="fw-bold mb-3">🚀 Get Started Today</h3>
+    <p class="text-muted mb-4">Sign up for free and take control of your academic journey with StudyMate.</p>
+    <a href="{% url 'register' %}" class="btn btn-success btn-lg px-5">
+        <i class="fa-solid fa-graduation-cap me-2"></i> Join Now
+    </a>
+</div>
+<br> <br> 
+<!-- FAQ Section -->
+<div class="container faq-section">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">❓ Frequently Asked Questions</h2>
+        <p>All you need to know about StudyMate and how it helps you manage your studies.</p>
+    </div>
+    <div class="accordion" id="faqAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="faq1">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                    What is StudyMate?
+                </button>
+            </h2>
+            <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    StudyMate is an academic study manager where you can add your current class subjects and organize your learning efficiently.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="faq2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                    Can I track my homework and assignments?
+                </button>
+            </h2>
+            <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    Each subject can have multiple learning items like homework, projects, quizzes, mid-term, and final-term exams.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="faq3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                    How can I manage upcoming tasks?
+                </button>
+            </h2>
+            <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    You can store all upcoming tasks such as assignments, quizzes, projects, and exams with deadlines.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="faq4">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">
+                    Does StudyMate send reminders?
+                </button>
+            </h2>
+            <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    StudyMate has an email reminder system:
+                    <ul>
+                        <li><strong>7 days before a task deadline:</strong> Sends a reminder about pending tasks.</li>
+                        <li><strong>4 days before a task deadline:</strong> Sends a follow-up reminder.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="faq5">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5">
+                    Is StudyMate free?
+                </button>
+            </h2>
+            <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    Absolutely! StudyMate is completely free to use.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.faq-card {
+    background-color: #e6f4ea; /* light green */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.faq-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.12);
+}
+.faq-question {
+    cursor: default;
+}
+.faq-answer {
+    margin-top: 10px;
+}
+</style>
+
+{% endblock %}
+
+

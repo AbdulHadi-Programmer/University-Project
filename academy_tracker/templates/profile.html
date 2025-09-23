@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<style>
+/* Profile Card Enhancements */
+.profile-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #ffffff;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.profile-card-header {
+    background: linear-gradient(135deg, #28a745 60%, #f8f9fa 40%);
+    color: #ffc107;
+    text-align: center;
+    padding: 30px 20px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    position: relative;
+}
+
+.profile-card-body {
+    padding: 30px 20px;
+}
+
+.profile-card-body p {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+.profile-card-body p strong {
+    color: #28a745;
+}
+
+.profile-card-footer {
+    padding: 20px;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+}
+
+.profile-btn {
+    border-radius: 30px;
+    padding: 10px 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.profile-btn-accent {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+}
+
+.profile-btn-accent:hover {
+    background-color: #218838;
+    color: #fff;
+}
+
+.profile-btn-outline {
+    background-color: #fff;
+    color: #28a745;
+    border: 2px solid #28a745;
+}
+
+.profile-btn-outline:hover {
+    background-color: #28a745;
+    color: #fff;
+}
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <!-- Profile Card -->
+            <div class="card profile-card">
+                <div class="profile-card-header">
+                    👤 My Profile
+                </div>
+                <div class="profile-card-body">
+                    <p><strong>Name:</strong> {{ user.name }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Semester:</strong> {{ user.get_semester_display }}</p>
+                    <p><strong>Joined:</strong> {{ user.created_at|date:"F j, Y" }}</p>
+                </div>
+                <div class="profile-card-footer">
+                    <a href="{% url 'edit_profile' %}" class="btn profile-btn profile-btn-accent">✏️ Edit Profile</a>
+                    <a href="{% url 'student_dashboard' %}" class="btn profile-btn profile-btn-outline">🏠 Home</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% comment %}
+
+{% extends "base.html" %}
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <!-- Profile Card -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header text-white" style="background-color: #2E7D32;">
+                    <h4 class="mb-0">👤 My Profile</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ user.name }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Semester:</strong> {{ user.get_semester_display }}</p>
+                    <p><strong>Joined:</strong> {{ user.created_at|date:"F j, Y" }}</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <a href="{% url 'edit_profile' %}" class="btn btn-accent">✏️ Edit Profile</a>
+                    <a href="{% url 'student_dashboard' %}" class="btn btn-outline-success">🏠 Home</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% endcomment %}
