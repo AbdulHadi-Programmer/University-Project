@@ -38,10 +38,8 @@ It helps students stay organized by managing subjects, tasks, learning items, an
 StudyMate/
 │── academy_tracker/   # Main Django project
 │── accounts/          # User authentication and profiles
-│── tasks/             # Task CRUD functionality
-│── subjects/          # Subjects and learning items
+│── academy/           # Task, Subject, Learning Items CRUD functionality
 │── templates/         # HTML templates (Bootstrap-based)
-│── static/            # Static assets (CSS, JS, icons)
 │── db.sqlite3         # Default SQLite database
 ```
 
