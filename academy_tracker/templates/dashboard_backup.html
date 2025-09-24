@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    .btn-success.rounded-circle:hover {
+        transform: scale(1.1);
+        background: #218838; /* darker green */
+        transition: all 0.2s ease-in-out;
+    }
+
+    /* Make Learning Items icon white on hover */
+    .btn-outline-success:hover .fa-book-open-reader {
+        color: #fff !important;
+    }
+
+    /* Compact action badges */
+    .action-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;              /* smaller font */
+        padding: 0.5em 0.9em;            /* reduced padding */
+        border-radius: 40px;             /* pill shape */
+        font-weight: 500;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+        min-height: 38px;                /* more compact height */
+    }
+
+    .action-badge i {
+        font-size: 0.85rem;              /* smaller icon */
+    }
+
+    .action-badge:hover {
+        transform: translateY(-2px);
+        opacity: 0.95;
+    }
+</style>
+
+<div class="container">
+    <h2 class="fw-bold mb-4 text-center text-lg-start">📚 My Subjects</h2>
+
+    <!-- Action badges row -->
+    <!-- <div class="row g-2 mb-4 text-center">
+        <div class="col-6 col-lg-3">
+            <div class="action-badge" style="background-color: #6f42c1; color: #fff;">
+                <i class="fa-solid fa-folder-plus me-1"></i> Create
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="action-badge" style="background-color: #20c997; color: #fff;">
+                <i class="fa-solid fa-plus me-1"></i> Add Subject
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="action-badge" style="background-color: #fd7e14; color: #fff;">
+                <i class="fa-solid fa-tasks me-1"></i> Add Task
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="action-badge" style="background-color: #6c757d; color: #fff;">
+                <i class="fa-solid fa-book-open-reader me-1"></i> Learning
+            </div>
+        </div>
+    </div> -->
+
+    <!-- Small 3 buttons: -->
+    <!-- <div class="d-flex gap-3 flex-wrap mt-2">
+    <span class="badge rounded-pill" style="background-color: #0d6efd; color: #fff; padding: 0.6em 1em;">
+        <i class="fa-solid fa-plus me-1"></i> Add Subject
+    </span>
+    <span class="badge rounded-pill" style="background-color: #fd7e14; color: #fff; padding: 0.6em 1em;">
+        <i class="fa-solid fa-tasks me-1"></i> Add Task
+    </span>
+    <span class="badge rounded-pill" style="background-color: #6c757d; color: #fff; padding: 0.6em 1em;">
+        <i class="fa-solid fa-book-open-reader me-1"></i> Learning Item
+    </span>
+</div> -->
+<div class="d-flex flex-wrap justify-content-center gap-2 mt-2">
+    <span class="badge rounded-pill text-bg-success px-3 py-2 small">
+        <i class="fa-solid fa-plus me-1"></i> Add Subject
+    </span>
+    <span class="badge rounded-pill" style="background-color: #ffc107; color: #000; padding: 0.5em 1.1em; font-size: 0.85rem;">
+        <i class="fa-solid fa-tasks me-1"></i> Add Task
+    </span>
+    <span class="badge rounded-pill text-bg-secondary px-3 py-2 small">
+        <i class="fa-solid fa-book-open-reader me-1"></i> Learning Item
+    </span>
+</div>
+
+
+
+    <!-- Subjects Grid -->
+    {% if subjects %}
+        <div class="row g-4">
+            {% for subject in subjects %}
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ subject.name }}</h5>
+                        {% if subject.course_code %}
+                            <p class="text-muted">Code: {{ subject.course_code }}</p>
+                        {% endif %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'learning_items' subject.id %}" class="btn btn-sm btn-outline-success">
+                                <i class="fa-solid fa-book-open-reader text-primary me-2"></i> Learning Items
+                            </a>
+                            <a href="{% url 'tasks' subject.id %}" class="btn btn-sm btn-accent">
+                                <i class="fa-solid fa-clipboard-check text-accent me-1"></i> Tasks
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">No subjects assigned for your semester.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

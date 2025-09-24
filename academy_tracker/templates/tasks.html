@@ -2,6 +2,24 @@
 {% block title %}Tasks - {{ subject.name }}{% endblock %}
 
 {% block content %}
+
+<style>
+    .custom-yellow-btn {
+        border: 2px solid #FFB300;
+        color: #FFB300;
+        background-color: transparent;
+        transition: all 0.3s ease;
+    }
+
+    .custom-yellow-btn:hover,
+    .custom-yellow-btn:focus {
+        background-color: #FFB300;
+        color: white;
+        text-decoration: none;
+    }
+</style>
+
+
 <div class="container py-4">
     <h2 class="fw-bold mb-4"><i class="fa-solid fa-list-check text-success me-2"></i>
  Tasks for {{ subject.name }}</h2>
@@ -48,17 +66,36 @@
             {% endfor %}
         </ul>
     {% else %}
-        <p class="text-muted">No tasks yet.</p>
+        <!-- <p class="text-muted">No tasks yet.</p> -->
+         <div class="text-center py-5">
+        <!-- Illustration / Icon -->
+        <div style="font-size: 4rem;" class="mb-3 text-muted">
+            📭
+             <!-- 🧹 -->
+        </div>
+
+        <!-- Heading -->
+        <h4 class="fw-semibold text-muted mb-2">No tasks yet</h4>
+
+        <!-- CTA Button -->
+        <!-- <a href="{% url 'add_task' %}" class="btn btn-outline-success">
+            <i class="fa-solid fa-plus me-1"></i> Add your first task
+        </a> -->
+        <!-- CTA Button -->
+        <a href="{% url 'add_task' %}" class="btn custom-yellow-btn">
+            <i class="fa-solid fa-plus me-1"></i> Add your first task
+        </a>
+
+
+    </div>
     {% endif %}
 
     <!-- Back & Add Task Buttons -->
-    <div class="d-flex justify-content-between mt-4">
-        <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary">
-            ⬅ Back to Dashboard
-        </a>
-        <a href="{% url 'add_task' %}" class="btn btn-success">
-             Add Task
-        </a>
-    </div>
+<div class="d-flex justify-content-center mt-4">
+    <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary">
+        ⬅ Back to Dashboard
+    </a>
+</div>
+
 </div>
 {% endblock %}
