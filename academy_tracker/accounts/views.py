@@ -35,7 +35,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect("login")  # back to login page
+    return redirect("home")  # back to login page
 
 
 @login_required

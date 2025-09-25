@@ -40,7 +40,15 @@ class TaskForm(forms.ModelForm):
 class SubjectForm(forms.ModelForm):
     class Meta:
         model = Subject
-        fields = ['name', "course_code"]
+        # fields = ['name', "course_code"]
+        fields = ["name",  "course_code",  "semester"]
+    
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # Get the user from kwargs
+        super().__init__(*args, **kwargs)
+        
+        if user and not self.instance.pk:  # Ensure the user is only set when creating a new subject
+            self.instance.user = user    
 
 
 from django import forms

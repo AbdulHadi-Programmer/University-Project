@@ -30,14 +30,23 @@
                             </div>
                         {% endfor %}
 
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-success btn-lg">
+                        <!-- <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success btn-md">
                                 <i class="fa-solid fa-circle-check me-2"></i> Save Changes
                             </button>
                             <a href="{% url 'profile' %}" class="btn btn-outline-secondary">
                                 <i class="fa-solid fa-arrow-left me-2"></i> Cancel
                             </a>
+                        </div> -->
+                        <div class="text-center text-sm-start mt-4">
+                            <button type="submit" class="btn btn-success btn-sm px-4">
+                                <i class="fa-solid fa-circle-check me-2"></i> Save Changes
+                            </button>
+                            <a href="{% url 'profile' %}" class="btn btn-outline-secondary btn-sm ms-2 px-4">
+                                <i class="fa-solid fa-arrow-left me-2"></i> Cancel
+                            </a>
                         </div>
+
                     </form>
                 </div>
             </div>

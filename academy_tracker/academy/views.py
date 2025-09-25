@@ -75,6 +75,14 @@ def delete_task(request, pk):
         return redirect("student_dashboard")  # use correct URL name
     return redirect("student_dashboard")
 
+@login_required
+def delete_subject(request, pk):
+    subject = get_object_or_404(Subject, pk=pk, user=request.user)
+    if request.method == "POST": 
+        subject.delete()
+        return redirect("student_dashboard")
+    return redirect("student_dashboard")
+
 
 ## Student Dashboard 
 # @login_required
@@ -112,6 +120,7 @@ def student_dashboard(request):
 # 4. Learning Item Delete → Delete Topic 
 
 ## Learning list:
+@login_required
 def learning(request):
     user = request.user
     learning_items = LearningItem.objects.filter(subject__semester=user.semester)
@@ -144,6 +153,25 @@ def add_or_update_learningItem(request, pk=None):
 
     return render(request, "learning_form.html", {"form": form})
 
+## Subject CRUD : 
+# Create New Subject :
+@login_required
+def add_or_update__subject(request, pk=None):
+    subject = Subject.objects.filter(pk=pk, user= request.user) if pk else None 
+    if request.method == "POST":
+        form = SubjectForm(request.POST, instance=subject, user=request.user)
+        if form.is_valid():
+            subject = form.save(commit=False)
+            subject.user = request.user
+            subject.save()
+            return redirect("student_dashboard")
+    else :
+        form = SubjectForm(instance=subject, user=request.user)
+    
+    return render(request, "subject_form.html", {"form": form})
+
+
+
 
 @login_required
 def delete_item(request, pk):
@@ -163,3 +191,4 @@ def task_list(request, subject_id):
         "subject": subject,
         "tasks": tasks
     })
+

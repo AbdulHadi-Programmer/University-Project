@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import student_dashboard, task_list, add_or_update_task, delete_task, add_or_update_learningItem, delete_item, learning, learning_item_list, task_list
+from .views import *
 
 urlpatterns = [
     path("dashboard/", student_dashboard, name="student_dashboard"),
@@ -17,5 +18,8 @@ urlpatterns = [
     # subject-specific pages
     path("subjects/<int:subject_id>/learning-items/", learning_item_list, name="learning_items"),
     path("subjects/<int:subject_id>/tasks/", task_list, name="tasks"),
+    # subject add or update:
+    path("subjects/add-new-subject/", add_or_update__subject, name="add_subject"),
+    path("subjects/update-subject/<int:pk>/", add_or_update__subject, name="update_subject"),
 
 ]

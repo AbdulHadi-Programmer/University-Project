@@ -120,17 +120,7 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <!-- <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'student_dashboard' %}"> <i class="fa-solid fa-gauge-high me-1"></i> Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'timetable' %}">Time Table</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
-                        {% endif %} 
-                    </ul> -->
+                
                     <ul class="navbar-nav ms-auto">
                         {% if user.is_authenticated %}
                             <li class="nav-item">
@@ -147,7 +137,7 @@
                                 <a class="nav-link" href="{% url 'profile' %}">
                                     <i class="fa-regular fa-user me-1"></i> Profile
                                 </a>
-                            </li>
+                           </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'logout' %}">
                                     <i class="fa-solid fa-right-from-bracket me-1"></i> Logout

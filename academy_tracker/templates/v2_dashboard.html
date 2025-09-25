@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    /* Dashboard heading */
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-header h2 {
+        font-weight: 700;
+    }
+
+    /* Subject card styles */
+    .subject-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease-in-out;
+        border: none;
+    }
+
+    .subject-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .subject-card .card-body {
+        padding: 1.2rem 1.4rem;
+    }
+
+    .subject-card h5 {
+        font-weight: 600;
+        color: #343a40;
+    }
+
+    .subject-card .text-muted {
+        font-size: 0.9rem;
+    }
+
+    .subject-card .btn-sm {
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+
+    /* Action badges */
+    .action-badges {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+    }
+
+    .action-badges .badge {
+        padding: 0.55em 1em;
+        font-size: 0.85rem;
+        border-radius: 50px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s ease;
+    }
+
+    .action-badges .badge:hover {
+        transform: translateY(-2px);
+        opacity: 0.95;
+    }
+
+    /* Button hover adjustments */
+    .btn-outline-success:hover {
+        background-color: #198754;
+        color: #fff !important;
+        border-color: #198754;
+    }
+
+    .btn-outline-warning:hover {
+        background-color: #ffc107;
+        color: #fff !important;
+        border-color: #ffc107;
+    }
+
+    /* Optional icon hover (already in your code) */
+    .btn-outline-success:hover .fa-book-open-reader {
+        color: #fff !important;
+}
+    .action-badges .badge, .action-badges a {
+        text-decoration: none;
+        z-index: 1;
+}
+.action-badges .badge {
+    text-decoration: none;
+}
+
+
+</style>
+
+<div class="container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <h2 class="fw-bold text-success">
+            <i class="fa-solid fa-layer-group me-2"></i> My Subjects
+        </h2>
+    </div>
+
+    <!-- Action Badges -->
+    <div class="action-badges">
+        <a href="{% url 'add_task' %}" style="text-decoration: none;"  class="badge text-bg-success">
+            <i class="fa-solid fa-plus"></i> Add Subject
+        </a>
+        <a href="{% url 'add_task' %}" class="badge"  style="background-color: #ffc107; color: #000;  text-decoration: none;">
+            <i class="fa-solid fa-tasks"></i> Add Task
+        </a>
+        <a href="{% url 'add_learning' %}" style="text-decoration: none; "  class="badge text-bg-secondary">
+            <i class="fa-solid fa-book-open-reader"></i> Learning Item
+        </a>
+    </div>
+    
+    <!-- Subject Cards -->
+    {% if subjects %}
+        <div class="row g-4">
+            {% for subject in subjects %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card subject-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ subject.name }}</h5>
+                        {% if subject.course_code %}
+                            <p class="text-muted mb-3">Code: {{ subject.course_code }}</p>
+                        {% endif %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'learning_items' subject.id %}" class="btn btn-sm btn-outline-success">
+                                <i class="fa-solid fa-book-open-reader me-1"></i> Learning Item
+                            </a>
+                            <a href="{% url 'tasks' subject.id %}" class="btn btn-sm btn-outline-warning text-dark">
+                                <i class="fa-solid fa-clipboard-check me-1"></i> Tasks
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <div style="font-size: 3rem;" class="mb-3 text-muted">📭</div>
+            <h5 class="text-muted">No subjects assigned for this semester.</h5>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

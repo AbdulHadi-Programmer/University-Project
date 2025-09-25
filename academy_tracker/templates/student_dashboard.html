@@ -89,6 +89,25 @@
     .btn-outline-success:hover .fa-book-open-reader {
         color: #fff !important;
     }
+    .action-badges .badge {
+    text-decoration: none; /* Remove underline */
+    font-weight: 600; /* Make text bold */
+    padding: 0.75em 1.2em;
+    font-size: 0.85rem;
+    border-radius: 50px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease;
+    cursor: pointer; /* Ensure it shows as clickable */
+}
+
+.action-badges .badge:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+}
+
 </style>
 
 <div class="container">
@@ -101,15 +120,15 @@
 
     <!-- Action Badges -->
     <div class="action-badges">
-        <span class="badge text-bg-success">
+        <a href="{% url 'add_subject' %}" class="badge text-bg-success">
             <i class="fa-solid fa-plus"></i> Add Subject
-        </span>
-        <span class="badge" style="background-color: #ffc107; color: #000;">
+        </a>
+        <a href="{% url 'add_task' %}" class="badge" style="background-color: #ffc107; color: #000;">
             <i class="fa-solid fa-tasks"></i> Add Task
-        </span>
-        <span class="badge text-bg-secondary">
+        </a>
+        <a href="{% url 'add_learning' %}" class="badge text-bg-secondary">
             <i class="fa-solid fa-book-open-reader"></i> Learning Item
-        </span>
+        </a>
     </div>
 
     <!-- Subject Cards -->
