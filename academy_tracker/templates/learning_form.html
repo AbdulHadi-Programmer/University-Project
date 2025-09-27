@@ -9,7 +9,9 @@
             <!-- Card wrapper -->
             <div class="card shadow-lg border-0 rounded-3">
                 <div class="card-header bg-success text-white text-center rounded-top">
-                    <h4 class="mb-0">Update Information</h4>
+                    <h4 class="mb-0">
+                        {% if task_id %}Update Information{% else %}<i class="fa-solid fa-clipboard-check text-accent me-1"></i> Add New Learning{% endif %}
+                    </h4>
                 </div>
                 <div class="card-body p-4">
                     <form method="post" novalidate>
