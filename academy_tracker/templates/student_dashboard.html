@@ -112,6 +112,13 @@
         transform: translateY(-2px);
         opacity: 0.95;
     }
+    /* Force 2 stats per row on ~iPhone SE screens (390px wide) */
+@media (max-width: 400px) and (min-width: 360px) {
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 </style>
 
 <div class="container">
@@ -163,7 +170,7 @@
             <i class="fa-solid fa-tasks"></i> Add Task
         </a>
         <a href="{% url 'add_learning' %}" class="badge text-bg-secondary">
-            <i class="fa-solid fa-book-open-reader"></i> Study Note
+            <i class="fa-solid fa-book-open-reader"></i> Add Study Note
         </a>
     </div>
 
@@ -174,11 +181,11 @@
         <div class="col-md-6 col-lg-4">
             <div class="card subject-card">
                 <div class="card-body">
-                    <h5 class="card-title">{{ subject.name }}</h5>
+                    <h5 class="card-title mb-3">{{ subject.name }}</h5>
                     {% if subject.course_code %}
                         <p class="text-muted mb-3">Code: {{ subject.course_code }}</p>
                     {% endif %}
-                    
+
                     <div class="d-flex justify-content-between">
                         <a href="{% url 'learning_items' subject.id %}" class="btn btn-sm btn-outline-success">
                             <i class="fa-solid fa-book-open-reader me-1"></i> Study Notes
@@ -202,6 +209,10 @@
 </div>
 {% endblock %}
 
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 {% comment %}
 
 {% extends "base.html" %}
@@ -219,12 +230,19 @@
     }
 
     /* Stats cards */
-    .stats-row {
+    /* .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 0.8rem;
+        margin-bottom: 2rem;
+    } */
+     .stats-row {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 0.8rem;
         margin-bottom: 2rem;
     }
+
     .stat-card {
         background: #fff;
         border-radius: 10px;

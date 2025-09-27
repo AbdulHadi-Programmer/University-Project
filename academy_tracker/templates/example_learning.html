@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Learning Items - {{ subject.name }}{% endblock %}
+{% block title %}Study Notes - {{ subject.name }}{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h2 class="fw-bold mb-4">📖 Learning Items for {{ subject.name }}</h2>
+    <h2 class="fw-bold mb-4">📖 Study Notes for {{ subject.name }}</h2>
 
     {% if learning_items %}
         <ul class="list-group">
@@ -15,7 +15,7 @@
             {% endfor %}
         </ul>
     {% else %}
-        <p class="text-muted">No learning items yet.</p>
+        <p class="text-muted">No Study Notes yet.</p>
     {% endif %}
 
     <a href="{% url 'student_dashboard' %}" class="btn btn-outline-success mt-3">⬅ Back to Dashboard</a>

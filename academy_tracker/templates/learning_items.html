@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Learning Items - {{ subject.name }}{% endblock %}
+{% block title %} Study Notes - {{ subject.name }}{% endblock %}
 
 {% block content %}
 <div class="container py-4">
-    <h2 class="fw-bold mb-4"><i class="fa-solid fa-book-open-reader text-success me-2"></i> Learning Items for {{ subject.name }}</h2>
+    <h2 class="fw-bold mb-4"><i class="fa-solid fa-book-open-reader text-success me-2"></i> Study Notes for {{ subject.name }}</h2>
 
     {% if learning_items %}
         <ul class="list-group shadow-sm rounded-3">
@@ -38,15 +38,15 @@
         {% else %}
         <div class="text-center py-5">
             <div style="font-size: 3rem;" class="mb-3 text-muted">📭</div>
-            <h5 class="text-muted">No learning items yet. Please add one!</h5>
+            <h5 class="text-muted">No Study Notes yet. Please add one!</h5>
         </div>
         {% endif %}
         
         {% else %}
             <div class="text-center py-5">
                 <div class="mb-3 text-muted fs-1 fs-md-2 fs-lg-1" style="font-size: 4rem;">📭</div>
-                <h2 class="text-muted fw-semibold d-none d-md-block">No learning items yet. Please add one!</h2>
-                <h5 class="text-muted fw-semibold d-block d-md-none">No learning items yet. Please add one!</h5>
+                <h2 class="text-muted fw-semibold d-none d-md-block">No Study Notes yet. Please add one!</h2>
+                <h5 class="text-muted fw-semibold d-block d-md-none">No Study Notes yet. Please add one!</h5>
             </div>
             {% endif %}
             
@@ -66,7 +66,7 @@
 
         <!-- Text: smaller than before -->
         <p class="text-muted fw-medium" style="font-size: 1.05rem;">
-            No learning items yet. Please add one!
+            No Study Notes yet. Please add one!
         </p>
     </div>
 {% endif %}
@@ -102,11 +102,11 @@
 {% comment %}
 
 {% extends "base.html" %}
-{% block title %}Learning Items - {{ subject.name }}{% endblock %}
+{% block title %}Study Notes - {{ subject.name }}{% endblock %}
 
 {% block content %}
 <div class="container py-4">
-    <h2 class="fw-bold mb-4"><i class="fa-solid fa-book-open-reader text-success me-2"></i> Learning Items for {{ subject.name }}</h2>
+    <h2 class="fw-bold mb-4"><i class="fa-solid fa-book-open-reader text-success me-2"></i> Study Notes for {{ subject.name }}</h2>
 
     {% if learning_items %}
         <ul class="list-group shadow-sm rounded-3">
@@ -137,7 +137,7 @@
             {% endfor %}
         </ul>
     {% else %}
-        <p class="text-muted">No learning items yet.</p>
+        <p class="text-muted">No Study Notes yet.</p>
     {% endif %}
 
     <!-- Back & Add Learning Item Buttons -->
@@ -147,7 +147,7 @@
         </a>
         {% if user.is_authenticated %}
             <a href="{% url 'add_learning' %}" class="btn btn-success">
-                 Add Learning Item
+                 Add Study Notes
             </a>
         {% endif %}
     </div>
