@@ -55,3 +55,22 @@ class LearningItem(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.subject.name})"
+
+
+class TimeTable(models.Model):
+    DAYS_OF_WEEK = [
+        ("Monday", "Monday"),
+        ("Tuesday", "Tuesday"),
+        ("Wednesday", "Wednesday"),
+        ("Thursday", "Thursday"),
+        ("Friday", "Friday"),
+        ("Saturday", "Saturday"),
+        ("Sunday", "Sunday"),
+        ]
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    day = models.CharField(max_length=20, choices = DAYS_OF_WEEK)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    subject = models.ForeignKey(Subject, on_delete= models.CASCADE)
+    room_no = models.CharField(max_length=100, blank=True, null=True)
+

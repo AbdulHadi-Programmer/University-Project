@@ -1,5 +1,5 @@
 from django import forms
-from .models import Task, Subject, LearningItem
+from .models import Task, Subject, LearningItem, TimeTable 
 
 # class TaskForm(forms.ModelForm):
 #     class Meta:
@@ -70,3 +70,59 @@ class LearningItemForm(forms.ModelForm):
         # Add CSS class same as field name
         for field_name, field in self.fields.items():
             field.widget.attrs.update({"class": field_name})
+
+
+# # Time Table Form: 
+# class TimeTableForm(forms.ModelForm):
+#     class Meta:
+#         model = TimeTable
+#         fields = ["day", "start_time", "end_time", "subject", "room_no"]
+
+#         widgets = {
+#             "start_time": forms.TimeInput(
+#                 format="%I:%M %p",  # 12-hour format with AM/PM
+#                 attrs={"type": "time", "class": "form-control"}
+#             ),
+#             "end_time": forms.TimeInput(
+#                 format="%I:%M %p",
+#                 attrs={"type": "time", "class": "form-control"}
+#             ),
+#         }
+
+#     def __init__(self, *args, **kwargs):
+#         user = kwargs.pop("user", None)
+#         super().__init__(*args, **kwargs)
+
+#         # Subject filter for current user
+#         if user:
+#             self.fields["subject"].queryset = Subject.objects.filter(user=user)
+
+#         # Override display format for time fields
+#         self.fields["start_time"].input_formats = ["%I:%M %p"]
+#         self.fields["end_time"].input_formats = ["%I:%M %p"]
+from django import forms
+from .models import TimeTable, Subject
+
+class TimeTableForm(forms.ModelForm):
+    class Meta:
+        model = TimeTable 
+        fields = ["day", "start_time", "end_time", "subject", "room_no"]
+        widgets = {
+            "start_time": forms.TimeInput(
+                format="%H:%M",
+                attrs={"type": "time", "class": "form-control"}
+            ),
+            "end_time": forms.TimeInput(
+                format="%H:%M",
+                attrs={"type": "time", "class": "form-control"}
+            ),
+            "day": forms.Select(attrs={"class": "form-control"}),
+            "subject": forms.Select(attrs={"class": "form-control"}),
+            "room_no": forms.TextInput(attrs={"class": "form-control", "placeholder": "e.g. Room 204"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields["subject"].queryset = Subject.objects.filter(user=user)

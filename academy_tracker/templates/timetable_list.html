@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}My Timetable{% endblock %}
+
+{% block content %}
+<style>
+    /* Floating Add Button */
+    .fab {
+        position: fixed;
+        top: 70px;
+        right: 30px;
+        background-color: #198754; /* bootstrap success green */
+        color: white;
+        border-radius: 50%;
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        transition: transform 0.2s ease-in-out;
+        z-index: 1000;
+        text-decoration: none;
+    }
+    .fab:hover {
+        transform: scale(1.1);
+        background-color: #157347; /* darker green */
+        color: #fff;
+    }
+    /* Highlight current day */
+    .highlight-day {
+        background: #d1e7dd !important; /* soft green */
+        border-top: 10px solid #198754;
+        border-bottom : 10px solid #198754;
+        font-weight: 600;
+    }
+    .table-custom {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .table-custom thead {
+        background: linear-gradient(45deg, #198754, #20c997);
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .table-custom tbody tr {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .table-custom tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+</style>
+
+<div class="container my-4">
+    <h2 class="fw-bold text-center mb-4">
+        <i class="fa-solid fa-calendar-days me-2 text-success"></i> My Timetable
+    </h2>
+
+    {% if timetables %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle text-center">
+                <thead class="table-success">
+                    <tr class="{% if entry.day == current_day %}highlight-day{% endif %}">
+                        <th>Day</th>
+                        <th>Timing</th>
+                        <th>Subject</th>
+                        <th>Room No</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in timetables %}
+                    <tr class="{% if entry.day == current_day %}highlight-day{% endif %}">
+                        <td>{{ entry.day }}</td>
+                        <td>
+                            {{ entry.start_time|time:"h:i A" }} — {{ entry.end_time|time:"h:i A" }}
+                        </td>
+                        <td>{{ entry.subject.name }}</td>
+                        <td>{{ entry.room_no|default:"-" }}</td>
+                        <td>
+                            <a href="{% url 'timetable_update' entry.id %}" class="btn btn-sm btn-accent">
+                                <i class="fa-solid fa-pencil"></i>
+                            </a>
+                            <a href="{% url 'timetable_delete' entry.id %}" 
+                               class="btn btn-sm btn-danger">
+                               <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Floating Add Button -->
+        <a href="{% url 'timetable_create' %}" class="fab">
+            <i class="fa-solid fa-plus"></i>
+        </a>
+
+    {% else %}
+        <div class="text-center py-5">
+            <div style="font-size: 3rem;" class="mb-3 text-muted">
+                <i class="fa-solid fa-calendar-xmark"></i>
+            </div>
+            <h5 class="text-muted mb-3">No Timetable Entries Found</h5>
+            <a href="{% url 'timetable_create' %}" class="btn btn-success">
+                <i class="fa-solid fa-plus"></i> Add Timetable Row
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

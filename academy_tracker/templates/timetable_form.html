@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block title %}Add Timetable Row{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-success mb-0">
+            <i class="fa-solid fa-plus-circle me-2"></i> Add Timetable Row
+        </h2>
+        <a href="{% url 'timetable_list' %}" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <div class="card shadow-lg border-0">
+        <div class="card-body p-4">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Day</label>
+                        {% render_field form.day class="form-select" %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Subject</label>
+                        {% render_field form.subject class="form-select" %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Start Time</label>
+                        {% render_field form.start_time class="form-control" placeholder="HH:MM AM/PM" %}
+                        <small class="text-muted">Example: 09:30 AM</small>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">End Time</label>
+                        {% render_field form.end_time class="form-control" placeholder="HH:MM AM/PM" %}
+                        <small class="text-muted">Example: 11:00 AM</small>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Room No</label>
+                        {% render_field form.room_no class="form-control" placeholder="Optional" %}
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-success px-4">
+                        <i class="fa-solid fa-save me-2"></i> Save Row
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

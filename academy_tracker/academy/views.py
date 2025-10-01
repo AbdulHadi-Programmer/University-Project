@@ -98,6 +98,7 @@ def delete_subject(request, pk):
 #     }
 
 #     return render(request, "student_dashboard.html", context)
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.db.models import Count, Q
@@ -106,6 +107,11 @@ from .models import Subject, Task, LearningItem
 @login_required
 def student_dashboard(request):
     user = request.user
+
+    # Total :
+    tasks_count = Task.objects.filter(user=request.user).count() or 0
+    notes_count = LearningItem.objects.filter(user=request.user).count()  or 0
+    timetable_count = TimeTable.objects.filter(user=request.user).count() or 0
 
     # Subjects for this user/semester, annotated with counts
     subjects = (
@@ -121,8 +127,8 @@ def student_dashboard(request):
     )
 
     # Global counts for badges / dashboard summary
-    task_pending_count = Task.objects.filter(user=user, status="Pending").count()
-    task_completed_count = Task.objects.filter(user=user, status="Completed").count()
+    task_pending_count = Task.objects.filter(user=user, status="Pending").count() 
+    task_completed_count = Task.objects.filter(user=user, status="Completed").count() 
     learning_items_count = LearningItem.objects.filter(subject__semester=user.semester).count()
 
     context = {
@@ -130,6 +136,10 @@ def student_dashboard(request):
         "task_pending_count": task_pending_count,
         "task_completed_count": task_completed_count,
         "learning_items_count": learning_items_count,
+        # Total Count :
+        "tasks_count": tasks_count,
+        "notes_count": notes_count,
+        "timetable_count": timetable_count,
     }
 
     return render(request, "student_dashboard.html", context)
@@ -206,5 +216,78 @@ def task_list(request, subject_id):
     return render(request, "tasks.html", {
         "subject": subject,
         "tasks": tasks
-    })
+    }) 
+
+
+# @login_required 
+# def
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required 
+from .models import TimeTable 
+from .forms import TimeTableForm 
+
+# List View 
+# @login_required 
+# def timetable_list(request):
+#     timetables = TimeTable.objects.filter(user=request.user).order_by("day", "start_time")
+#     return render(request, "timetable_list.html", {"timetables": timetables})
+from django.db.models import Case, When, Value, IntegerField
+import datetime 
+
+@login_required
+def timetable_list(request):
+    # Current Day ka name (e.g: "Monday")
+    current_day = datetime.datetime.today().strftime("%A")
+    day_order = Case(
+        When(day="Monday", then=Value(1)),
+        When(day="Tuesday", then=Value(2)),
+        When(day="Wednesday", then=Value(3)),
+        When(day="Thursday", then=Value(4)),
+        When(day="Friday", then=Value(5)),
+        When(day="Saturday", then=Value(6)),
+        When(day="Sunday", then=Value(7)),
+        output_field=IntegerField(),
+    )
+
+    timetables = TimeTable.objects.filter(user=request.user).order_by(day_order, "start_time")
+
+    return render(request, "timetable_list.html", {"timetables": timetables, "current_day": current_day})
+
+
+
+# CREATE view
+@login_required
+def timetable_create(request):
+    if request.method == "POST":
+        form = TimeTableForm(request.POST, user=request.user)
+        if form.is_valid():
+            timetable = form.save(commit=False)
+            timetable.user = request.user
+            timetable.save()
+            return redirect("timetable_list")
+    else:
+        form = TimeTableForm(user=request.user)
+    return render(request, "timetable_form.html", {"form": form})
+
+
+# UPDATE view
+@login_required
+def timetable_update(request, pk):
+    timetable = get_object_or_404(TimeTable, pk=pk, user=request.user)
+    if request.method == "POST":
+        form = TimeTableForm(request.POST, instance=timetable, user=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("timetable_list")
+    else:
+        form = TimeTableForm(instance=timetable, user=request.user)
+    return render(request, "timetable_form.html", {"form": form})
+
+
+# DELETE view  (remove the confirmation view and add direct)
+@login_required
+def timetable_delete(request, pk):
+    timetable = get_object_or_404(TimeTable, pk=pk, user=request.user)
+    timetable.delete()
+    return redirect("timetable_list")
 

@@ -188,7 +188,7 @@
 
                     <div class="d-flex justify-content-between">
                         <a href="{% url 'learning_items' subject.id %}" class="btn btn-sm btn-outline-success">
-                            <i class="fa-solid fa-book-open-reader me-1"></i> Study Notes
+                            <i class="fa-solid fa-book-open-reader me-1"></i> Study Notes ({{ subject.learning_items_count|default:0 }})
                         </a>
                         <style>
                             .task_btn:hover {
@@ -198,7 +198,7 @@
                             
                         </style>
                         <a href="{% url 'tasks' subject.id %}" class="btn btn-sm btn-outline-warning text-dark task_btn">
-                            <i class="fa-solid fa-clipboard-check me-1" class="task-icon"></i> Tasks
+                            <i class="fa-solid fa-clipboard-check me-1" class="task-icon"></i> Tasks  ({{ subject.total_tasks|default:0 }})
                         </a>
                     </div>
                 </div>

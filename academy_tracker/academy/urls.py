@@ -22,4 +22,10 @@ urlpatterns = [
     path("subjects/add-new-subject/", add_or_update__subject, name="add_subject"),
     path("subjects/update-subject/<int:pk>/", add_or_update__subject, name="update_subject"),
 
+    # Time Table :
+    path("timetable/", timetable_list, name="timetable_list"),
+    path("timetable/add/", timetable_create, name="timetable_create"),
+    path("timetable/<int:pk>/edit/", timetable_update, name="timetable_update"),
+    path("timetable/<int:pk>/delete/", timetable_delete, name="timetable_delete"),
+
 ]
