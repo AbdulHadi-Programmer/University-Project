@@ -27,6 +27,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["studymate.pythonanywhere.com", "*"]
 
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'  
+
+# This tells Django where to look for a global static folder
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+# In production (when you run collectstatic), files will go here
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Application definition
 

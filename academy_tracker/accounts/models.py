@@ -39,3 +39,25 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.name} ({self.email}) - Semester {self.semester}"
+
+# Pending User Model (linkedin with CustomUser fields)
+
+# accounts/models.py
+from django.db import models
+import uuid
+from django.utils import timezone
+from datetime import timedelta
+
+class PendingUser(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    semester = models.PositiveSmallIntegerField(default=1)
+    password = models.CharField(max_length=255)  # store hashed password
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_expired(self):
+        return timezone.now() > self.created_at + timedelta(hours=24)
+
+    def __str__(self):
+        return f"Pending: {self.email}"
