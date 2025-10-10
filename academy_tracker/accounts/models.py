@@ -57,7 +57,9 @@ class PendingUser(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def is_expired(self):
+        """Return True if 24 hours have passed"""
         return timezone.now() > self.created_at + timedelta(hours=24)
 
     def __str__(self):
         return f"Pending: {self.email}"
+

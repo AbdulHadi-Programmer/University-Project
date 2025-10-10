@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Check Your Email{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+  <div class="card shadow-lg border-0 p-4 text-center" style="max-width: 500px; width: 100%;">
+    <div class="mb-3">
+      <h2 class="fw-bold text-success">📧 Verify Your Email</h2>
+    </div>
+
+    <p class="text-muted fs-5 mb-4">
+      We’ve sent a verification link to:
+    </p>
+    <div class="alert alert-success fw-semibold py-2" style="font-size: 1rem;">
+      {{ email }}
+    </div>
+
+    <p class="text-secondary mt-3">
+      Please check your inbox and click the link to activate your StudyMate account.
+    </p>
+    <p class="text-secondary">
+      Didn’t get the email? Check your spam folder or try registering again later.
+    </p>
+
+    <div class="mt-4">
+      <a href="{% url 'login' %}" class="btn btn-success px-4 py-2">Return to Login</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #f9fafb;
+      margin: 0;
+      padding: 40px;
+    }
+    .email-container {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .email-header {
+      color: #198754;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .verify-btn {
+      display: block;
+      background: #198754;
+      color: white;
+      padding: 12px 20px;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      margin: 20px auto;
+      width: fit-content;
+    }
+    .footer {
+      margin-top: 25px;
+      text-align: center;
+      color: #6c757d;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="email-header">Welcome to StudyMate 🎓</div>
+    <p>Hi  name ,</p>
+    <p>Thanks for signing up! Please verify your email to activate your StudyMate account.</p>
+
+    <a href=" verify_url" class="verify-btn">Verify My Email</a>
+
+    <p>If you didn’t request this, you can safely ignore this email.</p>
+
+    <div class="footer">
+      © 2025 StudyMate | Stay Productive 📚
+    </div>
+  </div>
+</body>
+</html> -->

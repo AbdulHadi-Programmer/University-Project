@@ -25,3 +25,4 @@ env/
 .idea/
 
 academy_tracker/*.sqlite3 
+.env

@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os  
+from dotenv import load_dotenv 
+
+load_dotenv() # Load Environment Variables from .env 
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +30,8 @@ SECRET_KEY = 'django-insecure--@)tkovv!&la)(f37@il)7x7^l=u%wdo#g01nsbppq8!d!cwf&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["studymate.pythonanywhere.com", "*"]
+# ALLOWED_HOSTS = ["studymate.pythonanywhere.com", "*"]
+ALLOWED_HOSTS = ['studymate.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'  
@@ -111,6 +117,17 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Email :
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+# "studymate@password_2024"
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 
 # Internationalization
