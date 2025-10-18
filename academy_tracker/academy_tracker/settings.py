@@ -71,6 +71,12 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'academy_tracker.urls'
 AUTH_USER_MODEL = "accounts.CustomUser"
 
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.EmailBackend',  # your custom backend
+    'django.contrib.auth.backends.ModelBackend',  # fallback
+]
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
