@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure--@)tkovv!&la)(f37@il)7x7^l=u%wdo#g01nsbppq8!d!cwf&
 DEBUG = True
 
 # ALLOWED_HOSTS = ["studymate.pythonanywhere.com", "*"]
-ALLOWED_HOSTS = ['studymate.pythonanywhere.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['www.studymate.pythonanywhere.com', 'studymate.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'  

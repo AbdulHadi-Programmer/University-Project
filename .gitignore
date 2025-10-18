@@ -26,3 +26,12 @@ env/
 
 academy_tracker/*.sqlite3 
 .env
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+myenv/
+
+# SQLite database
+*.sqlite3
