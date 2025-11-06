@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Email Verification Issue{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center mt-5">
+    <div class="card shadow-sm border-0" style="max-width: 480px; width: 100%;">
+        <div class="card-body text-center p-4">
+            <!-- Dynamic Icon -->
+            {% if email %}
+                <i class="fa-solid fa-clock-rotate-left fa-3x text-warning mb-3"></i>
+                <h3 class="fw-bold text-success mb-3">Verification Link Expired</h3>
+                <p class="text-muted mb-4">
+                    Your verification link has expired. You can request a new one below to activate your account.
+                </p>
+
+                <form method="POST" action="{% url 'resend_verification' %}" class="text-start">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold text-success">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-success text-white border-0">
+                                <i class="fa-solid fa-envelope"></i>
+                            </span>
+                            <input type="email" id="email" name="email" class="form-control border-success" 
+                                   value="{{ email }}" readonly>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-accent w-100 py-2 fw-semibold">
+                        <i class="fa-solid fa-paper-plane me-2"></i> Resend Verification Email
+                    </button>
+                </form>
+
+            {% else %}
+                <i class="fa-solid fa-triangle-exclamation fa-3x text-danger mb-3"></i>
+                <h3 class="fw-bold text-danger mb-3">Invalid Verification Link</h3>
+                <p class="text-muted mb-4">
+                    The link you used is invalid or has already been used. Please register again or log in.
+                </p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="{% url 'register' %}" class="btn btn-accent fw-semibold px-4">
+                        <i class="fa-solid fa-user-plus me-2"></i> Register
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-success fw-semibold px-4">
+                        <i class="fa-solid fa-right-to-bracket me-2"></i> Login
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

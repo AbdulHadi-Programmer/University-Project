@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Invalid Link{% endblock %}
+{% block content %}
+<div class="text-center mt-5">
+    <div class="card shadow-sm border-0 mx-auto" style="max-width: 480px;">
+        <div class="card-body p-4">
+            <i class="fa-solid fa-triangle-exclamation fa-3x text-danger mb-3"></i>
+            <h3 class="fw-bold text-danger mb-3">Invalid Verification Link</h3>
+            <p class="text-muted mb-4">
+                The verification link is invalid or has already been used. 
+                Please register again or try requesting a new verification email.
+            </p>
+            <div class="d-flex justify-content-center gap-2">
+                <a href="{% url 'register' %}" class="btn btn-accent fw-semibold px-4">
+                    <i class="fa-solid fa-user-plus me-2"></i> Register Again
+                </a>
+                <a href="{% url 'login' %}" class="btn btn-outline-success fw-semibold px-4">
+                    <i class="fa-solid fa-right-to-bracket me-2"></i> Login
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

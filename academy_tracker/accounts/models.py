@@ -60,6 +60,10 @@ class PendingUser(models.Model):
         """Return True if 24 hours have passed"""
         return timezone.now() > self.created_at + timedelta(hours=24)
 
+    def resend_token(self):
+        self.token = uuid.uuid4()  # new unique token 
+        self.created_at = timezone.now()
+        
     def __str__(self):
         return f"Pending: {self.email}"
 

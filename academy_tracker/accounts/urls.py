@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import register_user, login_view, logout_view, profile, edit_profile, home , timetable, verify_email 
+from .views import register_user, login_view, logout_view, profile, edit_profile, home , timetable, verify_email, resend_verification 
 
 
 urlpatterns = [
@@ -12,5 +12,6 @@ urlpatterns = [
     # path('timetable/', timetable, name="timetable")
     path("register/", register_user, name="register"),
     path("verify/<uuid:token>/", verify_email, name="verify_email"),
+    path("resend-verification/", resend_verification, name="resend_verification"),
 
 ]

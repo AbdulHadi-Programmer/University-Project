@@ -9,20 +9,6 @@ from django.http import HttpResponse
 from django.contrib.auth import get_user_model 
 from .forms import PendingUserForm 
 from .models import PendingUser 
-
-# def register_user(request):
-    # if request.method == "POST":
-        # form = CustomUserForm(request.POST)
-        # if form.is_valid():
-            # form.save()
-            # return redirect("home")  # redirect after success
-    # else:
-        # form = CustomUserForm()
-
-    # return render(request, "register.html", {"form": form})
-
-# Register View:
-from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.mail import send_mail
 from django.http import HttpResponse
@@ -82,7 +68,42 @@ def register_user(request):
     return render(request, "register.html", {"form": form})
 
 
+# from django.contrib.auth import login
+
+# def verify_email(request, token):
+#     try:
+#         pending_user = PendingUser.objects.get(token=token)
+#     except PendingUser.DoesNotExist:
+#         return render(request, "email_invalid.html")
+
+#     # Check expiration
+#     # if pending_user.is_expired():
+#     #     pending_user.delete()
+#     #     # return render(request, "email_expired.html")
+#     #     return HttpResponse("Invalid Email Error")
+#     if pending_user.is_expired():
+#         return render(request, "email_expired.html", {"email": pending_user.email})
+
+
+#     # Create and log in actual verified user
+#     user = CustomUser.objects.create_user(
+#         email=pending_user.email,
+#         name=pending_user.name,
+#         semester=pending_user.semester,
+#     )
+#     user.password=pending_user.password,  # use pre-hashed password 
+#     pending_user.delete()
+
+#     # ✅ Log in user automatically
+#     login(request, user, backend='accounts.backends.EmailBackend')
+
+#     # ✅ Redirect to dashboard (change URL name to yours)
+#     return redirect("student_dashboard")
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.contrib.auth import login
+from django.contrib import messages
+from .models import PendingUser, CustomUser
 
 def verify_email(request, token):
     try:
@@ -92,25 +113,60 @@ def verify_email(request, token):
 
     # Check expiration
     if pending_user.is_expired():
-        pending_user.delete()
-        # return render(request, "email_expired.html")
-        return HttpResponse("Invalid Email Error")
+        # Don't delete yet — allow user to resend verification
+        return render(request, "email_expired.html", {"email": pending_user.email})
 
-    # Create and log in actual verified user
-    user = CustomUser.objects.create_user(
+    # ✅ Create a verified CustomUser (don't rehash password)
+    user = CustomUser.objects.create(
         email=pending_user.email,
         name=pending_user.name,
         semester=pending_user.semester,
-        password=pending_user.password,  # already hashed in PendingUserForm
+        password=pending_user.password,   # pre-hashed
     )
 
+    # ✅ Delete pending user record
     pending_user.delete()
 
-    # ✅ Log in user automatically
-    login(request, user)
+    # ✅ Log the user in
+    login(request, user, backend='accounts.backends.EmailBackend')
 
-    # ✅ Redirect to dashboard (change URL name to yours)
+    # ✅ Optional success message
+    messages.success(request, "Your email has been verified and your account is now active.")
+
+    # ✅ Redirect to dashboard or home
     return redirect("student_dashboard")
+
+from django.contrib import messages 
+def resend_verification(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        try: 
+            pending_user = PendingUser.objects.get(email=email)
+        except PendingUser.DoesNotExist:
+            messages.error(request, "No Pending Account found with this email.")
+            return redirect('resend_verification')
+        
+        # Regenerate token and reset expiration 
+        pending_user.resend_token()
+
+        verify_url = request.build_absolute_url(f'/verify/{pending_user.token}/')
+
+        subject = "Resend: Verify your StudyMate Account"
+        from_email = settings.DEFAULT_FROM_EMAIL
+        to = [pending_user.email]
+        context = {"name": pending_user.name, "verify_url": verify_url}
+
+        html_content = render_to_string("verify_email.html", context)
+        text_content = f"Hi {pending_user.name}, please verify your account here: {verify_url}"
+
+        msg = EmailMultiAlternatives(subject, text_content, from_email, to)
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+
+        messages.success(request, "A new verification email has been sent.")
+        return render(request, "check_email.html", {"email": pending_user.email})
+
+    return render(request, "resend_verification.html")
 
 # Login View :
 def login_view(request):
@@ -122,7 +178,7 @@ def login_view(request):
 
             user = authenticate(request, email=email, password=password)
             if user is not None:
-                login(request, user)
+                login(request, user, backend='accounts.backends.EmailBackend')
                 return redirect("student_dashboard")  # replace with your homepage
             else:
                 form.add_error(None, "Invalid email or password")
@@ -139,6 +195,8 @@ def logout_view(request):
 @login_required
 def edit_profile(request):
     user = request.user 
+# Django only hashes passwords when you call user.set_password(raw_password).
+
 
     if request.method == "POST":
         form = ProfileEditForm(request.POST, instance=user)

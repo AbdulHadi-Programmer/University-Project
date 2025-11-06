@@ -45,6 +45,9 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Application definition
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/student_dashboard/'
+LOGOUT_REDIRECT_URL = '/'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
