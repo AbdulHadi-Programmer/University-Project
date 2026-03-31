@@ -14,7 +14,7 @@ def register_user(request):
             user = form.save()
 
             # auto login after signup
-            login(request, user, backend='accounts.backends.EmailBackend')
+            login(request, user)
 
             return redirect("student_dashboard")
     else:
@@ -23,25 +23,21 @@ def register_user(request):
     return render(request, "register.html", {"form": form})
 
 
-# 🔥 LOGIN
 def login_view(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
 
         if form.is_valid():
-            user = authenticate(
-                request,
-                email=form.cleaned_data["email"],
-                password=form.cleaned_data["password"]
-            )
+            user = authenticate(request, username=form.cleaned_data["email"], password=form.cleaned_data["password"])
 
             if user:
-                login(request, user, backend='accounts.backends.EmailBackend')
+                login(request, user)
                 return redirect("student_dashboard")
-
+            
             form.add_error(None, "Invalid email or password")
-    else:
-        form = LoginForm()
+        
+        else:
+            form = LoginForm()
 
     return render(request, "login.html", {"form": form})
 

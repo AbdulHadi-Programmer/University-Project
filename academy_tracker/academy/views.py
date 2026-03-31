@@ -4,42 +4,7 @@ from .forms import TaskForm, SubjectForm, LearningItemForm
 from .models import *
 from django.utils import timezone 
 from django.views.decorators.http import require_POST 
-
-
-
-## Task Model CRUD :
-# @login_required
-# def add_or_update_task(request, pk=None):
-#     # Check if a primary key (pk) is provided in the URL
-#     if pk:
-#         # If pk exists, retrieve the existing task object
-#         task = get_object_or_404(Task, pk=pk, user=request.user)
-#     else:
-#         # If no pk, initialize a new, empty task object
-#         task = None
-
-#     if request.method == "POST":
-#         # If a task object exists, pass it to the form for updating
-#         form = TaskForm(request.POST, instance=task, user=request.user)
-#         if form.is_valid():
-#             task = form.save(commit=False)
-#             task.user = request.user
-#             task.save()
-#             return redirect("task_list")
-#     else:
-#         # For a GET request, create a form instance
-#         # If a task object exists, the form will be pre-filled with its data
-#         form = TaskForm(instance=task, user=request.user)
-
-#     context = {
-#         "form": form,
-#         "task_id": pk # Optional: for potential use in the template
-#     }
-#     return render(request, "task_form.html", context)
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 from .models import Task
-from .forms import TaskForm
 
 @login_required
 def add_or_update_task(request, pk=None):
@@ -63,7 +28,7 @@ def add_or_update_task(request, pk=None):
 
 
 @login_required
-def task_list(request):
+def task_list_all(request):
     tasks = Task.objects.filter(user=request.user)
     return render(request, "task_list.html", {"tasks": tasks})
 
@@ -83,21 +48,6 @@ def delete_subject(request, pk):
         return redirect("student_dashboard")
     return redirect("student_dashboard")
 
-
-# Old View :
-# @login_required
-# def student_dashboard(request):
-#     user = request.user  
-
-#     # Prepare all data in one context dict
-#     context = {
-#         "task_pending_count": Task.objects.filter(user=user, status="Pending").count(),
-#         "task_completed_count": Task.objects.filter(user=user, status="Completed").count(),
-#         "learning_items_count": LearningItem.objects.filter(subject__semester=user.semester).count(),
-#         "subjects": Subject.objects.filter(semester=user.semester),
-#     }
-
-#     return render(request, "student_dashboard.html", context)
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -210,7 +160,7 @@ def delete_item(request, pk):
 
 
 @login_required
-def task_list(request, subject_id):
+def task_list_by_subject(request, subject_id):
     subject = get_object_or_404(Subject, id=subject_id, semester=request.user.semester)
     tasks = Task.objects.filter(subject=subject, user=request.user).order_by("due_date")
     return render(request, "tasks.html", {
