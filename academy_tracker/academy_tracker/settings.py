@@ -75,8 +75,7 @@ ROOT_URLCONF = 'academy_tracker.urls'
 AUTH_USER_MODEL = "accounts.CustomUser"
 
 AUTHENTICATION_BACKENDS = [
-    'accounts.backends.EmailBackend',  # your custom backend
-    'django.contrib.auth.backends.ModelBackend',  # fallback
+    'django.contrib.auth.backends.ModelBackend', 
 ]
 
 
