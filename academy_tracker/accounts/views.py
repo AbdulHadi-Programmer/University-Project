@@ -24,20 +24,23 @@ def register_user(request):
 
 
 def login_view(request):
+    form = LoginForm()  # ✅ always exists
+
     if request.method == "POST":
         form = LoginForm(request.POST)
 
         if form.is_valid():
-            user = authenticate(request, username=form.cleaned_data["email"], password=form.cleaned_data["password"])
+            user = authenticate(
+                request,
+                username=form.cleaned_data["email"],
+                password=form.cleaned_data["password"]
+            )
 
             if user:
                 login(request, user)
                 return redirect("student_dashboard")
-            
+
             form.add_error(None, "Invalid email or password")
-        
-        else:
-            form = LoginForm()
 
     return render(request, "login.html", {"form": form})
 

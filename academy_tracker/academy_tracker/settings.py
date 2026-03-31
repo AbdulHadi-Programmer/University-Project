@@ -28,7 +28,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure--@)tkovv!&la)(f37@il)7x7^l=u%wdo#g01nsbppq8!d!cwf&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+import socket
+
+hostname = socket.gethostname()
+
+if "pythonanywhere" in hostname:
+    DEBUG = False
+else:
+    DEBUG = True
 
 # ALLOWED_HOSTS = ["studymate.pythonanywhere.com", "*"]
 ALLOWED_HOSTS = ['www.studymate.pythonanywhere.com', 'studymate.pythonanywhere.com', 'localhost', '127.0.0.1']
