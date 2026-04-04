@@ -40,7 +40,7 @@ else:
 
 # ALLOWED_HOSTS = ["studymate.pythonanywhere.com", "*"]
 ALLOWED_HOSTS = ['www.studymate.pythonanywhere.com', 'studymate.pythonanywhere.com', 'localhost', '127.0.0.1']
-
+ 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'  
 
