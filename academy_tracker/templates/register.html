@@ -1,41 +1,488 @@
 {% extends "base.html" %}
-{% block title %}Register{% endblock %}
+{% block title %}Register — StudyMate{% endblock %}
 {% load widget_tweaks %}
 
+{% block extra_css %}
+<style>
+/* ── AUTH WRAP ── */
+main{
+  flex:1;display:flex;align-items:stretch;
+  justify-content:center;padding:2.5rem 1.5rem;
+}
+.auth-wrap{
+  display:grid;grid-template-columns:1.05fr 1fr;
+  max-width:980px;width:100%;
+  border-radius:var(--rl);overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,.12);
+  border:1px solid var(--border);
+}
+
+/* ── LEFT PANEL ── */
+.panel{
+  background:var(--ink);
+  display:flex;flex-direction:column;
+  padding:2.8rem 2.5rem;position:relative;overflow:hidden;
+}
+.pb{position:absolute;border-radius:50%;pointer-events:none;}
+.pb1{width:300px;height:300px;top:-90px;right:-90px;background:var(--accent);opacity:.15;}
+.pb2{width:180px;height:180px;bottom:-60px;left:-50px;background:var(--a2);opacity:.08;}
+.pb3{width:120px;height:120px;top:45%;left:-40px;background:var(--a3);opacity:.07;}
+
+.panel-tag{
+  display:inline-flex;align-items:center;gap:7px;font-size:.68rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--a2);
+  margin-bottom:.9rem;position:relative;z-index:2;
+}
+.panel-tag::before{content:'';width:18px;height:2px;background:var(--a2);border-radius:2px;display:block;}
+.panel-h{
+  font-family:'Syne',sans-serif;font-size:1.65rem;font-weight:800;
+  color:#fff;line-height:1.15;letter-spacing:-.025em;
+  margin-bottom:.6rem;position:relative;z-index:2;
+}
+.panel-h .hl{color:var(--a2);}
+.panel-sub{
+  font-size:.82rem;color:rgba(255,255,255,.42);line-height:1.65;
+  font-weight:300;margin-bottom:1.8rem;position:relative;z-index:2;
+}
+
+/* Journey steps */
+.journey{position:relative;z-index:2;flex:1;}
+.journey-step{
+  display:flex;align-items:flex-start;gap:14px;
+  margin-bottom:1.1rem;position:relative;
+}
+.journey-step:not(:last-child)::after{
+  content:'';position:absolute;
+  left:15px;top:34px;
+  width:1px;height:calc(100% + 8px);
+  background:rgba(255,255,255,.1);
+}
+.js-circle{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.js-circle.done{background:var(--accent);box-shadow:0 0 0 3px rgba(91,76,219,.25);}
+.js-circle.active{background:var(--a2);box-shadow:0 0 0 3px rgba(232,255,84,.2);}
+.js-circle.idle{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);}
+.js-body{padding-top:4px;}
+.js-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;color:#fff;margin-bottom:.2rem;}
+.js-desc{font-size:.76rem;color:rgba(255,255,255,.4);font-weight:300;line-height:1.5;}
+
+/* Floating stat card */
+.stat-card{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);
+  border-radius:12px;padding:.9rem 1rem;
+  margin-top:1.8rem;position:relative;z-index:2;
+  animation:floatCard 3.5s ease-in-out infinite;
+}
+.sc-icon{
+  width:34px;height:34px;border-radius:9px;
+  background:rgba(91,76,219,.3);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sc-num{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:#fff;line-height:1;}
+.sc-label{font-size:.68rem;color:rgba(255,255,255,.4);margin-top:1px;font-weight:300;}
+.sc-divider{width:1px;height:28px;background:rgba(255,255,255,.1);}
+
+/* ── RIGHT PANEL ── */
+.auth-form{
+  background:var(--card);
+  padding:2.5rem 2.6rem;
+  display:flex;flex-direction:column;justify-content:center;
+  overflow-y:auto;
+}
+.form-h{
+  font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;
+  color:var(--ink);letter-spacing:-.025em;margin-bottom:.3rem;
+}
+.form-sub{font-size:.84rem;color:var(--ink-muted);margin-bottom:1.6rem;font-weight:300;}
+
+/* Two-col row for name + semester */
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+
+/* Input fields */
+.field{margin-bottom:1rem;}
+.field label{
+  display:block;font-size:.8rem;font-weight:600;
+  color:var(--ink-soft);margin-bottom:.36rem;letter-spacing:.01em;
+}
+.field-inner{position:relative;}
+.field-icon{
+  position:absolute;left:.9rem;top:50%;transform:translateY(-50%);
+  color:var(--ink-muted);pointer-events:none;
+  display:flex;align-items:center;z-index:1;
+}
+/* Override widget_tweaks styles */
+.field-inner input,
+.field-inner select{
+  width:100%;padding:.72rem 1rem .72rem 2.6rem !important;
+  border:1.5px solid var(--borderS) !important;border-radius:var(--r) !important;
+  font-family:'DM Sans',sans-serif !important;font-size:.9rem !important;
+  color:var(--ink) !important;background:var(--surface) !important;
+  outline:none !important;
+  transition:border-color .2s,background .2s,box-shadow .2s !important;
+  box-shadow:none !important;-webkit-appearance:none !important;
+}
+.field-inner input:focus,
+.field-inner select:focus{
+  border-color:var(--accent) !important;background:var(--card) !important;
+  box-shadow:0 0 0 3px var(--al) !important;
+}
+.field-inner input::placeholder{color:var(--ink-muted);}
+/* password right padding for eye btn */
+.field-inner.pw-wrap input{padding-right:2.8rem !important;}
+/* select custom arrow */
+.sel-arrow{
+  position:absolute;right:.85rem;top:50%;transform:translateY(-50%);
+  pointer-events:none;color:var(--ink-muted);
+}
+.eye-btn{
+  position:absolute;right:.8rem;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;
+  color:var(--ink-muted);padding:3px;transition:color .2s;
+}
+.eye-btn:hover{color:var(--accent);}
+
+/* Password strength */
+.pwd-strength{margin-top:.4rem;}
+.pwd-bars{display:flex;gap:3px;}
+.pwd-bar{
+  flex:1;height:3px;border-radius:2px;
+  background:var(--border);transition:background .3s;
+}
+.pwd-lbl{font-size:.72rem;color:var(--ink-muted);margin-top:.25rem;}
+
+/* Field errors */
+.field-error{font-size:.78rem;color:var(--err);margin-top:.3rem;display:flex;align-items:center;gap:4px;}
+
+/* Non-field error alert */
+.alert-danger{
+  padding:.75rem 1rem;border-radius:var(--r);margin-bottom:1.1rem;
+  font-size:.84rem;font-weight:500;
+  background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);
+  color:#b91c1c;display:flex;align-items:flex-start;gap:8px;line-height:1.4;
+}
+
+/* Submit */
+.btn-submit{
+  width:100%;padding:.85rem;border-radius:50px;
+  background:var(--accent);color:#fff;
+  font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:600;
+  border:2px solid var(--accent);cursor:pointer;
+  transition:all .25s;margin-top:.4rem;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-submit:hover{
+  background:var(--ink);border-color:var(--ink);
+  transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.12);
+}
+.btn-submit:active{transform:translateY(0);}
+
+.f-link{text-align:center;margin-top:1.1rem;font-size:.84rem;color:var(--ink-muted);}
+.f-link a{color:var(--accent);font-weight:600;text-decoration:none;}
+.f-link a:hover{text-decoration:underline;}
+
+.terms{font-size:.73rem;color:var(--ink-muted);text-align:center;margin-top:.65rem;line-height:1.5;}
+.terms a{color:var(--accent);text-decoration:none;}
+
+/* Animations */
+@keyframes floatCard{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+
+/* Responsive */
+@media(max-width:760px){
+  main{padding:1.25rem 1rem;}
+  .auth-wrap{
+    grid-template-columns:1fr;
+    border-radius:var(--r);
+    box-shadow:0 8px 32px rgba(0,0,0,.08);
+  }
+  .panel{display:none;}
+  .auth-form{padding:2rem 1.5rem;}
+}
+@media(max-width:480px){
+  main{padding:1rem .75rem;}
+  .auth-form{padding:1.75rem 1.25rem;}
+  .field-row{grid-template-columns:1fr;}
+  .form-h{font-size:1.3rem;}
+}
+</style>
+{% endblock %}
+
+
 {% block content %}
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
-    <div class="card shadow-lg border-0 p-4" style="max-width: 480px; width: 100%;">
-        <h2 class="text-center fw-bold mb-4 text-success">
-            📝 Create Account
-        </h2>
+<main>
+<div class="auth-wrap">
 
-        <form method="post" novalidate>
-            {% csrf_token %}
-            
-            {% for field in form.visible_fields %}
-                <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label fw-semibold">
-                        {{ field.label }}
-                    </label>
-                    {% render_field field class="form-control" %}
-                    {% if field.errors %}
-                        <div class="text-danger small mt-1">{{ field.errors }}</div>
-                    {% endif %}
-                </div>
-            {% endfor %}
+  {# ══ LEFT PANEL ══ #}
+  <div class="panel">
+    <div class="pb pb1"></div>
+    <div class="pb pb2"></div>
+    <div class="pb pb3"></div>
 
-            <button type="submit" class="btn btn-success w-100 py-2">
-                Register
-            </button>
-        </form>
+    <div class="panel-tag">Free forever</div>
+    <h2 class="panel-h">One account.<br><span class="hl">Zero chaos.</span></h2>
+    <p class="panel-sub">Set up in under a minute. Your organized semester starts the moment you register.</p>
 
-        <div class="mt-3 text-center">
-            <p class="mb-1">
-                Already have an account? 
-                <a href="{% url 'login' %}" class="fw-semibold text-success">Login</a>
-            </p>
+    {# Journey steps #}
+    <div class="journey">
+      <div class="journey-step">
+        <div class="js-circle done">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="js-body">
+          <div class="js-title">Create your account</div>
+          <div class="js-desc">Free, instant, no card needed.</div>
+        </div>
+      </div>
+
+      <div class="journey-step">
+        <div class="js-circle active">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <rect x="1" y="1" width="5.5" height="5.5" rx="1.2" fill="#0a0a0f"/>
+            <rect x="9.5" y="1" width="5.5" height="5.5" rx="1.2" fill="#0a0a0f" opacity=".6"/>
+            <rect x="1" y="9.5" width="5.5" height="5.5" rx="1.2" fill="#0a0a0f" opacity=".6"/>
+            <rect x="9.5" y="9.5" width="5.5" height="5.5" rx="1.2" fill="#0a0a0f"/>
+          </svg>
+        </div>
+        <div class="js-body">
+          <div class="js-title">Add your subjects</div>
+          <div class="js-desc">Set up your semester — takes 10 min.</div>
+        </div>
+      </div>
+
+      <div class="journey-step">
+        <div class="js-circle idle">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <div class="js-body">
+          <div class="js-title">Stay on top every day</div>
+          <div class="js-desc">Reminders fire before deadlines hit.</div>
+        </div>
+      </div>
+    </div>
+
+    {# Stats card #}
+    <div class="stat-card">
+      <div class="sc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9b8cff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      </div>
+      <div><div class="sc-num">100%</div><div class="sc-label">Free always</div></div>
+      <div class="sc-divider"></div>
+      <div><div class="sc-num">2×</div><div class="sc-label">Reminders</div></div>
+      <div class="sc-divider"></div>
+      <div><div class="sc-num">4</div><div class="sc-label">Tools built in</div></div>
+    </div>
+  </div>
+
+  {# ══ RIGHT PANEL — FORM ══ #}
+  <div class="auth-form">
+    <h1 class="form-h">Create account</h1>
+    <p class="form-sub">Free and ready in under 60 seconds.</p>
+
+    {# Non-field errors #}
+    {% if form.non_field_errors %}
+      <div class="alert-danger">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>{% for error in form.non_field_errors %}{{ error }}{% endfor %}</span>
+      </div>
+    {% endif %}
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+    
+  <!-- Loop through all visible fields. -->
+  <!-- We detect "name" + "semester" to put them side-by-side, -->
+  <!-- and "password" to add strength bar + eye toggle. -->
+  <!-- All other fields (email, etc.) get a matching icon automatically. -->
+
+      {# ── Name + Semester side by side ── #}
+      {% with name_field=form.name semester_field=form.semester %}
+      {% if name_field and semester_field %}
+      <div class="field-row">
+
+        {# Name #}
+        <div class="field {% if form.name.errors %}has-error{% endif %}">
+          <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+          <div class="field-inner">
+            <span class="field-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+            {% render_field form.name class="form-control" placeholder="Your name" %}
+          </div>
+          {% for error in form.name.errors %}
+            <span class="field-error">⚠ {{ error }}</span>
+          {% endfor %}
         </div>
 
-    </div>
+        {# Semester #}
+        <div class="field {% if form.semester.errors %}has-error{% endif %}">
+          <label for="{{ form.semester.id_for_label }}">{{ form.semester.label }}</label>
+          <div class="field-inner">
+            <span class="field-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            </span>
+            {% render_field form.semester class="form-control" %}
+            <span class="sel-arrow">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </span>
+          </div>
+          {% for error in form.semester.errors %}
+            <span class="field-error">⚠ {{ error }}</span>
+          {% endfor %}
+        </div>
+
+      </div>
+      {% endif %}
+      {% endwith %}
+
+      {# ── Remaining fields (email, password, any others) ── #}
+      {% for field in form.visible_fields %}
+        {% if field.name != "name" and field.name != "semester" %}
+        <div class="field {% if field.errors %}has-error{% endif %}">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+          {% if field.name == "email" %}
+            <div class="field-inner">
+              <span class="field-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </span>
+              {% render_field field class="form-control" placeholder="you@university.edu" %}
+            </div>
+
+          {% elif field.name == "password" or field.name == "password1" %}
+            <div class="field-inner pw-wrap">
+              <span class="field-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              {% render_field field class="form-control" id="pwdField" placeholder="••••••••" %}
+              <button type="button" class="eye-btn" id="togglePwd" aria-label="Show/hide password">
+                <svg id="eye-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+            {# Password strength bars #}
+            <div class="pwd-strength">
+              <div class="pwd-bars">
+                <div class="pwd-bar" id="pb1"></div>
+                <div class="pwd-bar" id="pb2"></div>
+                <div class="pwd-bar" id="pb3"></div>
+                <div class="pwd-bar" id="pb4"></div>
+              </div>
+              <div class="pwd-lbl" id="pwd-lbl">Enter a password</div>
+            </div>
+
+          {% elif field.name == "password2" %}
+            {# Confirm password — no strength bar #}
+            <div class="field-inner pw-wrap">
+              <span class="field-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              {% render_field field class="form-control" id="pwdConfirmField" placeholder="••••••••" %}
+              <button type="button" class="eye-btn" id="togglePwdConfirm" aria-label="Show/hide password">
+                <svg id="eye-icon-confirm" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+
+          {% else %}
+            {# Generic fallback for any other field #}
+            <div class="field-inner">
+              <span class="field-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+              </span>
+              {% render_field field class="form-control" %}
+            </div>
+          {% endif %}
+
+          {# Per-field errors #}
+          {% for error in field.errors %}
+            <span class="field-error">⚠ {{ error }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+      {% endfor %}
+
+      <button type="submit" class="btn-submit">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <line x1="19" y1="8" x2="19" y2="14"/>
+          <line x1="22" y1="11" x2="16" y2="11"/>
+        </svg>
+        Create free account
+      </button>
+    </form>
+
+    <p class="f-link">Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+    <p class="terms">By registering you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>.</p>
+  </div>
+
 </div>
+</main>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+// ── Password show/hide (main) ──
+const togglePwd  = document.getElementById('togglePwd');
+const pwdField   = document.getElementById('pwdField');
+const eyeIcon    = document.getElementById('eye-icon');
+const eyeOpen    = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+const eyeClosed  = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+
+if (togglePwd && pwdField) {
+  togglePwd.addEventListener('click', () => {
+    const show = pwdField.type === 'password';
+    pwdField.type = show ? 'text' : 'password';
+    eyeIcon.innerHTML = show ? eyeClosed : eyeOpen;
+  });
+}
+
+// ── Password show/hide (confirm) ──
+const toggleConfirm  = document.getElementById('togglePwdConfirm');
+const pwdConfirm     = document.getElementById('pwdConfirmField');
+const eyeIconConfirm = document.getElementById('eye-icon-confirm');
+
+if (toggleConfirm && pwdConfirm) {
+  toggleConfirm.addEventListener('click', () => {
+    const show = pwdConfirm.type === 'password';
+    pwdConfirm.type = show ? 'text' : 'password';
+    eyeIconConfirm.innerHTML = show ? eyeClosed : eyeOpen;
+  });
+}
+
+// ── Password strength bars ──
+const bars  = ['pb1','pb2','pb3','pb4'].map(id => document.getElementById(id));
+const lbl   = document.getElementById('pwd-lbl');
+const colors = ['#ef4444','#f59e0b','#3b82f6','#10b981'];
+const labels = ['Weak','Fair','Good','Strong 💪'];
+
+if (pwdField && lbl) {
+  pwdField.addEventListener('input', () => {
+    const v = pwdField.value;
+    let score = 0;
+    if (v.length >= 8)           score++;
+    if (/[A-Z]/.test(v))         score++;
+    if (/[0-9]/.test(v))         score++;
+    if (/[^A-Za-z0-9]/.test(v))  score++;
+    bars.forEach((b, i) => {
+      if (b) b.style.background = i < score ? colors[score - 1] : 'var(--border)';
+    });
+    lbl.textContent  = v.length === 0 ? 'Enter a password' : (labels[score - 1] || 'Enter a password');
+    lbl.style.color  = v.length === 0 ? 'var(--ink-muted)' : colors[score - 1];
+  });
+}
+</script>
 {% endblock %}

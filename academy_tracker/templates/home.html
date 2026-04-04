@@ -1,328 +1,661 @@
-{% extends "base.html" %}
-{% block title %}Study Mate{% endblock %}
-
-{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyMate — Your Academic OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <style>
-    /* Hero Section */
-    /* .hero {
-        background: linear-gradient(135deg, #28a745 60%, #f8f9fa 40%);
-        color: white;
-        padding: 80px 20px;
-        border-radius: 1rem;
-        text-align: center;
-        margin: 0 20px;
-        border: linear-gradient(135deg,#f8f9fa 60%, #28a745 40%);
-        } */
-/* .hero {
-    position: relative;
-    background: linear-gradient(135deg, #28a745 60%, #f8f9fa 40%);
-    color: white;
-    padding: 80px 20px;
-    border-radius: 1rem;
-    text-align: center;
-    margin: 0 20px;
-    overflow: hidden;
-} */
-
-/* Add border simulation using pseudo-element */
-/* .hero::before {
-    content: "";
-    position: absolute;
-    top: -4px; left: -4px; right: -4px; bottom: -4px;
-    border-radius: 1rem;
-    background: linear-gradient(135deg, #d3d3d3 60%, #28a745 40%);
-    z-index: -1; behind the content
-} */
-.hero {
-    background: linear-gradient(135deg, #28a745 60%, #f8f9fa 40%);
-    padding: 80px 20px;
-    border-radius: 1rem;
-    text-align: center;
-    color: white;
-
-    /* Split-color border */
-    border: 4px solid; /* Adjust thickness */
-    border-image: linear-gradient(135deg, #28a745 60%, #f8f9fa 40%) 1;
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ink:#0a0a0f;--ink-soft:#3a3a4a;--ink-muted:#8a8a9a;
+  --surface:#f6f5f1;--card:#ffffff;
+  --accent:#5b4cdb;--accent-light:rgba(91,76,219,0.09);--accent-2:#e8ff54;--accent-3:#ff6b35;
+  --border:rgba(10,10,15,0.1);--border-strong:rgba(10,10,15,0.18);
+  --r:14px;--rl:22px;
 }
-.hero {
-    /* border-radius: 100px;  */
-    border: 4px solid transparent;
-    border-image: linear-gradient(135deg, #28a745 60%, #f8f9fa 40%) 1 stretch;
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+/* HAMBURGER */
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;}
+.ham span{display:block;width:22px;height:2px;background:var(--ink);border-radius:2px;transition:.3s;}
+.ham.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.ham.open span:nth-child(2){opacity:0;}
+.ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 2.5rem;
+  background:rgba(246,245,241,0.88);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);transition:padding .3s;
 }
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:9px;}
+.logo-icon{width:30px;height:30px;border-radius:9px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-links{display:flex;align-items:center;gap:6px;}
+.nav-links a{padding:.48rem 1.1rem;border-radius:50px;font-size:.88rem;text-decoration:none;font-weight:500;transition:all .2s;color:var(--ink-soft);}
+.nav-links a:hover{background:var(--card);color:var(--ink);}
+.nav-links a.cta{background:var(--ink);color:#fff;padding:.48rem 1.3rem;}
+.nav-links a.cta:hover{background:var(--accent);}
+.mobile-menu{display:none;position:fixed;top:61px;left:0;right:0;z-index:190;background:var(--card);border-bottom:1px solid var(--border);flex-direction:column;padding:1rem 1.5rem 1.5rem;gap:6px;box-shadow:0 8px 30px rgba(0,0,0,.08);}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{padding:.7rem 1rem;border-radius:10px;font-size:.95rem;text-decoration:none;font-weight:500;color:var(--ink-soft);transition:background .2s;}
+.mobile-menu a:hover{background:var(--surface);}
+.mobile-menu a.cta{background:var(--ink);color:#fff;text-align:center;margin-top:4px;}
 
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7rem 1.5rem 5rem;position:relative;overflow:hidden;text-align:center;}
+.hero-bg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 80% 55% at 15% 25%,rgba(91,76,219,.13) 0%,transparent 65%),radial-gradient(ellipse 60% 50% at 85% 75%,rgba(255,107,53,.09) 0%,transparent 65%);}
+.hero-blob{position:absolute;border-radius:50%;pointer-events:none;}
+.hero-blob.b1{width:360px;height:360px;top:-120px;right:-80px;background:var(--accent);opacity:.05;}
+.hero-blob.b2{width:220px;height:220px;bottom:-60px;left:-50px;background:var(--accent-3);opacity:.06;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);padding:.38rem 1rem;border-radius:50px;font-size:.78rem;font-weight:500;color:var(--ink-soft);margin-bottom:1.8rem;animation:fadeUp .5s ease both;}
+.hero-badge .pill{background:var(--accent-2);color:var(--ink);padding:2px 9px;border-radius:50px;font-size:.72rem;font-weight:700;}
+.hero-headline{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,5.2vw,4rem);font-weight:800;line-height:1.07;letter-spacing:-.03em;max-width:780px;animation:fadeUp .5s .08s ease both;}
+.hero-headline .hl{color:var(--accent);}
+.hero-sub{max-width:500px;margin:1.3rem auto 2.3rem;font-size:1rem;color:var(--ink-soft);line-height:1.7;font-weight:300;animation:fadeUp .5s .16s ease both;}
+.hero-ctas{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;animation:fadeUp .5s .24s ease both;}
+.btn-primary{padding:.8rem 1.9rem;border-radius:50px;background:var(--ink);color:#fff;font-size:.9rem;font-weight:500;text-decoration:none;border:2px solid var(--ink);transition:all .25s;white-space:nowrap;}
+.btn-primary:hover{background:var(--accent);border-color:var(--accent);transform:translateY(-2px);}
+.btn-outline{padding:.8rem 1.9rem;border-radius:50px;background:transparent;color:var(--ink);font-size:.9rem;font-weight:500;text-decoration:none;border:2px solid var(--border-strong);transition:all .25s;white-space:nowrap;}
+.btn-outline:hover{border-color:var(--ink);transform:translateY(-2px);}
+.hero-graphic{margin-top:3.5rem;width:100%;max-width:680px;position:relative;animation:fadeUp .5s .32s ease both;}
+.hero-graphic svg{width:100%;height:auto;filter:drop-shadow(0 28px 50px rgba(0,0,0,.11));}
+.float-badge{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.5rem .9rem;display:flex;align-items:center;gap:8px;font-size:.74rem;font-weight:600;color:var(--ink);box-shadow:0 8px 20px rgba(0,0,0,.08);white-space:nowrap;pointer-events:none;}
+.float-badge.fb1{top:10%;left:0;animation:floatA 3s ease-in-out infinite;}
+.float-badge.fb2{top:6%;right:0;animation:floatB 3.5s ease-in-out infinite;}
+.float-badge.fb3{bottom:20%;left:2%;animation:floatA 4s 1s ease-in-out infinite;}
+.fb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 
-    .hero p {
-        font-size: 1.2rem;
-        margin: 15px 0 25px;
-        color: #fff; /* Keep text white for contrast */
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.35); /* Subtle shadow for readability */
-        font-weight: 500; /* Slightly bolder for better visibility */
-    }
+/* TICKER */
+.ticker{background:var(--ink);padding:.65rem 0;overflow:hidden;white-space:nowrap;}
+.ticker-track{display:flex;}
+.ticker-inner{display:inline-flex;align-items:center;flex-shrink:0;animation:scroll 25s linear infinite;font-family:'Syne',sans-serif;font-size:.82rem;font-weight:600;letter-spacing:.06em;color:var(--accent-2);}
+.ticker-inner span{margin:0 1.8rem;}
+.ticker-inner .sep{color:rgba(91,76,219,.8);}
 
-    .hero h1 {
-        font-weight: 700;
-        font-size: 2.5rem;
-    }
+/* SECTIONS */
+section{padding:5.5rem 1.5rem;}
+.container{max-width:1080px;margin:0 auto;}
+.section-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.7rem;}
+.section-eyebrow::before{content:'';display:block;width:18px;height:2px;background:var(--accent);border-radius:2px;}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(1.55rem,3.4vw,2.65rem);font-weight:800;line-height:1.1;letter-spacing:-.025em;max-width:580px;}
+.section-desc{color:var(--ink-soft);font-size:.98rem;line-height:1.72;max-width:480px;margin-top:.9rem;font-weight:300;}
 
-      /* text-shadow: 1px 1px 4px rgba(0,0,0,0.3); */
-      /* color: #ffffff; */
+/* PAIN SECTION */
+.pain-section{background:var(--ink);color:#fff;}
+.pain-section .section-title{color:#fff;max-width:620px;}
+.pain-section .section-eyebrow,.pain-section .section-eyebrow::before{color:var(--accent-2);background:var(--accent-2);}
+.pain-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem;margin-top:3rem;}
+.pain-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--rl);padding:1.6rem;transition:background .3s;}
+.pain-card:hover{background:rgba(255,255,255,.07);}
+.pain-emoji{font-size:1.6rem;margin-bottom:.9rem;display:block;}
+.pain-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:#fff;margin-bottom:.4rem;}
+.pain-desc{font-size:.855rem;color:rgba(255,255,255,.5);line-height:1.65;}
 
-    .btn-cta {
-        padding: 12px 30px;
-        font-size: 1.1rem;
-        border-radius: 30px;
-    }
+/* BEFORE / AFTER SECTION */
+.before-after-section{background:var(--surface);border-top:3px solid var(--ink);}
+.before-after-section .section-eyebrow::before{background:var(--accent);}
+.pain-vs{display:flex;align-items:stretch;justify-content:center;gap:0;border-radius:var(--rl);overflow:hidden;border:1px solid rgba(10,10,15,.12);}
+.pv-col{flex:1;min-width:200px;padding:2rem;background:var(--card);}
+.pv-col.after{background:var(--ink);border-left:1px solid rgba(10,10,15,.12);}
+.pv-label{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem;}
+.pv-col .pv-label{color:var(--ink-muted);}
+.pv-col.after .pv-label{color:var(--accent-2);}
+.pv-list{list-style:none;display:flex;flex-direction:column;gap:.7rem;}
+.pv-list li{font-size:.875rem;font-weight:300;display:flex;align-items:flex-start;gap:10px;line-height:1.45;}
+.pv-col .pv-list li{color:var(--ink-soft);}
+.pv-col.after .pv-list li{color:rgba(255,255,255,.8);}
+.pv-list li::before{content:'×';flex-shrink:0;font-weight:700;color:rgba(200,60,60,.7);margin-top:1px;}
+.pv-col.after .pv-list li::before{content:'✓';color:#10b981;}
 
-    /* Features */
-    .feature-card {
-        border: none;
-        border-radius: 1rem;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
-    }
-    .feature-icon {
-        font-size: 2rem;
-        color: #28a745;
-        margin-bottom: 15px;
-    }
+/* FEATURES */
+.features-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.3rem;margin-top:3rem;}
+.feature-card{background:var(--card);border-radius:var(--rl);border:1px solid var(--border);padding:1.8rem;transition:all .3s;position:relative;overflow:hidden;}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .3s;}
+.fc1::before{background:linear-gradient(90deg,#5b4cdb,#9b8cff);}
+.fc2::before{background:linear-gradient(90deg,#ff6b35,#ffad60);}
+.fc3::before{background:linear-gradient(90deg,#06b6d4,#38bdf8);}
+.fc4::before{background:linear-gradient(90deg,#10b981,#6ee7b7);}
+.feature-card:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(0,0,0,.07);}
+.feature-card:hover::before{opacity:1;}
+.feat-icon-wrap{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem;flex-shrink:0;}
+.fc1 .feat-icon-wrap{background:rgba(91,76,219,.1);}
+.fc2 .feat-icon-wrap{background:rgba(255,107,53,.1);}
+.fc3 .feat-icon-wrap{background:rgba(6,182,212,.1);}
+.fc4 .feat-icon-wrap{background:rgba(16,185,129,.1);}
+.feat-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:.5rem;}
+.feat-desc{color:var(--ink-soft);font-size:.875rem;line-height:1.65;font-weight:300;}
 
-    /* Call-to-action */
-    .cta-section {
-        background: #f8f9fa;
-        border-radius: 1rem;
-        padding: 50px 20px;
-        text-align: center;
-        margin-top: 60px;
-    }
+/* HOW IT WORKS */
+.how-wrap{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
+.how-steps{margin-top:2rem;display:flex;flex-direction:column;gap:0;}
+.how-step{display:flex;gap:1.2rem;padding:1.4rem 0;border-bottom:1px solid var(--border);}
+.how-step:last-child{border-bottom:none;}
+.step-num-wrap{flex-shrink:0;width:40px;height:40px;border-radius:12px;background:var(--accent-light);color:var(--accent);font-family:'Syne',sans-serif;font-weight:800;font-size:.9rem;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.how-step-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;margin-bottom:.3rem;}
+.how-step-desc{font-size:.855rem;color:var(--ink-soft);line-height:1.6;font-weight:300;}
+.how-visual svg{width:100%;height:auto;border-radius:var(--rl);}
 
-    .btn-register {
-    background-color: #ffffff;
-    color: #28a745;
-    border: 2px solid #28a745;
-    transition: all 0.3s ease;
+/* REMINDER SECTION */
+.reminder-section{background:var(--accent-light);}
+.reminder-inner{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+.reminder-graphic{background:var(--ink);border-radius:var(--rl);padding:1.5rem;}
+.rg-header{display:flex;align-items:center;gap:8px;margin-bottom:1rem;color:rgba(255,255,255,.35);font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
+.rg-dots{display:flex;gap:5px;}
+.rg-dots span{width:9px;height:9px;border-radius:50%;}
+.email-row{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.85rem 1rem;margin-bottom:.65rem;display:flex;align-items:center;gap:10px;transition:background .3s;}
+.email-row:last-child{margin-bottom:0;}
+.email-row:hover{background:rgba(255,255,255,.08);}
+.er-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.er-text{font-size:.8rem;color:rgba(255,255,255,.7);flex:1;line-height:1.3;}
+.er-badge{font-size:.68rem;padding:2px 9px;border-radius:50px;flex-shrink:0;font-weight:600;}
+.reminder-text h3{font-family:'Syne',sans-serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;line-height:1.15;margin-bottom:.9rem;}
+.reminder-text p{color:var(--ink-soft);font-size:.95rem;line-height:1.68;font-weight:300;margin-bottom:1.3rem;}
+.tag-row{display:flex;flex-wrap:wrap;gap:8px;}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:.38rem .9rem;border-radius:50px;font-size:.78rem;font-weight:500;background:white;color:var(--accent);border:1px solid rgba(91,76,219,.2);}
+
+/* PROOF */
+.proof-section{background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.proof-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;text-align:center;}
+.proof-num{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;color:var(--accent);line-height:1;}
+.proof-label{font-size:.85rem;color:var(--ink-muted);margin-top:.3rem;font-weight:300;}
+
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:.75rem;margin-top:2.5rem;max-width:760px;}
+.faq-item{background:var(--card);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;}
+.faq-q{width:100%;background:none;border:none;cursor:pointer;padding:1.2rem 1.4rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;color:var(--ink);text-align:left;}
+.faq-q:hover{background:var(--surface);}
+.faq-chevron{flex-shrink:0;width:22px;height:22px;border-radius:6px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:transform .25s;}
+.faq-item.open .faq-chevron{transform:rotate(180deg);}
+.faq-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+.faq-item.open .faq-body{max-height:200px;}
+.faq-a{padding:.1rem 1.4rem 1.2rem;font-size:.875rem;color:var(--ink-soft);line-height:1.68;font-weight:300;}
+
+/* CTA SECTION */
+.cta-section{background:var(--ink);color:#fff;text-align:center;position:relative;overflow:hidden;}
+.cta-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 90% at 50% 110%,rgba(91,76,219,.45) 0%,transparent 70%);}
+.cta-section .section-eyebrow{justify-content:center;color:var(--accent-2);}
+.cta-section .section-eyebrow::before{background:var(--accent-2);}
+.cta-section .section-title{color:#fff;max-width:640px;margin:0 auto;}
+.cta-section .section-desc{color:rgba(255,255,255,.55);margin:1rem auto 2.5rem;max-width:440px;}
+.btn-accent{padding:.9rem 2.4rem;border-radius:50px;background:var(--accent-2);color:var(--ink);font-size:.95rem;font-weight:700;text-decoration:none;display:inline-block;transition:all .25s;}
+.btn-accent:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 12px 32px rgba(232,255,84,.25);}
+
+/* FOOTER */
+footer{background:var(--ink);color:rgba(255,255,255,.35);padding:1.5rem;text-align:center;font-size:.82rem;border-top:1px solid rgba(255,255,255,.06);}
+footer a{color:rgba(255,255,255,.5);text-decoration:none;}
+footer a:hover{color:#fff;}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .65s ease,transform .65s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.1s;}.d2{transition-delay:.2s;}.d3{transition-delay:.3s;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+@keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@keyframes floatA{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
+@keyframes floatB{0%,100%{transform:translateY(-5px);}50%{transform:translateY(6px);}}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .how-wrap{grid-template-columns:1fr;}
+  .how-visual{display:none;}
+  .reminder-inner{grid-template-columns:1fr;}
 }
-
-.btn-register:hover {
-    background-color: #28a745;
-    color: #ffffff;
+@media(max-width:768px){
+  nav{padding:.85rem 1.25rem;}
+  .nav-links{display:none;}
+  .ham{display:flex;}
+  .hero{padding:5.5rem 1.25rem 3.5rem;}
+  .hero-graphic{margin-top:2rem;}
+  .float-badge{display:none;}
+  section{padding:4rem 1.25rem;}
 }
-
-/* FAQ Section Enhancements */
-.faq-section {
-    margin: 4rem 0;
-}
-
-.faq-section h2 {
-    font-weight: 700;
-    font-size: 2rem;
-    margin-bottom: 1rem;
-}
-
-.faq-section p {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 2rem;
-}
-
-.accordion-button {
-    background-color: #f8f9fa;
-    color: #2E7D32;
-    font-weight: 600;
-    border-radius: 0.5rem;
-    padding: 1rem 1.25rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.accordion-button:not(.collapsed) {
-    background-color: #2E7D32;
-    color: #fff;
-}
-
-.accordion-button:focus {
-    box-shadow: 0 0 0 0.2rem rgba(46,125,50,0.25);
-}
-
-.accordion-body {
-    padding: 1rem 1.25rem;
-    background-color: #fff;
-    border-left: 3px solid #2E7D32;
-    border-radius: 0 0.5rem 0.5rem 0;
-    color: #333;
-}
-
-.accordion-item {
-    border: none;
-    margin-bottom: 1rem;
-}
-
-.accordion-item:last-child {
-    margin-bottom: 0;
-}
-
-
-</style>
-
-<!-- Hero Section -->
-<div class="hero mb-5">
-    <h1>🎓 Welcome to <span class="text-warning">StudyMate</span></h1>
-    <p>Your all-in-one academic companion. Manage subjects, track tasks, and stay ahead! </p>
-    
-{% if user.is_authenticated %}
-    <!-- If user is logged in -->
-    <a href="{% url 'student_dashboard' %}" class="btn btn-light btn-cta shadow-sm me-2" style="margin-bottom: 20px; margin-top: 20px;">
-        <i class="fa-solid fa-user-graduate me-2"></i> Dashboard
-    </a>
-    <a href="{% url 'logout' %}" class="btn btn-danger btn-cta" style="margin-bottom: 10px;">
-        <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
-    </a>
-{% else %}
-    <!-- If user is not logged in -->
-    <a href="{% url 'login' %}" class="btn btn-light btn-cta shadow-sm me-2" style="margin-bottom: 10px;">
-        <i class="fa-solid fa-right-to-bracket me-2"></i> Login
-    </a>
-    <a href="{% url 'register' %}" class="btn btn-register btn-cta" style="margin-bottom: 10px;">
-        <i class="fa-solid fa-user-plus me-2"></i> Register
-    </a>
-{% endif %}
-
-</div>
-<br>
-<!-- Features Section -->
-<div class="container my-5">
-    <div class="text-center mb-5">
-        <h2 class="fw-bold">✨ Why Choose StudyMate?</h2>
-        <p class="text-muted">Simplify your academic life with powerful tools, all in one place.</p>
-    </div>
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card feature-card shadow-sm p-4 text-center h-100">
-                <i class="fa-solid fa-book-open-reader feature-icon"></i>
-                <h5 class="fw-bold">Subjects & Learning</h5>
-                <p class="text-muted">Organize all your subjects and related learning items with ease.</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card feature-card shadow-sm p-4 text-center h-100">
-                <i class="fa-solid fa-clipboard-check feature-icon"></i>
-                <h5 class="fw-bold">Task Manager</h5>
-                <p class="text-muted">Stay on top of assignments, quizzes, and exams with smart tracking.</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card feature-card shadow-sm p-4 text-center h-100">
-                <i class="fa-solid fa-calendar-days feature-icon"></i>
-                <h5 class="fw-bold">Timetable</h5>
-                <p class="text-muted">View your schedule and highlight today's classes automatically.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Call-to-action Section -->
-<div class="container cta-section shadow-sm">
-    <h3 class="fw-bold mb-3">🚀 Get Started Today</h3>
-    <p class="text-muted mb-4">Sign up for free and take control of your academic journey with StudyMate.</p>
-    <a href="{% url 'register' %}" class="btn btn-success btn-lg px-5">
-        <i class="fa-solid fa-graduation-cap me-2"></i> Join Now
-    </a>
-</div>
-<br> <br> 
-<!-- FAQ Section -->
-<div class="container faq-section">
-    <div class="text-center mb-4">
-        <h2 class="fw-bold">❓ Frequently Asked Questions</h2>
-        <p>All you need to know about StudyMate and how it helps you manage your studies.</p>
-    </div>
-    <div class="accordion" id="faqAccordion">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="faq1">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
-                    What is StudyMate?
-                </button>
-            </h2>
-            <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                <div class="accordion-body">
-                    StudyMate is an academic study manager where you can add your current class subjects and organize your learning efficiently.
-                </div>
-            </div>
-        </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="faq2">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
-                    Can I track my homework and assignments?
-                </button>
-            </h2>
-            <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                <div class="accordion-body">
-                    Each subject can have multiple learning items like homework, projects, quizzes, mid-term, and final-term exams.
-                </div>
-            </div>
-        </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="faq3">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
-                    How can I manage upcoming tasks?
-                </button>
-            </h2>
-            <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                <div class="accordion-body">
-                    You can store all upcoming tasks such as assignments, quizzes, projects, and exams with deadlines.
-                </div>
-            </div>
-        </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="faq4">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">
-                    Does StudyMate send reminders?
-                </button>
-            </h2>
-            <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                <div class="accordion-body">
-                    StudyMate has an email reminder system:
-                    <ul>
-                        <li><strong>7 days before a task deadline:</strong> Sends a reminder about pending tasks.</li>
-                        <li><strong>4 days before a task deadline:</strong> Sends a follow-up reminder.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="faq5">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5">
-                    Is StudyMate free?
-                </button>
-            </h2>
-            <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                <div class="accordion-body">
-                    Absolutely! StudyMate is completely free to use.
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-.faq-card {
-    background-color: #e6f4ea; /* light green */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.faq-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.12);
-}
-.faq-question {
-    cursor: default;
-}
-.faq-answer {
-    margin-top: 10px;
+@media(max-width:600px){
+  .features-grid{grid-template-columns:1fr;}
+  .pain-grid{grid-template-columns:1fr;}
+}%}" class="btn-primary">Get started free →</a>
+@media(max-width:500px){
+  .hero-ctas{flex-direction:column;align-items:center;}
+  .btn-primary,.btn-outline{width:100%;max-width:280px;text-align:center;}
+  .pain-vs{flex-direction:column;}
+  .pv-col.after{border-left:none;border-top:1px solid rgba(10,10,15,.1);}
+  .proof-grid{grid-template-columns:1fr 1fr;}
 }
 </style>
+</head>
+<body>
 
-{% endblock %}
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <div class="logo-icon">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <rect x="2" y="2" width="5.5" height="5.5" rx="1.5" fill="white"/>
+        <rect x="8.5" y="2" width="5.5" height="5.5" rx="1.5" fill="white" opacity=".6"/>
+        <rect x="2" y="8.5" width="5.5" height="5.5" rx="1.5" fill="white" opacity=".6"/>
+        <rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5" fill="white"/>
+      </svg>
+    </div>
+    StudyMate
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#faq">FAQ</a>
+    <a href="{% url 'login' %}">Login</a>
+    <a href="{% url 'register' %}" class="cta">Sign up free</a>
+  </div>
+  <button class="ham" id="ham" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mob">
+  <a href="#features" onclick="closeMob()">Features</a>
+  <a href="#how" onclick="closeMob()">How it works</a>
+  <a href="#faq" onclick="closeMob()">FAQ</a>
+  <a href="{% url 'login' %}" onclick="closeMob()">Login</a>
+  <a href="{% url 'register' %}" class="cta" onclick="closeMob()">Sign up free →</a>
+</div>
 
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-blob b1"></div>
+  <div class="hero-blob b2"></div>
 
+  <div class="hero-badge"><span class="pill">Free</span> No credit card · Up in 60 seconds</div>
+
+  <h1 class="hero-headline">
+    Stop juggling,<br>start <span class="hl">studying</span>.
+  </h1>
+
+  <p class="hero-sub">StudyMate organizes your subjects, tracks every deadline, and reminds you before it's too late — all in one free tool built for students.</p>
+
+  <div class="hero-ctas">
+    <a href="{% url 'register' %}" class="btn-primary">Get started free →</a>
+    <a href="#features" class="btn-outline">Explore features</a>
+  </div>
+
+  <!-- DASHBOARD MOCKUP -->
+  <div class="hero-graphic">
+    <div class="float-badge fb1"><span class="fb-dot" style="background:#10b981;"></span>OOP Project — 3 days left</div>
+    <div class="float-badge fb2"><span class="fb-dot" style="background:#e8ff54;"></span>📬 Reminder sent!</div>
+    <div class="float-badge fb3"><span class="fb-dot" style="background:#5b4cdb;"></span>4 subjects active</div>
+    <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" style="border-radius:18px;">
+      <rect width="680" height="340" fill="#0f0f17"/>
+      <!-- sidebar -->
+      <rect width="154" height="340" fill="#0a0a0f"/>
+      <rect x="14" y="18" width="126" height="32" rx="8" fill="#5b4cdb"/>
+      <rect x="22" y="26" width="14" height="14" rx="3" fill="white" opacity=".9"/>
+      <rect x="42" y="30" width="56" height="7" rx="3.5" fill="white" opacity=".85"/>
+      <rect x="14" y="60" width="126" height="26" rx="6" fill="rgba(255,255,255,.03)"/>
+      <rect x="22" y="67" width="12" height="12" rx="3" fill="rgba(255,255,255,.25)"/>
+      <rect x="40" y="70" width="48" height="6" rx="3" fill="rgba(255,255,255,.2)"/>
+      <rect x="14" y="92" width="126" height="26" rx="6" fill="rgba(255,255,255,.03)"/>
+      <rect x="22" y="99" width="12" height="12" rx="3" fill="rgba(255,255,255,.25)"/>
+      <rect x="40" y="102" width="40" height="6" rx="3" fill="rgba(255,255,255,.2)"/>
+      <rect x="14" y="124" width="126" height="26" rx="6" fill="rgba(255,255,255,.03)"/>
+      <rect x="22" y="131" width="12" height="12" rx="3" fill="rgba(255,255,255,.25)"/>
+      <rect x="40" y="134" width="52" height="6" rx="3" fill="rgba(255,255,255,.2)"/>
+      <rect x="14" y="168" width="54" height="6" rx="3" fill="rgba(255,255,255,.16)"/>
+      <rect x="14" y="184" width="126" height="24" rx="6" fill="rgba(91,76,219,.3)" stroke="#5b4cdb" stroke-width="1"/>
+      <rect x="20" y="191" width="7" height="7" rx="2" fill="#9b8cff"/>
+      <rect x="33" y="193" width="44" height="5" rx="2.5" fill="rgba(255,255,255,.6)"/>
+      <rect x="14" y="214" width="126" height="24" rx="6" fill="rgba(255,255,255,.02)"/>
+      <rect x="20" y="221" width="7" height="7" rx="2" fill="#ff6b35" opacity=".7"/>
+      <rect x="33" y="223" width="50" height="5" rx="2.5" fill="rgba(255,255,255,.28)"/>
+      <rect x="14" y="244" width="126" height="24" rx="6" fill="rgba(255,255,255,.02)"/>
+      <rect x="20" y="251" width="7" height="7" rx="2" fill="#06b6d4" opacity=".7"/>
+      <rect x="33" y="253" width="42" height="5" rx="2.5" fill="rgba(255,255,255,.28)"/>
+      <rect x="14" y="274" width="126" height="24" rx="6" fill="rgba(255,255,255,.02)"/>
+      <rect x="20" y="281" width="7" height="7" rx="2" fill="#10b981" opacity=".7"/>
+      <rect x="33" y="283" width="52" height="5" rx="2.5" fill="rgba(255,255,255,.28)"/>
+      <!-- divider -->
+      <line x1="154" y1="0" x2="154" y2="340" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+      <!-- main header -->
+      <rect x="168" y="18" width="160" height="10" rx="5" fill="rgba(255,255,255,.12)"/>
+      <rect x="168" y="34" width="90" height="7" rx="3.5" fill="rgba(255,255,255,.06)"/>
+      <!-- stat cards -->
+      <rect x="168" y="56" width="110" height="58" rx="10" fill="rgba(91,76,219,.18)" stroke="rgba(91,76,219,.35)" stroke-width="1"/>
+      <rect x="178" y="66" width="38" height="6" rx="3" fill="rgba(255,255,255,.35)"/>
+      <rect x="178" y="79" width="52" height="15" rx="4" fill="rgba(255,255,255,.85)"/>
+      <rect x="178" y="100" width="42" height="5" rx="2.5" fill="rgba(255,255,255,.25)"/>
+      <rect x="288" y="56" width="110" height="58" rx="10" fill="rgba(255,107,53,.14)" stroke="rgba(255,107,53,.28)" stroke-width="1"/>
+      <rect x="298" y="66" width="42" height="6" rx="3" fill="rgba(255,255,255,.35)"/>
+      <rect x="298" y="79" width="44" height="15" rx="4" fill="rgba(255,255,255,.85)"/>
+      <rect x="298" y="100" width="50" height="5" rx="2.5" fill="rgba(255,255,255,.25)"/>
+      <rect x="408" y="56" width="110" height="58" rx="10" fill="rgba(16,185,129,.1)" stroke="rgba(16,185,129,.22)" stroke-width="1"/>
+      <rect x="418" y="66" width="34" height="6" rx="3" fill="rgba(255,255,255,.35)"/>
+      <rect x="418" y="79" width="48" height="15" rx="4" fill="rgba(255,255,255,.85)"/>
+      <rect x="418" y="100" width="46" height="5" rx="2.5" fill="rgba(255,255,255,.25)"/>
+      <rect x="528" y="56" width="136" height="58" rx="10" fill="rgba(6,182,212,.1)" stroke="rgba(6,182,212,.2)" stroke-width="1"/>
+      <rect x="538" y="66" width="50" height="6" rx="3" fill="rgba(255,255,255,.35)"/>
+      <rect x="538" y="79" width="60" height="15" rx="4" fill="rgba(255,255,255,.85)"/>
+      <rect x="538" y="100" width="44" height="5" rx="2.5" fill="rgba(255,255,255,.25)"/>
+      <!-- task list label -->
+      <rect x="168" y="132" width="56" height="6" rx="3" fill="rgba(255,255,255,.16)"/>
+      <!-- task rows -->
+      <rect x="168" y="148" width="496" height="36" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.07)" stroke-width="1"/>
+      <circle cx="185" cy="166" r="6.5" fill="none" stroke="#5b4cdb" stroke-width="1.5"/>
+      <rect x="200" y="159" width="110" height="7" rx="3.5" fill="rgba(255,255,255,.72)"/>
+      <rect x="200" y="172" width="66" height="5" rx="2.5" fill="rgba(255,255,255,.24)"/>
+      <rect x="604" y="155" width="52" height="21" rx="10.5" fill="rgba(232,255,84,.14)" stroke="rgba(232,255,84,.28)" stroke-width="1"/>
+      <rect x="614" y="161" width="32" height="9" rx="4.5" fill="#e8ff54" opacity=".8"/>
+      <rect x="168" y="192" width="496" height="36" rx="8" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+      <circle cx="185" cy="210" r="6.5" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+      <rect x="200" y="203" width="88" height="7" rx="3.5" fill="rgba(255,255,255,.72)"/>
+      <rect x="200" y="216" width="56" height="5" rx="2.5" fill="rgba(255,255,255,.24)"/>
+      <rect x="604" y="199" width="52" height="21" rx="10.5" fill="rgba(255,107,53,.14)" stroke="rgba(255,107,53,.26)" stroke-width="1"/>
+      <rect x="612" y="205" width="36" height="9" rx="4.5" fill="#ff6b35" opacity=".75"/>
+      <rect x="168" y="236" width="496" height="36" rx="8" fill="rgba(255,255,255,.025)"/>
+      <circle cx="185" cy="254" r="6.5" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="1.5"/>
+      <rect x="200" y="247" width="76" height="7" rx="3.5" fill="rgba(255,255,255,.35)"/>
+      <rect x="200" y="260" width="48" height="5" rx="2.5" fill="rgba(255,255,255,.14)"/>
+      <rect x="604" y="243" width="52" height="21" rx="10.5" fill="rgba(16,185,129,.1)"/>
+      <rect x="612" y="249" width="36" height="9" rx="4.5" fill="#10b981" opacity=".55"/>
+      <rect x="168" y="280" width="496" height="36" rx="8" fill="rgba(255,255,255,.025)"/>
+      <circle cx="185" cy="298" r="6.5" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="1.5"/>
+      <rect x="200" y="291" width="130" height="7" rx="3.5" fill="rgba(255,255,255,.35)"/>
+      <rect x="200" y="304" width="60" height="5" rx="2.5" fill="rgba(255,255,255,.14)"/>
+      <rect x="604" y="287" width="52" height="21" rx="10.5" fill="rgba(6,182,212,.1)"/>
+      <rect x="612" y="293" width="36" height="9" rx="4.5" fill="#06b6d4" opacity=".55"/>
+    </svg>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span class="ticker-inner">
+      <span>Track Subjects</span><span class="sep">✦</span><span>Manage Assignments</span><span class="sep">✦</span><span>Timetable View</span><span class="sep">✦</span><span>Email Reminders</span><span class="sep">✦</span><span>Quiz Tracking</span><span class="sep">✦</span><span>Project Deadlines</span><span class="sep">✦</span><span>Mid-term Prep</span><span class="sep">✦</span><span>Final Exam Planner</span><span class="sep">✦</span><span>100% Free</span><span class="sep">✦</span>
+    </span>
+    <span class="ticker-inner" aria-hidden="true">
+      <span>Track Subjects</span><span class="sep">✦</span><span>Manage Assignments</span><span class="sep">✦</span><span>Timetable View</span><span class="sep">✦</span><span>Email Reminders</span><span class="sep">✦</span><span>Quiz Tracking</span><span class="sep">✦</span><span>Project Deadlines</span><span class="sep">✦</span><span>Mid-term Prep</span><span class="sep">✦</span><span>Final Exam Planner</span><span class="sep">✦</span><span>100% Free</span><span class="sep">✦</span>
+    </span>
+  </div>
+</div>
+
+<!-- PAIN SECTION -->
+<section class="pain-section">
+  <div class="container">
+    <span class="section-eyebrow reveal">Sound familiar?</span>
+    <h2 class="section-title reveal">Student life is already hard enough.</h2>
+    <div class="pain-grid">
+      <div class="pain-card reveal d1"><span class="pain-emoji">😵</span><div class="pain-title">Forgotten deadlines</div><div class="pain-desc">You remembered the exam the night before. The assignment? Already submitted — by someone else.</div></div>
+      <div class="pain-card reveal d2"><span class="pain-emoji">🗂️</span><div class="pain-title">Tasks everywhere</div><div class="pain-desc">WhatsApp, sticky notes, phone reminders — your tasks live everywhere except one organized place.</div></div>
+      <div class="pain-card reveal d1"><span class="pain-emoji">😰</span><div class="pain-title">Timetable confusion</div><div class="pain-desc">Which lecture is today? You're always checking five places to answer one simple question.</div></div>
+      <div class="pain-card reveal d2"><span class="pain-emoji">📅</span><div class="pain-title">No system, just stress</div><div class="pain-desc">You know you should be organized. You just never found a tool that fits how students actually work.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE / AFTER SECTION -->
+<section class="before-after-section">
+  <div class="container">
+    <span class="section-eyebrow reveal">The difference</span>
+    <h2 class="section-title reveal">What changes when you use StudyMate.</h2>
+    <div class="pain-vs reveal" style="margin-top:2.5rem;">
+      <div class="pv-col">
+        <div class="pv-label">Before StudyMate</div>
+        <ul class="pv-list">
+          <li>Scattered notes and missed tasks</li>
+          <li>Panic the night before deadlines</li>
+          <li>No overview of the full semester</li>
+          <li>Constantly forgetting what's due</li>
+        </ul>
+      </div>
+      <div class="pv-col after">
+        <div class="pv-label">After StudyMate</div>
+        <ul class="pv-list">
+          <li>Everything organized in one place</li>
+          <li>Reminders arrive before it's urgent</li>
+          <li>Full semester view at a glance</li>
+          <li>Always ahead, never behind</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <span class="section-eyebrow reveal">What's inside</span>
+    <h2 class="section-title reveal">Everything a student needs, built in.</h2>
+    <p class="section-desc reveal">Four tools that cover your full academic life — subjects, tasks, timetable, and reminders.</p>
+    <div class="features-grid">
+      <div class="feature-card fc1 reveal d1">
+        <div class="feat-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="3" width="7" height="7" rx="2" fill="#5b4cdb"/><rect x="12" y="3" width="7" height="7" rx="2" fill="#9b8cff" opacity=".6"/><rect x="3" y="12" width="7" height="7" rx="2" fill="#9b8cff" opacity=".6"/><rect x="12" y="12" width="7" height="7" rx="2" fill="#5b4cdb"/></svg>
+        </div>
+        <div class="feat-title">Subjects & Learning</div>
+        <div class="feat-desc">Organize every subject with its own space. Attach homework, projects, quizzes, mid-terms, and finals — all in one structured view.</div>
+      </div>
+      <div class="feature-card fc2 reveal d2">
+        <div class="feat-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="3" width="16" height="16" rx="3" stroke="#ff6b35" stroke-width="1.5" fill="none"/><path d="M7 11l3 3 5-5" stroke="#ff6b35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="feat-title">Task Manager</div>
+        <div class="feat-desc">Log every upcoming task with a due date. Mark them complete, track progress, and never lose sight of what's pending.</div>
+      </div>
+      <div class="feature-card fc3 reveal d1">
+        <div class="feat-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="14" rx="3" stroke="#06b6d4" stroke-width="1.5" fill="none"/><path d="M7 2v4M15 2v4M3 9h16" stroke="#06b6d4" stroke-width="1.5" stroke-linecap="round"/><rect x="6" y="12" width="4" height="4" rx="1" fill="#06b6d4" opacity=".5"/></svg>
+        </div>
+        <div class="feat-title">Smart Timetable</div>
+        <div class="feat-desc">View your weekly schedule in a clean layout. Today's classes are auto-highlighted so you always know what's next.</div>
+      </div>
+      <div class="feature-card fc4 reveal d2">
+        <div class="feat-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3C7.134 3 4 6.134 4 10v4l-1.5 2.5h17L18 14v-4c0-3.866-3.134-7-7-7z" stroke="#10b981" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M9 19a2 2 0 004 0" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="feat-title">Smart Reminders</div>
+        <div class="feat-desc">Automatic email alerts 7 days and 4 days before each deadline. Set your tasks once — StudyMate handles the follow-ups.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" style="background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="how-wrap">
+      <div>
+        <span class="section-eyebrow reveal">How it works</span>
+        <h2 class="section-title reveal">Three steps to a stress-free semester.</h2>
+        <div class="how-steps">
+          <div class="how-step reveal">
+            <div class="step-num-wrap">01</div>
+            <div><div class="how-step-title">Create your free account</div><div class="how-step-desc">Sign up in under a minute. No credit card, no setup hassle — just your email and you're in.</div></div>
+          </div>
+          <div class="how-step reveal d1">
+            <div class="step-num-wrap">02</div>
+            <div><div class="how-step-title">Add your subjects & tasks</div><div class="how-step-desc">Set up your semester subjects, add assignments and exams, and build your timetable. Takes about 10 minutes total.</div></div>
+          </div>
+          <div class="how-step reveal d2">
+            <div class="step-num-wrap">03</div>
+            <div><div class="how-step-title">Stay ahead, every day</div><div class="how-step-desc">Check your dashboard daily. Get automatic email reminders before deadlines. Finish the semester in control.</div></div>
+          </div>
+        </div>
+        <a href="https://studymate.pythonanywhere.com/register/" class="btn-primary" style="display:inline-flex;margin-top:2rem;">Start now — it's free →</a>
+      </div>
+      <div class="how-visual reveal d2">
+        <svg viewBox="0 0 340 360" xmlns="http://www.w3.org/2000/svg">
+          <rect width="340" height="360" rx="18" fill="#0a0a0f"/>
+          <rect x="18" y="18" width="304" height="42" rx="10" fill="#111118"/>
+          <circle cx="40" cy="39" r="11" fill="#5b4cdb" opacity=".25"/>
+          <path d="M35 39l4 4 7.5-7.5" stroke="#5b4cdb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="60" y="33" width="90" height="8" rx="4" fill="rgba(255,255,255,.55)"/>
+          <rect x="60" y="45" width="55" height="6" rx="3" fill="rgba(255,255,255,.18)"/>
+          <rect x="280" y="29" width="42" height="19" rx="9.5" fill="rgba(232,255,84,.13)" stroke="rgba(232,255,84,.28)" stroke-width="1"/>
+          <rect x="290" y="34" width="22" height="9" rx="4.5" fill="#e8ff54" opacity=".75"/>
+          <!-- ring -->
+          <circle cx="170" cy="175" r="68" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="22"/>
+          <circle cx="170" cy="175" r="68" fill="none" stroke="#5b4cdb" stroke-width="22" stroke-dasharray="272 155" stroke-dashoffset="-36" stroke-linecap="round" opacity=".55"/>
+          <circle cx="170" cy="175" r="50" fill="#0f0f17"/>
+          <rect x="144" y="165" width="52" height="17" rx="4" fill="rgba(255,255,255,.8)"/>
+          <rect x="150" y="186" width="40" height="6" rx="3" fill="rgba(255,255,255,.25)"/>
+          <!-- progress bars -->
+          <rect x="18" y="278" width="304" height="7" rx="3.5" fill="rgba(255,255,255,.05)"/>
+          <rect x="18" y="278" width="198" height="7" rx="3.5" fill="#5b4cdb" opacity=".55"/>
+          <rect x="18" y="296" width="304" height="7" rx="3.5" fill="rgba(255,255,255,.05)"/>
+          <rect x="18" y="296" width="126" height="7" rx="3.5" fill="#ff6b35" opacity=".5"/>
+          <rect x="18" y="314" width="304" height="7" rx="3.5" fill="rgba(255,255,255,.05)"/>
+          <rect x="18" y="314" width="254" height="7" rx="3.5" fill="#06b6d4" opacity=".48"/>
+          <rect x="18" y="332" width="304" height="7" rx="3.5" fill="rgba(255,255,255,.05)"/>
+          <rect x="18" y="332" width="72" height="7" rx="3.5" fill="#10b981" opacity=".5"/>
+          <rect x="18" y="264" width="46" height="6" rx="3" fill="rgba(255,255,255,.18)"/>
+          <!-- floating dots -->
+          <circle cx="272" cy="126" r="5" fill="#e8ff54" opacity=".45"/>
+          <circle cx="286" cy="208" r="3.5" fill="#ff6b35" opacity=".4"/>
+          <circle cx="68" cy="195" r="4.5" fill="#10b981" opacity=".38"/>
+          <circle cx="82" cy="120" r="3.5" fill="#5b4cdb" opacity=".45"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REMINDER SECTION -->
+<section class="reminder-section">
+  <div class="container">
+    <div class="reminder-inner">
+      <div class="reminder-graphic reveal">
+        <div class="rg-header">
+          <div class="rg-dots"><span style="background:#ff5f56;"></span><span style="background:#ffbd2e;"></span><span style="background:#27c93f;"></span></div>
+          📧 StudyMate Inbox
+        </div>
+        <div class="email-row">
+          <span class="er-dot" style="background:#e8ff54;"></span>
+          <span class="er-text">OOP Project due in 7 days — plan ahead and submit early!</span>
+          <span class="er-badge" style="background:rgba(232,255,84,.15);color:#e8ff54;">7d</span>
+        </div>
+        <div class="email-row">
+          <span class="er-dot" style="background:#ff6b35;"></span>
+          <span class="er-text">⚠️ Mid-term Exam in 4 days — start revising now!</span>
+          <span class="er-badge" style="background:rgba(255,107,53,.2);color:#ff6b35;">4d</span>
+        </div>
+        <div class="email-row" style="opacity:.4;">
+          <span class="er-dot" style="background:#10b981;"></span>
+          <span class="er-text">Database Quiz — Submitted ✓</span>
+          <span class="er-badge" style="background:rgba(16,185,129,.15);color:#10b981;">Done</span>
+        </div>
+        <div class="email-row" style="opacity:.22;">
+          <span class="er-dot" style="background:#6b7280;"></span>
+          <span class="er-text">Probability Assignment — Submitted ✓</span>
+          <span class="er-badge" style="background:rgba(107,114,128,.1);color:#6b7280;">Done</span>
+        </div>
+      </div>
+      <div class="reminder-text reveal d1">
+        <span class="section-eyebrow">Built-in reminders</span>
+        <h3>Your personal deadline<br>early-warning system.</h3>
+        <p>StudyMate automatically sends email reminders before each task deadline — giving you time to prepare, not panic. Zero configuration required.</p>
+        <div class="tag-row">
+          <span class="tag">⏰ 7-day alert</span>
+          <span class="tag">🔥 4-day alert</span>
+          <span class="tag">📬 Auto-delivered</span>
+          <span class="tag">✅ Zero setup</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF STATS -->
+<section class="proof-section">
+  <div class="container">
+    <div class="proof-grid">
+      <div class="reveal"><div class="proof-num">100%</div><div class="proof-label">Free, no hidden fees ever</div></div>
+      <div class="reveal d1"><div class="proof-num">4</div><div class="proof-label">Powerful tools in one place</div></div>
+      <div class="reveal d2"><div class="proof-num">2×</div><div class="proof-label">Email reminders per deadline</div></div>
+      <div class="reveal d3"><div class="proof-num">0</div><div class="proof-label">Missed deadlines (the goal 🎯)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <span class="section-eyebrow reveal">FAQ</span>
+    <h2 class="section-title reveal">Common questions, honest answers.</h2>
+    <div class="faq-list">
+      <div class="faq-item reveal">
+        <button class="faq-q" onclick="faq(this)">What is StudyMate exactly?<span class="faq-chevron">▾</span></button>
+        <div class="faq-body"><p class="faq-a">StudyMate is a free academic study manager for university students. Add your current semester subjects, organize learning items, manage your task list with deadlines, and view your timetable — all in one place.</p></div>
+      </div>
+      <div class="faq-item reveal d1">
+        <button class="faq-q" onclick="faq(this)">What kinds of tasks can I track?<span class="faq-chevron">▾</span></button>
+        <div class="faq-body"><p class="faq-a">Anything with a deadline — homework, assignments, quizzes, projects, presentations, mid-terms, and finals. Each task is linked to a subject so everything stays organized by course.</p></div>
+      </div>
+      <div class="faq-item reveal d1">
+        <button class="faq-q" onclick="faq(this)">How do the email reminders work?<span class="faq-chevron">▾</span></button>
+        <div class="faq-body"><p class="faq-a">Once you add a task with a deadline, StudyMate automatically sends an email reminder 7 days before, then a follow-up 4 days before. No configuration needed — it just works.</p></div>
+      </div>
+      <div class="faq-item reveal d1">
+        <button class="faq-q" onclick="faq(this)">Is it really free? What's the catch?<span class="faq-chevron">▾</span></button>
+        <div class="faq-body"><p class="faq-a">No catch. StudyMate is completely free — no credit card, no premium tier, no locked features. Every tool is available to every user from day one.</p></div>
+      </div>
+      <div class="faq-item reveal d1">
+        <button class="faq-q" onclick="faq(this)">Does the timetable show today's classes?<span class="faq-chevron">▾</span></button>
+        <div class="faq-body"><p class="faq-a">Yes! The timetable view automatically highlights today's schedule so you can see your classes at a glance without counting which day of the week it is.</p></div>
+      </div>
+      <div class="faq-item reveal d1">
+        <button class="faq-q" onclick="faq(this)">How long does setup take?<span class="faq-chevron">▾</span></button>
+        <div class="faq-body"><p class="faq-a">Registering takes under a minute. Adding your subjects and first tasks takes about 10 minutes. After that, just check in daily and StudyMate keeps you on track.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <span class="section-eyebrow">Get started</span>
+    <h2 class="section-title">Ready to own your semester?</h2>
+    <p class="section-desc">Free, simple, and genuinely useful. Join in 60 seconds — no credit card needed.</p>
+    <a href="https://studymate.pythonanywhere.com/register/" class="btn-accent">Create free account →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 StudyMate &nbsp;·&nbsp; Academic Task Manager &nbsp;·&nbsp;
+  <a href="https://studymate.pythonanywhere.com/login/">Login</a> &nbsp;·&nbsp;
+  <a href="https://studymate.pythonanywhere.com/register/">Register</a> &nbsp;·&nbsp;
+  Built with 💜 for students</p>
+</footer>
+
+<script>
+// Hamburger
+const ham=document.getElementById('ham'),mob=document.getElementById('mob');
+ham.addEventListener('click',()=>{ham.classList.toggle('open');mob.classList.toggle('open');});
+function closeMob(){ham.classList.remove('open');mob.classList.remove('open');}
+
+// FAQ
+function faq(btn){
+  const item=btn.parentElement,open=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+  if(!open)item.classList.add('open');
+}
+
+// Scroll reveal
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Nav shrink
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').style.padding=scrollY>50?'.65rem 2.5rem':'.9rem 2.5rem';
+},{ passive:true });
+</script>
+</body>
+</html>
