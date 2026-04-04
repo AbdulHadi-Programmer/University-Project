@@ -1,42 +1,209 @@
 {% extends "base.html" %}
+{% block title %}{% if task_id %}Edit Task{% else %}Add Task{% endif %} — StudyMate{% endblock %}
 
-{% block title %}{% if task_id %}Edit Task{% else %}Add Task{% endif %}{% endblock %}
+{% block extra_css %}
+<style>
+main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:2.5rem 1.5rem;}
+.auth-wrap{display:grid;grid-template-columns:1.05fr 1fr;max-width:900px;width:100%;border-radius:var(--rl);overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.1);border:1px solid var(--border);}
+
+/* left panel — warm dark for urgency */
+.panel{background:#0f0a07;display:flex;flex-direction:column;padding:2.8rem 2.5rem;position:relative;overflow:hidden;}
+.pb{position:absolute;border-radius:50%;pointer-events:none;}
+.pb1{width:260px;height:260px;top:-70px;right:-70px;background:#ff6b35;opacity:.13;}
+.pb2{width:150px;height:150px;bottom:-40px;left:-30px;background:#f59e0b;opacity:.1;}
+.pb3{width:100px;height:100px;top:50%;right:-30px;background:#5b4cdb;opacity:.08;}
+.panel-tag{display:inline-flex;align-items:center;gap:7px;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--a3);margin-bottom:.9rem;position:relative;z-index:2;}
+.panel-tag::before{content:'';width:18px;height:2px;background:var(--a3);border-radius:2px;display:block;}
+.panel-h{font-family:'Syne',sans-serif;font-size:1.65rem;font-weight:800;color:#fff;line-height:1.15;letter-spacing:-.025em;margin-bottom:.6rem;position:relative;z-index:2;}
+.panel-sub{font-size:.82rem;color:rgba(255,255,255,.4);line-height:1.65;font-weight:300;margin-bottom:1.8rem;position:relative;z-index:2;}
+
+/* task type chips */
+.type-chips{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.8rem;position:relative;z-index:2;}
+.tc{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.7rem .8rem;display:flex;align-items:center;gap:.55rem;}
+.tc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.tc-name{font-size:.75rem;font-weight:600;color:rgba(255,255,255,.55);}
+
+/* reminder callout */
+.reminder-vis{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem 1.1rem;display:flex;align-items:center;gap:.9rem;position:relative;z-index:2;}
+.rv-icon{width:38px;height:38px;border-radius:10px;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.rv-text{font-size:.78rem;color:rgba(255,255,255,.45);font-weight:300;line-height:1.5;}
+.rv-text strong{color:#f59e0b;font-weight:700;display:block;}
+
+/* right form */
+.auth-form{background:var(--card);padding:2.5rem 2.5rem;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;}
+.form-h{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--ink);letter-spacing:-.025em;margin-bottom:.3rem;}
+.form-sub{font-size:.84rem;color:var(--ink-muted);margin-bottom:1.6rem;font-weight:300;}
+
+/* fields */
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:.8rem;font-weight:600;color:var(--ink-soft);margin-bottom:.36rem;letter-spacing:.01em;}
+.field-inner{position:relative;}
+.field-icon{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--ink-muted);pointer-events:none;display:flex;align-items:center;z-index:1;}
+.field-inner input,.field-inner select,.field-inner textarea{
+  width:100%;padding:.7rem 1rem .7rem 2.6rem !important;
+  border:1.5px solid var(--borderS) !important;border-radius:var(--r) !important;
+  font-family:'DM Sans',sans-serif !important;font-size:.9rem !important;
+  color:var(--ink) !important;background:var(--surface) !important;
+  outline:none !important;transition:border-color .2s,background .2s,box-shadow .2s !important;
+  box-shadow:none !important;-webkit-appearance:none !important;
+}
+.field-inner input:focus,.field-inner select:focus,.field-inner textarea:focus{
+  border-color:var(--accent) !important;background:var(--card) !important;
+  box-shadow:0 0 0 3px var(--al) !important;
+}
+.field-inner input[type="date"]{color:var(--ink) !important;}
+.sel-arrow{position:absolute;right:.85rem;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--ink-muted);}
+.field-error{font-size:.78rem;color:var(--err);margin-top:.3rem;display:flex;align-items:center;gap:4px;}
+.has-error .field-inner input,.has-error .field-inner select{border-color:var(--err) !important;}
+
+/* non-field errors */
+.alert-danger{padding:.75rem 1rem;border-radius:var(--r);margin-bottom:1.1rem;font-size:.84rem;font-weight:500;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);color:#b91c1c;display:flex;align-items:flex-start;gap:8px;line-height:1.4;}
+
+/* status pills */
+.status-row{display:flex;gap:.5rem;margin-top:.4rem;}
+.status-pill{flex:1;padding:.5rem;border-radius:50px;border:1.5px solid var(--border);background:var(--surface);font-size:.75rem;font-weight:600;color:var(--ink-muted);text-align:center;cursor:pointer;transition:all .2s;user-select:none;}
+.status-pill.s-pending{background:rgba(245,158,11,.1);border-color:var(--warn);color:var(--warn);}
+.status-pill.s-ongoing{background:rgba(91,76,219,.1);border-color:var(--accent);color:var(--accent);}
+.status-pill.s-done{background:rgba(16,185,129,.1);border-color:var(--ok);color:var(--ok);}
+
+/* buttons */
+.btn-submit{width:100%;padding:.85rem;border-radius:50px;background:var(--ink);color:#fff;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:600;border:2px solid var(--ink);cursor:pointer;transition:all .25s;margin-top:.5rem;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-submit:hover{background:var(--a3);border-color:var(--a3);transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,107,53,.25);}
+.btn-cancel{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:.72rem;border-radius:50px;background:transparent;color:var(--ink-soft);font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;border:2px solid var(--border);text-decoration:none;margin-top:.65rem;transition:all .22s;}
+.btn-cancel:hover{border-color:var(--ink-soft);color:var(--ink);}
+
+@media(max-width:760px){
+  main{padding:1.25rem 1rem;}
+  .auth-wrap{grid-template-columns:1fr;border-radius:var(--r);}
+  .panel{display:none;}
+  .auth-form{padding:2rem 1.5rem;}
+}
+@media(max-width:420px){.auth-form{padding:1.75rem 1.25rem;}}
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-6 col-md-8">
-            <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-header bg-success text-white text-center rounded-top">
-                    <h4 class="mb-0">
-                        {% if task_id %}✏️ Edit Task{% else %}<i class="fa-solid fa-clipboard-check text-accent me-1"></i> Add New Task{% endif %}
-                    </h4>
-                </div>
-                <div class="card-body p-4">
-                    <form method="post" novalidate>
-                        {% csrf_token %}
-                        {{ form.non_field_errors }}
+<main>
+<div class="auth-wrap">
 
-                        {% for field in form %}
-                            <div class="mb-3">
-                                <label for="{{ field.id_for_label }}" class="form-label fw-semibold">
-                                    {{ field.label }}
-                                </label>
-                                {{ field }}
-                                {% if field.errors %}
-                                    <div class="text-danger small mt-1">{{ field.errors }}</div>
-                                {% endif %}
-                            </div>
-                        {% endfor %}  <br>
+  {# ── LEFT PANEL ── #}
+  <div class="panel">
+    <div class="pb pb1"></div><div class="pb pb2"></div><div class="pb pb3"></div>
+    <div class="panel-tag">{% if task_id %}Edit Task{% else %}New Task{% endif %}</div>
+    <h2 class="panel-h">Capture it now.<br>Nail it before it's late.</h2>
+    <p class="panel-sub">Log every assignment, quiz, and exam with a deadline — reminders fire automatically.</p>
 
-                        <div class="d-grid gap-3">
-                            <button type="submit" class="btn btn-success btn-md"><i class="fa-solid fa-circle-check"></i> Save Task</button>
-                            <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary">⬅ Cancel</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+    {# Task type chips #}
+    <div class="type-chips">
+      <div class="tc"><span class="tc-dot" style="background:#ff6b35;"></span><span class="tc-name">Assignment</span></div>
+      <div class="tc"><span class="tc-dot" style="background:#f59e0b;"></span><span class="tc-name">Quiz</span></div>
+      <div class="tc"><span class="tc-dot" style="background:#8b5cf6;"></span><span class="tc-name">Project</span></div>
+      <div class="tc"><span class="tc-dot" style="background:#ef4444;"></span><span class="tc-name">Mid Term</span></div>
+      <div class="tc"><span class="tc-dot" style="background:#f43f5e;"></span><span class="tc-name">Final Term</span></div>
+      <div class="tc"><span class="tc-dot" style="background:#10b981;"></span><span class="tc-name">Ongoing</span></div>
     </div>
+
+    {# Reminder callout #}
+    <div class="reminder-vis">
+      <div class="rv-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      </div>
+      <div class="rv-text">
+        <strong>Auto-reminders included</strong>
+        Email alert 7 days before, then 4 days before.
+      </div>
+    </div>
+  </div>
+
+  {# ── RIGHT PANEL ── #}
+  <div class="auth-form">
+    <h1 class="form-h">{% if task_id %}Edit Task{% else %}Add Task{% endif %}</h1>
+    <p class="form-sub">{% if task_id %}Update the details below.{% else %}Log it with a deadline and let reminders do the rest.{% endif %}</p>
+
+    {# Non-field errors #}
+    {% if form.non_field_errors %}
+      <div class="alert-danger">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        {% for e in form.non_field_errors %}{{ e }}{% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      {% for field in form %}
+        {# Status field gets pill selector treatment #}
+        {% if field.name == "status" %}
+          <div class="field">
+            <label>{{ field.label }}</label>
+            <div class="status-row" id="status-pills">
+              {% for val, lbl in field.field.choices %}
+                <div class="status-pill
+                  {% if field.value == val %}
+                    {% if val == 'Pending' %}s-pending{% elif val == 'On Going' %}s-ongoing{% else %}s-done{% endif %}
+                  {% elif forloop.first and not field.value %}s-pending{% endif %}"
+                  onclick="setStatus('{{ val }}', this)">{{ lbl }}</div>
+              {% endfor %}
+            </div>
+            <input type="hidden" name="{{ field.html_name }}" id="status-hidden" value="{{ field.value|default:'Pending' }}">
+            {% for e in field.errors %}<span class="field-error">⚠ {{ e }}</span>{% endfor %}
+          </div>
+
+        {% else %}
+          <div class="field {% if field.errors %}has-error{% endif %}">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            <div class="field-inner" style="position:relative;">
+
+              {# Icons per field name #}
+              {% if field.name == "title" %}
+                <span class="field-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12l2 2 4-4"/></svg></span>
+              {% elif field.name == "task_type" %}
+                <span class="field-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+              {% elif field.name == "subject" %}
+                <span class="field-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+              {% elif field.name == "due_date" %}
+                <span class="field-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+              {% else %}
+                <span class="field-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span>
+              {% endif %}
+
+              {{ field }}
+
+              {# Select arrow for dropdowns #}
+              {% if field.field.widget.input_type == "select" or field.name == "task_type" or field.name == "subject" %}
+                <span class="sel-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+              {% endif %}
+
+            </div>
+            {% for e in field.errors %}<span class="field-error">⚠ {{ e }}</span>{% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      <button type="submit" class="btn-submit">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12l2 2 4-4"/></svg>
+        {% if task_id %}Save Changes{% else %}Save Task{% endif %}
+      </button>
+    </form>
+
+    <a href="{% url 'student_dashboard' %}" class="btn-cancel">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Cancel
+    </a>
+  </div>
+
 </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function setStatus(val, el) {
+  document.querySelectorAll('.status-pill').forEach(p => p.classList.remove('s-pending','s-ongoing','s-done'));
+  if(val==='Pending') el.classList.add('s-pending');
+  else if(val==='On Going') el.classList.add('s-ongoing');
+  else el.classList.add('s-done');
+  document.getElementById('status-hidden').value = val;
+}
+</script>
 {% endblock %}
