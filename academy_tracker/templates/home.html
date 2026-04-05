@@ -253,7 +253,7 @@ footer a:hover{color:#fff;}
     {% if user.is_authenticated %}
       {# Logged-in user: show app nav links #}
       <a href="{% url 'student_dashboard' %}">Dashboard</a>
-      <a href="{% url 'timetable' %}">Timetable</a>
+      <a href="{% url 'timetable_list' %}">Timetable</a>
       <a href="{% url 'profile' %}" class="cta">My Profile</a>
     {% else %}
       {# Guest: show login / register #}
@@ -274,7 +274,7 @@ footer a:hover{color:#fff;}
 
   {% if user.is_authenticated %}
     <a href="{% url 'student_dashboard' %}" onclick="closeMob()">Dashboard</a>
-    <a href="{% url 'timetable' %}" onclick="closeMob()">Timetable</a>
+    <a href="{% url 'timetable_list' %}" onclick="closeMob()">Timetable</a>
     <a href="{% url 'profile' %}" onclick="closeMob()">Profile</a>
     <a href="{% url 'logout' %}" class="cta" onclick="closeMob()">Sign out</a>
   {% else %}

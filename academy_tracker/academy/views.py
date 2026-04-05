@@ -1,3 +1,7 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required 
+from .models import TimeTable, Task, LearningItem
+from .forms import TimeTableForm 
 from django.contrib.auth.decorators import login_required 
 from django.shortcuts import render, redirect, get_object_or_404 
 from .forms import TaskForm, SubjectForm, LearningItemForm 
@@ -5,6 +9,9 @@ from .models import *
 from django.utils import timezone 
 from django.views.decorators.http import require_POST 
 from .models import Task
+#  Explicitly import ALL models used in this file
+from .models import TimeTable, Task, LearningItem, Subject 
+from .forms import TimeTableForm, TaskForm, SubjectForm, LearningItemForm
 
 @login_required
 def add_or_update_task(request, pk=None):
@@ -52,7 +59,7 @@ def delete_subject(request, pk):
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.db.models import Count, Q
-from .models import Subject, Task, LearningItem
+# from .models import Subject, Task, LearningItem
 
 @login_required
 def student_dashboard(request):
@@ -171,10 +178,6 @@ def task_list_by_subject(request, subject_id):
 
 # @login_required 
 # def
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required 
-from .models import TimeTable 
-from .forms import TimeTableForm 
 
 # List View 
 # @login_required 
@@ -198,10 +201,13 @@ def timetable_list(request):
         When(day="Sunday", then=Value(7)),
         output_field=IntegerField(),
     )
+    
+
 
     timetables = TimeTable.objects.filter(user=request.user).order_by(day_order, "start_time")
 
     return render(request, "timetable_list.html", {"timetables": timetables, "current_day": current_day})
+
 
 
 

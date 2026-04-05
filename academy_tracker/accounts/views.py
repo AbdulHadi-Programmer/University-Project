@@ -50,11 +50,19 @@ def logout_view(request):
     logout(request)
     return redirect("home")
 
-
+#  Explicitly import ALL models used in this file
+from academy.models import TimeTable, Task, LearningItem, Subject 
+from academy.forms import TimeTableForm, TaskForm, SubjectForm, LearningItemForm
+# from academy.views import 
 # 🔥 PROFILE VIEW
 @login_required
 def profile(request):
-    return render(request, "profile.html", {"user": request.user})
+    # subject_count = Subject.objects.filter(user=user)
+    total_tasks = Task.objects.filter(user=request.user).count() or 0
+    notes_count = LearningItem.objects.filter(user=request.user).count()  or 0
+    subjects_count = Subject.objects.filter(user=request.user).count() or 0
+
+    return render(request, "profile.html", {"user": request.user, "total_tasks": total_tasks, "learning_items_count": notes_count, "subjects_count": subjects_count})
 
 
 # 🔥 EDIT PROFILE
@@ -79,22 +87,3 @@ def home(request):
 
 
 # 🔥 TIMETABLE (unchanged — it's fine)
-from datetime import datetime
-
-def timetable(request):
-    current_day = datetime.now().strftime('%A')
-
-    day_icons = {
-        "Monday": "🌞",
-        "Tuesday": "📘",
-        "Wednesday": "📖",
-        "Thursday": "📝",
-        "Friday": "📚",
-        "Saturday": "🎉",
-        "Sunday": "☕",
-    }
-
-    return render(request, "timetable.html", {
-        "current_day": current_day,
-        "current_icon": day_icons.get(current_day, "📅"),
-    })

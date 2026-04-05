@@ -1,119 +1,195 @@
 {% extends "base.html" %}
-{% block title %}My Timetable{% endblock %}
+{% block title %}My Timetable — StudyMate{% endblock %}
 
-{% block content %}
+{% block extra_css %}
 <style>
-    /* Floating Add Button */
-    .fab {
-        position: fixed;
-        top: 70px;
-        right: 30px;
-        background-color: #198754; /* bootstrap success green */
-        color: white;
-        border-radius: 50%;
-        width: 55px;
-        height: 55px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        transition: transform 0.2s ease-in-out;
-        z-index: 1000;
-        text-decoration: none;
-    }
-    .fab:hover {
-        transform: scale(1.1);
-        background-color: #157347; /* darker green */
-        color: #fff;
-    }
-    /* Highlight current day */
-    .highlight-day {
-        background: #d1e7dd !important; /* soft green */
-        border-top: 10px solid #198754;
-        border-bottom : 10px solid #198754;
-        font-weight: 600;
-    }
-    .table-custom {
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    }
+main{flex:1;padding:2.5rem 1.5rem;}
+.pc{max-width:1000px;margin:0 auto;}
 
-    .table-custom thead {
-        background: linear-gradient(45deg, #198754, #20c997);
-        color: white;
-        font-weight: 600;
-        font-size: 1rem;
-    }
+/* PAGE HEADER */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:2rem;}
+.page-eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem;display:flex;align-items:center;gap:7px;}
+.page-eyebrow::before{content:'';width:14px;height:2px;background:var(--accent);border-radius:2px;display:block;}
+.page-title{font-family:'Syne',sans-serif;font-size:clamp(1.5rem,3vw,1.9rem);font-weight:800;letter-spacing:-.025em;color:var(--ink);line-height:1.1;}
+.page-sub{font-size:.88rem;color:var(--ink-muted);margin-top:.3rem;font-weight:300;}
+.header-right{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
+.today-badge{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--a2);padding:.55rem 1.2rem;border-radius:50px;font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;white-space:nowrap;}
+.today-dot{width:8px;height:8px;border-radius:50%;background:var(--a2);animation:tdpulse 2s ease-in-out infinite;}
+.btn-add{display:inline-flex;align-items:center;gap:7px;padding:.65rem 1.4rem;border-radius:50px;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;text-decoration:none;border:2px solid var(--accent);transition:all .22s;white-space:nowrap;}
+.btn-add:hover{background:var(--ink);border-color:var(--ink);transform:translateY(-1px);}
 
-    .table-custom tbody tr {
-        transition: all 0.2s ease-in-out;
-    }
+/* SCHEDULE */
+.schedule{display:flex;flex-direction:column;gap:1.8rem;}
+.day-label{display:flex;align-items:center;gap:.7rem;margin-bottom:.75rem;}
+.day-pill{display:inline-flex;align-items:center;gap:6px;padding:.3rem .9rem;border-radius:50px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;}
+.day-divider{flex:1;height:1px;background:var(--border);}
+.today-indicator{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ok);display:flex;align-items:center;gap:4px;}
 
-    .table-custom tbody tr:hover {
-        background: #f8f9fa;
-    }
+/* day colours */
+.d-monday    .day-pill{background:rgba(99,102,241,.12);color:#6366f1;}
+.d-tuesday   .day-pill{background:rgba(245,158,11,.12);color:var(--warn);}
+.d-wednesday .day-pill{background:rgba(16,185,129,.12);color:var(--ok);}
+.d-thursday  .day-pill{background:rgba(244,63,94,.12);color:#f43f5e;}
+.d-friday    .day-pill{background:rgba(139,92,246,.12);color:#8b5cf6;}
+.d-saturday  .day-pill{background:rgba(6,182,212,.12);color:#06b6d4;}
+.d-sunday    .day-pill{background:rgba(107,114,128,.12);color:#6b7280;}
+.d-monday    .class-card:not(.is-today)::before{background:rgba(99,102,241,.4);}
+.d-tuesday   .class-card:not(.is-today)::before{background:rgba(245,158,11,.4);}
+.d-wednesday .class-card:not(.is-today)::before{background:rgba(16,185,129,.4);}
+.d-thursday  .class-card:not(.is-today)::before{background:rgba(244,63,94,.4);}
+.d-friday    .class-card:not(.is-today)::before{background:rgba(139,92,246,.4);}
+.d-saturday  .class-card:not(.is-today)::before{background:rgba(6,182,212,.4);}
+.d-sunday    .class-card:not(.is-today)::before{background:rgba(107,114,128,.4);}
 
+/* CLASS CARDS */
+.class-cards{display:flex;flex-direction:column;gap:.6rem;}
+.class-card{
+  background:var(--card);border-radius:var(--r);border:1px solid var(--border);
+  padding:1rem 1.2rem;
+  display:grid;grid-template-columns:90px 1fr auto;
+  align-items:center;gap:1rem;
+  transition:all .22s;position:relative;overflow:hidden;
+}
+.class-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;}
+.class-card:hover{transform:translateX(3px);box-shadow:0 6px 20px rgba(0,0,0,.06);}
+.class-card.is-today{background:rgba(91,76,219,.04);border-color:rgba(91,76,219,.2);}
+.class-card.is-today::before{background:var(--accent);}
+.cc-time{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;}
+.cc-start{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;color:var(--ink);line-height:1.1;}
+.cc-end{font-size:.7rem;color:var(--ink-muted);font-weight:300;}
+.cc-course{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;color:var(--ink);margin-bottom:.22rem;}
+.cc-room{display:inline-flex;align-items:center;gap:5px;padding:.28rem .75rem;border-radius:7px;font-size:.75rem;font-weight:600;background:var(--surface);color:var(--ink-soft);border:1px solid var(--border);}
+.cc-actions{display:flex;gap:.4rem;flex-shrink:0;}
+.cc-btn{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;text-decoration:none;border:1.5px solid var(--border);background:var(--surface);color:var(--ink-soft);transition:all .18s;flex-shrink:0;}
+.cc-btn.edit:hover{background:var(--al);border-color:var(--accent);color:var(--accent);transform:scale(1.08);}
+.cc-btn.del:hover{background:rgba(239,68,68,.08);border-color:var(--err);color:var(--err);transform:scale(1.08);}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:4.5rem 2rem;background:var(--card);border-radius:var(--rl);border:1px solid var(--border);}
+.empty-icon{width:72px;height:72px;border-radius:20px;background:var(--al);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;}
+.empty-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:.4rem;}
+.empty-desc{font-size:.88rem;color:var(--ink-muted);font-weight:300;margin-bottom:1.5rem;}
+
+@keyframes tdpulse{0%,100%{opacity:.6;}50%{opacity:1;}}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  main{padding:1.5rem 1rem;}
+  .class-card{grid-template-columns:70px 1fr;grid-template-rows:auto auto;}
+  .cc-actions{grid-column:2;grid-row:2;justify-content:flex-end;}
+}
+@media(max-width:420px){
+  .page-header{flex-direction:column;}
+  .class-card{grid-template-columns:1fr;}
+  .cc-time{flex-direction:row;align-items:center;gap:.5rem;}
+  .cc-actions{justify-content:flex-start;}
+}
 </style>
-
-<div class="container my-4">
-    <h2 class="fw-bold text-center mb-4">
-        <i class="fa-solid fa-calendar-days me-2 text-success"></i> My Timetable
-    </h2>
-
-    {% if timetables %}
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle text-center">
-                <thead class="table-success">
-                    <tr class="{% if entry.day == current_day %}highlight-day{% endif %}">
-                        <th>Day</th>
-                        <th>Timing</th>
-                        <th>Subject</th>
-                        <th>Room No</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for entry in timetables %}
-                    <tr class="{% if entry.day == current_day %}highlight-day{% endif %}">
-                        <td>{{ entry.day }}</td>
-                        <td>
-                            {{ entry.start_time|time:"h:i A" }} — {{ entry.end_time|time:"h:i A" }}
-                        </td>
-                        <td>{{ entry.subject.name }}</td>
-                        <td>{{ entry.room_no|default:"-" }}</td>
-                        <td>
-                            <a href="{% url 'timetable_update' entry.id %}" class="btn btn-sm btn-accent">
-                                <i class="fa-solid fa-pencil"></i>
-                            </a>
-                            <a href="{% url 'timetable_delete' entry.id %}" 
-                               class="btn btn-sm btn-danger">
-                               <i class="fa-solid fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Floating Add Button -->
-        <a href="{% url 'timetable_create' %}" class="fab">
-            <i class="fa-solid fa-plus"></i>
-        </a>
-
-    {% else %}
-        <div class="text-center py-5">
-            <div style="font-size: 3rem;" class="mb-3 text-muted">
-                <i class="fa-solid fa-calendar-xmark"></i>
-            </div>
-            <h5 class="text-muted mb-3">No Timetable Entries Found</h5>
-            <a href="{% url 'timetable_create' %}" class="btn btn-success">
-                <i class="fa-solid fa-plus"></i> Add Timetable Row
-            </a>
-        </div>
-    {% endif %}
-</div>
 {% endblock %}
 
+{% block content %}
+<main>
+<div class="pc">
+
+  {# PAGE HEADER #}
+  <div class="page-header">
+    <div>
+      <div class="page-eyebrow">Schedule</div>
+      <div class="page-title">Class Timetable</div>
+      <div class="page-sub">Arranged by day &amp; time · Today's classes are highlighted</div>
+    </div>
+    <div class="header-right">
+      <div class="today-badge">
+        <span class="today-dot"></span>
+        {{ current_day }}
+      </div>
+      <a href="{% url 'timetable_create' %}" class="btn-add">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Class
+      </a>
+    </div>
+  </div>
+
+  {% if timetables %}
+
+    {# Group by day using Django's regroup tag #}
+    {% regroup timetables by day as day_groups %}
+
+    <div class="schedule">
+      {% for day_group in day_groups %}
+        {% with day=day_group.grouper entries=day_group.list %}
+        <div class="day-group d-{{ day|lower }}">
+
+          <div class="day-label">
+            <div class="day-pill">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              {{ day }}
+            </div>
+            <div class="day-divider"></div>
+            {% if day == current_day %}
+              <div class="today-indicator">
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--ok);display:block;"></span>
+                Today
+              </div>
+            {% else %}
+              <span style="font-size:.75rem;color:var(--ink-muted);font-weight:400;">
+                {{ entries|length }} class{{ entries|length|pluralize:"es" }}
+              </span>
+            {% endif %}
+          </div>
+
+          <div class="class-cards">
+            {% for entry in entries %}
+            <div class="class-card {% if entry.day == current_day %}is-today{% endif %}">
+
+              <div class="cc-time">
+                <span class="cc-start">{{ entry.start_time|time:"g:i" }}</span>
+                <span class="cc-end">{{ entry.end_time|time:"g:i A" }}</span>
+              </div>
+
+              <div>
+                <div class="cc-course">{{ entry.subject.name }}</div>
+                {% if entry.room_no %}
+                  <span class="cc-room">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                    {{ entry.room_no }}
+                  </span>
+                {% endif %}
+              </div>
+
+              <div class="cc-actions">
+                <a href="{% url 'timetable_update' entry.id %}" class="cc-btn edit" title="Edit">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </a>
+                <a href="{% url 'timetable_delete' entry.id %}" class="cc-btn del" title="Delete"
+                   onclick="return confirm('Delete this entry?')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                </a>
+              </div>
+
+            </div>
+            {% endfor %}
+          </div>
+
+        </div>
+        {% endwith %}
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#5b4cdb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="empty-title">No timetable entries yet</div>
+      <p class="empty-desc">Add your class schedule so StudyMate can highlight today's lectures automatically.</p>
+      <a href="{% url 'timetable_create' %}" class="btn-add" style="display:inline-flex;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add your first class
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+</main>
+{% endblock %}
