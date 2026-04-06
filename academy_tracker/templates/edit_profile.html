@@ -69,7 +69,13 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:2.5r
   .panel{display:none;}
   .auth-form{padding:2rem 1.5rem;}
 }
-@media(max-width:420px){.auth-form{padding:1.75rem 1.25rem;}.form-h{font-size:1.3rem;}}
+@media(max-width:480px){
+  main{padding:1rem .75rem;}
+  .auth-form{padding:1.5rem 1.1rem;}
+  .form-h{font-size:1.25rem;}
+  .form-sub{margin-bottom:1.2rem;}
+}
+@media(max-width:360px){.auth-form{padding:1.25rem .9rem;}}
 </style>
 {% endblock %}
 

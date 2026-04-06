@@ -64,12 +64,19 @@ main{flex:1;padding:2.5rem 1.5rem;}
 
 /* RESPONSIVE */
 @media(max-width:640px){
-  main{padding:1.5rem 1rem;}
-  .page-header{flex-direction:column;}
+  main{padding:1.25rem 1rem;}
+  .page-header{flex-direction:column;gap:.75rem;}
   .header-actions{width:100%;}
   .btn-add-note,.btn-back{flex:1;justify-content:center;}
+  .notes-grid{grid-template-columns:1fr;}
+  .page-title{font-size:1.4rem;}
 }
-@media(max-width:380px){.notes-grid{grid-template-columns:1fr;}}
+@media(max-width:380px){
+  main{padding:1rem .75rem;}
+  .page-title{font-size:1.25rem;}
+  .nc-footer{flex-direction:column;}
+  .nc-btn{flex:unset;}
+}
 </style>
 {% endblock %}
 

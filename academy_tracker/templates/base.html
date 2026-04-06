@@ -33,20 +33,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--ink)
 .ham.open span:nth-child(2){opacity:0;}
 .ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
 nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:.85rem 2.5rem;background:rgba(246,245,241,.95);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);}
-.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:9px;}
-.logo-icon{width:28px;height:28px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px;}
+.nav-logo-text{/* text node — controlled via font-size on .nav-logo */}
+.logo-icon{width:26px;height:26px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .nav-center{display:flex;align-items:center;gap:4px;}
 .nav-center a{padding:.4rem .9rem;border-radius:50px;font-size:.85rem;text-decoration:none;font-weight:500;transition:all .2s;color:var(--ink-soft);}
 .nav-center a:hover{background:var(--al);color:var(--accent);}
 .nav-center a.active{background:var(--al);color:var(--accent);}
-.nav-right{display:flex;align-items:center;gap:10px;}
-.nav-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:.78rem;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:box-shadow .2s;}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:.72rem;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:box-shadow .2s;flex-shrink:0;}
 .nav-avatar:hover{box-shadow:0 0 0 3px var(--al);}
-.nav-logout{padding:.4rem .9rem;border-radius:50px;font-size:.82rem;text-decoration:none;font-weight:500;color:var(--ink-muted);border:1.5px solid var(--border);transition:all .2s;}
+.nav-logout{padding:.38rem .85rem;border-radius:50px;font-size:.8rem;text-decoration:none;font-weight:500;color:var(--ink-muted);border:1.5px solid var(--border);transition:all .2s;white-space:nowrap;}
 .nav-logout:hover{border-color:var(--err);color:var(--err);}
-.mob-menu{display:none;position:fixed;top:61px;left:0;right:0;z-index:190;background:var(--card);border-bottom:1px solid var(--border);flex-direction:column;padding:1rem 1.5rem 1.5rem;gap:4px;box-shadow:0 8px 30px rgba(0,0,0,.08);}
+.mob-menu{display:none;position:fixed;top:59px;left:0;right:0;z-index:190;background:var(--card);border-bottom:1px solid var(--border);flex-direction:column;padding:1rem 1.25rem 1.25rem;gap:3px;box-shadow:0 8px 30px rgba(0,0,0,.08);}
 .mob-menu.open{display:flex;}
-.mob-menu a{padding:.65rem 1rem;border-radius:10px;font-size:.92rem;text-decoration:none;font-weight:500;color:var(--ink-soft);}
+.mob-menu a{padding:.6rem 1rem;border-radius:10px;font-size:.9rem;text-decoration:none;font-weight:500;color:var(--ink-soft);display:flex;align-items:center;gap:8px;}
+.mob-menu a:hover{background:var(--surface);}
 .mob-menu a.active{background:var(--al);color:var(--accent);}
 .mob-menu .mob-logout{color:var(--err);}
 .mob-menu .mob-logout:hover{background:rgba(239,68,68,.06);}
@@ -211,33 +213,103 @@ footer a:hover{color:#fff;}
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+
 @media(max-width:768px){
-  nav{padding:.8rem 1.25rem;}
+  /* Nav */
+  nav{padding:.75rem 1rem;}
+  .nav-logo{font-size:.95rem;gap:7px;}
+  .logo-icon{width:24px;height:24px;border-radius:6px;}
+  .nav-logo svg{width:13px;height:13px;}
   .nav-center{display:none;}
+  .nav-right{gap:6px;}
+  .nav-logout{display:none;} /* hide text sign-out on mobile — avatar still clickable */
   .ham{display:flex;}
-  main{padding:1.5rem 1rem;}
-  .greeting-banner{padding:1.6rem 1.5rem;}
-  .greet-name{font-size:1.3rem;}
+
+  /* Layout */
+  main{padding:1.25rem 1rem;}
+
+  /* Dashboard */
+  .greeting-banner{padding:1.4rem 1.25rem;}
+  .greet-name{font-size:1.2rem;}
+  .greet-right{width:100%;}
+  .greet-btn{flex:1;justify-content:center;font-size:.8rem;padding:.6rem 1rem;}
+
+  /* Profile */
   .profile-layout{grid-template-columns:1fr;}
-  .avatar-col{flex-direction:row;align-items:center;}
+  .avatar-col{flex-direction:row;align-items:center;gap:1rem;}
+  .big-avatar{width:72px;height:72px;font-size:1.5rem;border-radius:18px;}
+  .info-card-header{padding:1.2rem 1.5rem;}
+  .info-card-body{padding:1.2rem 1.5rem;}
+  .info-card-footer{padding:1rem 1.5rem;flex-direction:column;gap:.5rem;}
+  .info-card-footer .btn{justify-content:center;}
+  .mini-stats{grid-template-columns:repeat(3,1fr);}
+
+  /* Timetable */
   .class-card{grid-template-columns:auto 1fr;grid-template-rows:auto auto;}
   .cc-room{grid-column:2;grid-row:2;}
-  /* Auth form pages — panel hides, form goes full width */
+  .cc-actions{grid-column:unset;grid-row:unset;}
+
+  /* Auth forms — panel hidden, full-width form */
   .auth-wrap{grid-template-columns:1fr !important;border-radius:var(--r) !important;}
   .panel{display:none !important;}
   .auth-form{padding:2rem 1.5rem !important;}
+
+  /* Tasks & Notes list */
+  .page-header{flex-direction:column;gap:.75rem;}
+  .header-actions{width:100%;display:flex;gap:.5rem;}
+  .header-actions a{flex:1;justify-content:center;}
+  .task-card{grid-template-columns:auto 1fr;grid-template-rows:auto auto;}
+  .task-actions{grid-column:2;grid-row:2;justify-content:flex-end;}
+
+  /* Edit profile */
+  .changed-badge{margin-bottom:.6rem;}
 }
+
 @media(max-width:480px){
+  /* Nav even smaller */
+  nav{padding:.65rem .9rem;}
+  .nav-logo{font-size:.85rem;gap:6px;}
+  .logo-icon{width:22px;height:22px;border-radius:5px;}
+
+  /* Dashboard */
   .stats-grid{grid-template-columns:repeat(2,1fr);}
-  .greet-right{width:100%;}
-  .greet-btn{flex:1;justify-content:center;}
+  .section-hd-actions{width:100%;display:grid;grid-template-columns:repeat(3,1fr);}
+  .section-hd-actions .btn-sm{justify-content:center;font-size:.72rem;padding:.4rem .5rem;}
+
+  /* Profile */
   .mini-stats{grid-template-columns:1fr 1fr;}
-  .info-card-footer{flex-direction:column;}
-  .btn{justify-content:center;}
-  /* Auth forms tighter on small phones */
-  .auth-form{padding:1.75rem 1.25rem !important;}
+  .info-card-footer .btn{font-size:.8rem;padding:.6rem 1rem;}
+
+  /* Auth forms */
+  .auth-form{padding:1.5rem 1.1rem !important;}
   .field-row{grid-template-columns:1fr !important;}
-  .form-h{font-size:1.3rem !important;}
+  .form-h{font-size:1.25rem !important;}
+  .form-sub{font-size:.8rem !important;}
+
+  /* Notes grid */
+  .notes-grid{grid-template-columns:1fr;}
+  .count-pill{font-size:.72rem;}
+
+  /* Tasks */
+  .task-card{grid-template-columns:auto 1fr;}
+  .tc-meta{gap:.4rem;}
+  .tc-due{display:none;} /* hide date on tiny screens, status+type remain */
+  .summary-row{gap:.4rem;}
+  .sum-pill{font-size:.7rem;padding:.28rem .7rem;}
+
+  /* Timetable */
+  .page-title{font-size:1.4rem;}
+  .header-right{width:100%;justify-content:space-between;}
+  .btn-add{font-size:.82rem;padding:.55rem 1.1rem;}
+}
+
+@media(max-width:360px){
+  nav{padding:.6rem .75rem;}
+  .nav-logo{font-size:.78rem;}
+  .logo-icon{width:20px;height:20px;}
+  .nav-avatar{width:26px;height:26px;font-size:.65rem;}
+  .task-check{width:22px;height:22px;}
+  .nc-btn{font-size:.7rem;}
 }
 </style>
 {% block extra_css %}{% endblock %}
@@ -255,12 +327,6 @@ footer a:hover{color:#fff;}
 
   {# Centre nav links — Dashboard · Timetable · Profile #}
   <div class="nav-center">
-    
-    <a href="{% url 'home' %}"
-       {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>
-      Home
-    </a>
-
     <a href="{% url 'student_dashboard' %}"
        {% if request.resolver_match.url_name == 'student_dashboard' %}class="active"{% endif %}>
       Dashboard
@@ -269,7 +335,10 @@ footer a:hover{color:#fff;}
        {% if request.resolver_match.url_name == 'timetable' %}class="active"{% endif %}>
       Timetable
     </a>
-    
+    <a href="{% url 'profile' %}"
+       {% if request.resolver_match.url_name == 'profile' %}class="active"{% endif %}>
+      Profile
+    </a>
   </div>
 
   {# Right: avatar initials + sign out #}
