@@ -1,101 +1,226 @@
 {% extends "base.html" %}
-{% block title %}Tasks - {{ subject.name }}{% endblock %}
+{% block title %}Tasks — {{ subject.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+main{flex:1;padding:2.5rem 1.5rem;}
+.pc{max-width:860px;margin:0 auto;}
+
+/* PAGE HEADER */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:2rem;}
+.page-eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem;display:flex;align-items:center;gap:7px;}
+.page-eyebrow::before{content:'';width:14px;height:2px;background:var(--accent);border-radius:2px;display:block;}
+.page-title{font-family:'Syne',sans-serif;font-size:clamp(1.4rem,3vw,1.9rem);font-weight:800;letter-spacing:-.025em;color:var(--ink);line-height:1.15;}
+.subj-pill{display:inline-flex;align-items:center;gap:6px;padding:.28rem .9rem;border-radius:50px;background:var(--al);color:var(--accent);font-size:.78rem;font-weight:700;border:1px solid rgba(91,76,219,.2);margin-top:.5rem;}
+.header-actions{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;}
+.btn-add-task{display:inline-flex;align-items:center;gap:7px;padding:.65rem 1.4rem;border-radius:50px;background:var(--warn);color:#fff;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;text-decoration:none;border:2px solid var(--warn);transition:all .22s;white-space:nowrap;}
+.btn-add-task:hover{background:var(--ink);border-color:var(--ink);transform:translateY(-1px);}
+.btn-back{display:inline-flex;align-items:center;gap:6px;padding:.62rem 1.2rem;border-radius:50px;font-size:.85rem;font-weight:500;text-decoration:none;color:var(--ink-soft);border:1.5px solid var(--border);transition:all .2s;}
+.btn-back:hover{border-color:var(--ink);color:var(--ink);}
+
+/* SUMMARY PILLS */
+.summary-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.sum-pill{display:inline-flex;align-items:center;gap:6px;padding:.35rem .9rem;border-radius:50px;font-size:.78rem;font-weight:600;}
+.sp-all{background:var(--surface);color:var(--ink-soft);border:1px solid var(--border);}
+.sp-pending{background:rgba(245,158,11,.1);color:var(--warn);border:1px solid rgba(245,158,11,.25);}
+.sp-ongoing{background:var(--al);color:var(--accent);border:1px solid rgba(91,76,219,.2);}
+.sp-done{background:rgba(16,185,129,.1);color:var(--ok);border:1px solid rgba(16,185,129,.25);}
+.sp-dot{width:7px;height:7px;border-radius:50%;}
+
+/* TASK LIST */
+.tasks-list{display:flex;flex-direction:column;gap:.75rem;}
+.task-card{
+  background:var(--card);border-radius:var(--r);border:1px solid var(--border);
+  padding:1.1rem 1.3rem;
+  display:grid;grid-template-columns:auto 1fr auto;
+  align-items:center;gap:1rem;
+  transition:all .22s;position:relative;overflow:hidden;
+}
+.task-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;}
+.task-card:hover{transform:translateX(3px);box-shadow:0 6px 20px rgba(0,0,0,.06);}
+
+/* Status colours */
+.task-card.s-pending::before{background:var(--warn);}
+.task-card.s-ongoing::before{background:var(--accent);}
+.task-card.s-done::before{background:var(--ok);}
+.task-card.s-pending{background:rgba(245,158,11,.02);}
+.task-card.s-ongoing{background:rgba(91,76,219,.02);}
+.task-card.s-done{background:rgba(16,185,129,.02);opacity:.75;}
+
+/* Checkbox */
+.task-check{
+  width:28px;height:28px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--border);
+}
+.task-check.done{background:rgba(16,185,129,.15);border-color:var(--ok);}
+.task-check.pending{border-color:var(--warn);}
+.task-check.ongoing{background:var(--al);border-color:var(--accent);}
+
+/* Task content */
+.tc-title{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:800;color:var(--ink);margin-bottom:.25rem;}
+.tc-title.done{text-decoration:line-through;color:var(--ink-muted);}
+.tc-meta{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.tc-type{font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:50px;background:var(--surface);border:1px solid var(--border);color:var(--ink-muted);}
+.tc-due{font-size:.75rem;color:var(--ink-muted);display:flex;align-items:center;gap:4px;font-weight:300;}
+.tc-status{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:50px;}
+.ts-pending{background:rgba(245,158,11,.12);color:var(--warn);}
+.ts-ongoing{background:var(--al);color:var(--accent);}
+.ts-done{background:rgba(16,185,129,.12);color:var(--ok);}
+
+/* Action buttons */
+.task-actions{display:flex;gap:.4rem;flex-shrink:0;}
+.ta-btn{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;text-decoration:none;border:1.5px solid var(--border);background:var(--surface);color:var(--ink-soft);transition:all .18s;flex-shrink:0;}
+.ta-btn.edit:hover{background:var(--al);border-color:var(--accent);color:var(--accent);transform:scale(1.08);}
+.ta-btn.del:hover{background:rgba(239,68,68,.08);border-color:var(--err);color:var(--err);transform:scale(1.08);}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:4rem 2rem;background:var(--card);border-radius:var(--rl);border:1px solid var(--border);}
+.empty-icon{width:80px;height:80px;border-radius:24px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;}
+.empty-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;margin-bottom:.4rem;}
+.empty-desc{font-size:.88rem;color:var(--ink-muted);font-weight:300;margin-bottom:1.5rem;max-width:320px;margin-left:auto;margin-right:auto;}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  main{padding:1.5rem 1rem;}
+  .page-header{flex-direction:column;}
+  .header-actions{width:100%;}
+  .btn-add-task,.btn-back{flex:1;justify-content:center;}
+  .task-card{grid-template-columns:auto 1fr;grid-template-rows:auto auto;}
+  .task-actions{grid-column:2;grid-row:2;justify-content:flex-end;}
+}
+@media(max-width:380px){
+  .task-card{grid-template-columns:1fr;}
+  .task-check{display:none;}
+  .task-actions{justify-content:flex-start;}
+}
+</style>
+{% endblock %}
 
 {% block content %}
+<main>
+<div class="pc">
 
-<style>
-    .custom-yellow-btn {
-        border: 2px solid #FFB300;
-        color: #FFB300;
-        background-color: transparent;
-        transition: all 0.3s ease;
-    }
+  {# PAGE HEADER #}
+  <div class="page-header">
+    <div>
+      <div class="page-eyebrow">Tasks</div>
+      <div class="page-title">{{ subject.name }}</div>
+      <div class="subj-pill">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12l2 2 4-4"/></svg>
+        {% if subject.course_code %}{{ subject.course_code }} · {% endif %}{{ tasks|length }} task{{ tasks|length|pluralize }}
+      </div>
+    </div>
+    <div class="header-actions">
+      <a href="{% url 'student_dashboard' %}" class="btn-back">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Dashboard
+      </a>
+      <a href="{% url 'add_task' %}" class="btn-add-task">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Task
+      </a>
+    </div>
+  </div>
 
-    .custom-yellow-btn:hover,
-    .custom-yellow-btn:focus {
-        background-color: #FFB300;
-        color: white;
-        text-decoration: none;
-    }
-</style>
+  {% if tasks %}
 
+    {# Summary pills #}
+    {% with pending=tasks|length completed=0 %}
+    <div class="summary-row">
+      <span class="sum-pill sp-all">
+        <span class="sp-dot" style="background:var(--ink-muted);"></span>
+        {{ tasks|length }} total
+      </span>
+      {# Count statuses — Django template can't easily count, so show all #}
+      <span class="sum-pill sp-pending">
+        <span class="sp-dot" style="background:var(--warn);"></span>
+        Pending
+      </span>
+      <span class="sum-pill sp-ongoing">
+        <span class="sp-dot" style="background:var(--accent);"></span>
+        On Going
+      </span>
+      <span class="sum-pill sp-done">
+        <span class="sp-dot" style="background:var(--ok);"></span>
+        Completed
+      </span>
+    </div>
+    {% endwith %}
 
-<div class="container py-4">
-    <h2 class="fw-bold mb-4"><i class="fa-solid fa-list-check text-success me-2"></i>
- Tasks for {{ subject.name }}</h2>
+<div class="tasks-list">
+  {% for task in tasks %}
+    
+    {# 1. Open the 'with' tag at the very top of the loop #}
+    {% with status=task.status %}
+      
+      <div class="task-card 
+        {% if status == 'Completed' %}s-done{% elif status == 'On Going' %}s-ongoing{% else %}s-pending{% endif %}">
 
-    {% if tasks %}
-        <ul class="list-group shadow-sm rounded-3">
-            {% for task in tasks %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <!-- Task details -->
-                    <div>
-                        <strong class="text-success">{{ task.title }}</strong> 
-                        <span class="text-muted">({{ task.get_task_type_display }})</span>
-                        <br>
-                        <small class="text-muted">📅 Due: {{ task.due_date }}</small>
-                        <br>
-                        Status: 
-                        {% if task.status == "Completed" %}
-                            <span class="badge bg-success">{{ task.status }}</span>
-                        {% elif task.status == "On Going" %}
-                            <span class="badge bg-warning text-dark">{{ task.status }}</span>
-                        {% else %}
-                            <span class="badge bg-danger">{{ task.status }}</span>
-                        {% endif %}
-                    </div>
-
-                    <!-- Action buttons -->
-                    <div class="d-flex">
-                        <!-- Edit button -->
-                        <a href="{% url 'update_task' task.id %}" class="btn btn-sm btn-outline-primary me-2">
-                            ✏️ Edit
-                        </a>
-                    
-                        <!-- Delete button -->
-                        <form method="post" action="{% url 'delete_task' task.id %}" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                🗑 Delete
-                            </button>
-                        </form>
-                    </div>
-
-
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <!-- <p class="text-muted">No tasks yet.</p> -->
-         <div class="text-center py-5">
-        <!-- Illustration / Icon -->
-        <div style="font-size: 4rem;" class="mb-3 text-muted">
-            📭
-             <!-- 🧹 -->
+        {# Status indicator circle #}
+        <div class="task-check 
+          {% if status == 'Completed' %}done{% elif status == 'On Going' %}ongoing{% else %}pending{% endif %}">
+          {% if status == "Completed" %}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          {% elif status == "On Going" %}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5b4cdb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/></svg>
+          {% else %}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          {% endif %}
         </div>
 
-        <!-- Heading -->
-        <h4 class="fw-semibold text-muted mb-2">No tasks yet</h4>
+        {# Task info #}
+        <div>
+          <div class="tc-title {% if status == 'Completed' %}done{% endif %}">{{ task.title }}</div>
+          <div class="tc-meta">
+            <span class="tc-type">{{ task.get_task_type_display }}</span>
+            <span class="tc-due">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Due {{ task.due_date }}
+            </span>
+            <span class="tc-status 
+              {% if status == 'Completed' %}ts-done{% elif status == 'On Going' %}ts-ongoing{% else %}ts-pending{% endif %}">
+              {{ status }}
+            </span>
+          </div>
+        </div>
 
-        <!-- CTA Button -->
-        <!-- <a href="{% url 'add_task' %}" class="btn btn-outline-success">
-            <i class="fa-solid fa-plus me-1"></i> Add your first task
-        </a> -->
-        <!-- CTA Button -->
-        <!-- <a href="{% url 'add_task' %}" class="btn custom-yellow-btn">
-            <i class="fa-solid fa-plus me-1"></i> Add your first task
-        </a> -->
+        {# Actions #}
+        <div class="task-actions">
+          <a href="{% url 'update_task' task.id %}" class="ta-btn edit" title="Edit">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </a>
+          <form method="post" action="{% url 'delete_task' task.id %}" style="display:contents;" onsubmit="return confirm('Delete this task?')">
+            {% csrf_token %}
+            <button type="submit" class="ta-btn del" title="Delete">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+            </button>
+          </form>
+        </div>
+
+      </div>
+    {% endwith %} {# This correctly closes the with block for each task #}
+
+  {% endfor %}
+</div>    
 
 
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12l2 2 4-4"/></svg>
+      </div>
+      <div class="empty-title">No tasks yet</div>
+      <p class="empty-desc">Add assignments, quizzes, or exams for {{ subject.name }} — StudyMate will remind you before deadlines.</p>
+      <a href="{% url 'add_task' %}" class="btn-add-task" style="display:inline-flex;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add your first task
+      </a>
     </div>
-    {% endif %}
-
-    <!-- Back & Add Task Buttons -->
-<div class="d-flex justify-content-center mt-4">
-    <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary">
-        ⬅ Back to Dashboard
-    </a>
-</div>
+  {% endif %}
 
 </div>
+</main>
 {% endblock %}
+
+

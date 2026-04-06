@@ -1,167 +1,165 @@
 {% extends "base.html" %}
-{% block title %} Study Notes - {{ subject.name }}{% endblock %}
+{% block title %}Study Notes — {{ subject.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+main{flex:1;padding:2.5rem 1.5rem;}
+.pc{max-width:860px;margin:0 auto;}
+
+/* PAGE HEADER */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:2rem;}
+.page-eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem;display:flex;align-items:center;gap:7px;}
+.page-eyebrow::before{content:'';width:14px;height:2px;background:var(--accent);border-radius:2px;display:block;}
+.page-title{font-family:'Syne',sans-serif;font-size:clamp(1.4rem,3vw,1.9rem);font-weight:800;letter-spacing:-.025em;color:var(--ink);line-height:1.15;}
+.page-sub{font-size:.88rem;color:var(--ink-muted);margin-top:.3rem;font-weight:300;}
+.subj-pill{display:inline-flex;align-items:center;gap:6px;padding:.28rem .9rem;border-radius:50px;background:var(--al);color:var(--accent);font-size:.78rem;font-weight:700;border:1px solid rgba(91,76,219,.2);margin-top:.5rem;}
+.header-actions{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;}
+.btn-add-note{display:inline-flex;align-items:center;gap:7px;padding:.65rem 1.4rem;border-radius:50px;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;text-decoration:none;border:2px solid var(--accent);transition:all .22s;white-space:nowrap;}
+.btn-add-note:hover{background:var(--ink);border-color:var(--ink);transform:translateY(-1px);}
+.btn-back{display:inline-flex;align-items:center;gap:6px;padding:.62rem 1.2rem;border-radius:50px;font-size:.85rem;font-weight:500;text-decoration:none;color:var(--ink-soft);border:1.5px solid var(--border);transition:all .2s;}
+.btn-back:hover{border-color:var(--ink);color:var(--ink);}
+
+/* NOTE CARDS GRID */
+.notes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:1.1rem;}
+.note-card{
+  background:var(--card);border-radius:var(--rl);border:1px solid var(--border);
+  padding:1.5rem;display:flex;flex-direction:column;gap:.75rem;
+  transition:all .28s;position:relative;overflow:hidden;
+}
+.note-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),#9b8cff);opacity:0;transition:opacity .28s;}
+.note-card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(0,0,0,.08);border-color:rgba(91,76,219,.2);}
+.note-card:hover::before{opacity:1;}
+
+/* Note card top */
+.nc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;}
+.nc-icon{width:38px;height:38px;border-radius:10px;background:var(--al);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nc-num{font-size:.68rem;font-weight:700;color:var(--ink-muted);background:var(--surface);padding:2px 8px;border-radius:50px;border:1px solid var(--border);}
+.nc-title{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;color:var(--ink);line-height:1.3;}
+.nc-desc{font-size:.82rem;color:var(--ink-muted);line-height:1.6;font-weight:300;flex:1;
+  /* Clamp to 3 lines */
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.nc-footer{display:flex;gap:.4rem;padding-top:.5rem;border-top:1px solid var(--border);}
+.nc-btn{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:5px;
+  padding:.45rem .6rem;border-radius:50px;font-size:.76rem;font-weight:600;
+  text-decoration:none;border:1.5px solid var(--border);
+  background:var(--surface);color:var(--ink-soft);transition:all .2s;
+}
+.nc-btn.edit:hover{background:var(--al);border-color:var(--accent);color:var(--accent);}
+.nc-btn.del:hover{background:rgba(239,68,68,.08);border-color:var(--err);color:var(--err);}
+
+/* EMPTY STATE */
+.empty-state{
+  text-align:center;padding:4rem 2rem;
+  background:var(--card);border-radius:var(--rl);border:1px solid var(--border);
+}
+.empty-icon{width:80px;height:80px;border-radius:24px;background:var(--al);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;}
+.empty-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;margin-bottom:.4rem;}
+.empty-desc{font-size:.88rem;color:var(--ink-muted);font-weight:300;margin-bottom:1.5rem;max-width:340px;margin-left:auto;margin-right:auto;}
+
+/* NOTE COUNT BADGE */
+.count-pill{display:inline-flex;align-items:center;gap:5px;padding:.28rem .9rem;border-radius:50px;background:var(--surface);border:1px solid var(--border);font-size:.78rem;font-weight:600;color:var(--ink-muted);margin-bottom:1.2rem;}
+.count-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  main{padding:1.5rem 1rem;}
+  .page-header{flex-direction:column;}
+  .header-actions{width:100%;}
+  .btn-add-note,.btn-back{flex:1;justify-content:center;}
+}
+@media(max-width:380px){.notes-grid{grid-template-columns:1fr;}}
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <h2 class="fw-bold mb-4"><i class="fa-solid fa-book-open-reader text-success me-2"></i> Study Notes for {{ subject.name }}</h2>
+<main>
+<div class="pc">
 
-    {% if learning_items %}
-        <ul class="list-group shadow-sm rounded-3">
-            {% for item in learning_items %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong class="text-success">{{ item.title }}</strong>
-                        {% if item.description %}
-                            <br><small class="text-muted">{{ item.description }}</small>
-                        {% endif %}
-                    </div>
+  {# PAGE HEADER #}
+  <div class="page-header">
+    <div>
+      <div class="page-eyebrow">Study Notes</div>
+      <div class="page-title">{{ subject.name }}</div>
+      <div class="subj-pill">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        {% if subject.course_code %}{{ subject.course_code }} · {% endif %}{{ subject.name }}
+      </div>
+    </div>
+    <div class="header-actions">
+      <a href="{% url 'student_dashboard' %}" class="btn-back">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Dashboard
+      </a>
+      {% if user.is_authenticated %}
+      <a href="{% url 'add_learning' %}" class="btn-add-note">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Note
+      </a>
+      {% endif %}
+    </div>
+  </div>
 
-                    <!-- Optional: Action buttons for edit/delete if needed -->
-                    <div class="d-flex">
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'update_item' item.id %}" class="btn btn-sm btn-outline-primary me-2">
-                                ✏️ Edit
-                            </a>
-                            <form method="post" action="{% url 'delete_item' item.id %}" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                    🗑 Delete
-                                </button>
-                            </form>
-                        {% endif %}
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
+  {% if learning_items %}
+    <div class="count-pill">
+      <span class="count-dot"></span>
+      {{ learning_items|length }} note{{ learning_items|length|pluralize }} for this subject
+    </div>
 
-        {% comment %}
+    <div class="notes-grid">
+      {% for item in learning_items %}
+      <div class="note-card">
+        <div class="nc-top">
+          <div class="nc-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5b4cdb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+          <span class="nc-num">#{{ forloop.counter }}</span>
+        </div>
+
+        <div class="nc-title">{{ item.title }}</div>
+
+        {% if item.description %}
+          <div class="nc-desc">{{ item.description }}</div>
         {% else %}
-        <div class="text-center py-5">
-            <div style="font-size: 3rem;" class="mb-3 text-muted">📭</div>
-            <h5 class="text-muted">No Study Notes yet. Please add one!</h5>
+          <div class="nc-desc" style="color:var(--border);font-style:italic;">No description added.</div>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+        <div class="nc-footer">
+          <a href="{% url 'update_item' item.id %}" class="nc-btn edit">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit
+          </a>
+          <form method="post" action="{% url 'delete_item' item.id %}" class="nc-btn del" style="display:flex;align-items:center;justify-content:center;gap:5px;flex:1;padding:0;border:1.5px solid var(--border);" onsubmit="return confirm('Delete this note?')">
+            {% csrf_token %}
+            <button type="submit" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-size:.76rem;font-weight:600;color:inherit;padding:.45rem .6rem;width:100%;justify-content:center;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+              Delete
+            </button>
+          </form>
         </div>
         {% endif %}
-        
-        {% else %}
-            <div class="text-center py-5">
-                <div class="mb-3 text-muted fs-1 fs-md-2 fs-lg-1" style="font-size: 4rem;">📭</div>
-                <h2 class="text-muted fw-semibold d-none d-md-block">No Study Notes yet. Please add one!</h2>
-                <h5 class="text-muted fw-semibold d-block d-md-none">No Study Notes yet. Please add one!</h5>
-            </div>
-            {% endif %}
-            
-            
-            <!-- Back Button Centered -->
-            <div class="d-flex justify-content-center mt-4">
-                <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary btn-sm">
-                    ⬅ Back to Dashboard
-                </a>
-            </div>
-        {% endcomment %}
-
-        {% else %}
-    <div class="text-center py-5">
-        <!-- Icon: larger on desktop -->
-        <div class="mb-3 text-muted" style="font-size: 3rem;">📭</div>
-
-        <!-- Text: smaller than before -->
-        <p class="text-muted fw-medium" style="font-size: 1.05rem;">
-            No Study Notes yet. Please add one!
-        </p>
+      </div>
+      {% endfor %}
     </div>
-{% endif %}
 
-<div class="d-flex justify-content-center mt-4">
-    <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary custom-dashboard-btn">
-        ⬅ Back to Dashboard
-    </a>
-</div>
-
-<style>
-    /* Custom size for dashboard button */
-    .custom-dashboard-btn {
-        font-size: 1rem;
-        padding: 0.5rem 1.25rem;
-    }
-
-    /* Slightly larger on screens ≥ 768px (desktop/tablet) */
-    @media (min-width: 768px) {
-        .custom-dashboard-btn {
-            font-size: 1.1rem;
-            padding: 0.6rem 1.5rem;
-        }
-    }
-</style>
-
-</div>
-{% endblock %}
-
-
-
-
-{% comment %}
-
-{% extends "base.html" %}
-{% block title %}Study Notes - {{ subject.name }}{% endblock %}
-
-{% block content %}
-<div class="container py-4">
-    <h2 class="fw-bold mb-4"><i class="fa-solid fa-book-open-reader text-success me-2"></i> Study Notes for {{ subject.name }}</h2>
-
-    {% if learning_items %}
-        <ul class="list-group shadow-sm rounded-3">
-            {% for item in learning_items %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong class="text-success">{{ item.title }}</strong>
-                        {% if item.description %}
-                            <br><small class="text-muted">{{ item.description }}</small>
-                        {% endif %}
-                    </div>
-
-                    <!-- Optional: Action buttons for edit/delete if needed -->
-                    <div class="d-flex">
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'update_item' item.id %}" class="btn btn-sm btn-outline-primary me-2">
-                                ✏️ Edit
-                            </a>
-                            <form method="post" action="{% url 'delete_item' item.id %}" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                    🗑 Delete
-                                </button>
-                            </form>
-                        {% endif %}
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p class="text-muted">No Study Notes yet.</p>
-    {% endif %}
-
-    <!-- Back & Add Learning Item Buttons -->
-    <div class="d-flex justify-content-between mt-4">
-        <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary">
-            ⬅ Back to Dashboard
-        </a>
-        {% if user.is_authenticated %}
-            <a href="{% url 'add_learning' %}" class="btn btn-success">
-                 Add Study Notes
-            </a>
-        {% endif %}
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#5b4cdb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <div class="empty-title">No study notes yet</div>
+      <p class="empty-desc">Add your first note for {{ subject.name }} — exam tips, key formulas, topic summaries, anything useful.</p>
+      {% if user.is_authenticated %}
+      <a href="{% url 'add_learning' %}" class="btn-add-note" style="display:inline-flex;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add your first note
+      </a>
+      {% endif %}
     </div>
+  {% endif %}
+
 </div>
+</main>
 {% endblock %}
-
-{% endcomment %}
-
-<!-- Back & Add Task Buttons -->
-    <!-- <div class="d-flex justify-content-between mt-4">
-        <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary">
-            ⬅ Back to Dashboard
-        </a>
-        <a href="{% url 'add_task' %}" class="btn btn-success">
-             Add Task
-        </a>
-    </div> -->
