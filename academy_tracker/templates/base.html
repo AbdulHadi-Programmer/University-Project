@@ -203,10 +203,82 @@ main{flex:1;padding:2.5rem 1.5rem;}
 .fri .class-card:not(.is-today)::before{background:rgba(139,92,246,.4);}
 
 /* ── FOOTER ── */
-footer{background:var(--ink);color:rgba(255,255,255,.3);padding:1.1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;font-size:.8rem;}
-footer a{color:rgba(255,255,255,.45);text-decoration:none;}
-footer a:hover{color:#fff;}
-.footer-brand{font-family:'Syne',sans-serif;font-weight:700;color:rgba(255,255,255,.6);}
+footer{
+  background:var(--ink);
+  color:rgba(255,255,255,.35);
+  padding:2.5rem 2.5rem 1.5rem;
+  margin-top:auto;
+}
+.footer-inner{
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:1.4fr 1fr 1fr;
+  gap:2.5rem;padding-bottom:2rem;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.footer-brand-col{}
+.footer-logo{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;
+  color:#fff;display:flex;align-items:center;gap:8px;margin-bottom:.7rem;
+  text-decoration:none;
+}
+.footer-logo-icon{
+  width:26px;height:26px;border-radius:7px;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.footer-tagline{
+  font-size:.82rem;color:rgba(255,255,255,.38);line-height:1.6;
+  font-weight:300;max-width:220px;margin-bottom:1.2rem;
+}
+.footer-badges{display:flex;gap:.5rem;flex-wrap:wrap;}
+.fbadge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:.28rem .75rem;border-radius:50px;
+  font-size:.7rem;font-weight:600;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);
+  color:rgba(255,255,255,.5);
+}
+.fbadge.green{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.25);color:#6ee7b7;}
+.fbadge .fd{width:6px;height:6px;border-radius:50%;}
+
+.footer-col-title{
+  font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);margin-bottom:.9rem;
+}
+.footer-links{display:flex;flex-direction:column;gap:.45rem;}
+.footer-links a{
+  font-size:.85rem;color:rgba(255,255,255,.45);text-decoration:none;
+  font-weight:400;transition:color .18s;
+  display:flex;align-items:center;gap:6px;
+}
+.footer-links a:hover{color:#fff;}
+.footer-links a svg{flex-shrink:0;opacity:.5;}
+.footer-links a:hover svg{opacity:1;}
+
+.footer-bottom{
+  max-width:1100px;margin:0 auto;
+  padding-top:1.2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:.5rem;
+}
+.footer-copy{font-size:.78rem;color:rgba(255,255,255,.22);}
+.footer-copy span{color:rgba(255,255,255,.35);}
+.footer-heart{font-size:.78rem;color:rgba(255,255,255,.22);}
+.footer-heart span{color:#f43f5e;}
+
+@media(max-width:700px){
+  footer{padding:2rem 1.25rem 1.25rem;}
+  .footer-inner{grid-template-columns:1fr 1fr;gap:1.8rem;}
+  .footer-brand-col{grid-column:1/-1;}
+  .footer-tagline{max-width:100%;}
+}
+@media(max-width:420px){
+  footer{padding:1.75rem 1rem 1rem;}
+  .footer-inner{grid-template-columns:1fr;gap:1.4rem;}
+  .footer-brand-col{grid-column:unset;}
+  .footer-bottom{flex-direction:column;align-items:flex-start;gap:.3rem;}
+}
 
 /* ── ANIMATIONS ── */
 @keyframes pulse{0%,100%{opacity:.6;}50%{opacity:1;}}
@@ -215,14 +287,13 @@ footer a:hover{color:#fff;}
 @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
 
 @media(max-width:768px){
-  /* Nav */
-  nav{padding:.75rem 1rem;}
-  .nav-logo{font-size:.95rem;gap:7px;}
-  .logo-icon{width:24px;height:24px;border-radius:6px;}
-  .nav-logo svg{width:13px;height:13px;}
+  /* Nav — slightly bigger than before on mobile */
+  nav{padding:.8rem 1.2rem;}
+  .nav-logo{font-size:1.05rem;gap:8px;}
+  .logo-icon{width:26px;height:26px;border-radius:7px;}
   .nav-center{display:none;}
-  .nav-right{gap:6px;}
-  .nav-logout{display:none;} /* hide text sign-out on mobile — avatar still clickable */
+  .nav-right{gap:8px;}
+  .nav-logout{display:none;}
   .ham{display:flex;}
 
   /* Layout */
@@ -249,29 +320,26 @@ footer a:hover{color:#fff;}
   .cc-room{grid-column:2;grid-row:2;}
   .cc-actions{grid-column:unset;grid-row:unset;}
 
-  /* Auth forms — panel hidden, full-width form */
+  /* Auth forms */
   .auth-wrap{grid-template-columns:1fr !important;border-radius:var(--r) !important;}
   .panel{display:none !important;}
   .auth-form{padding:2rem 1.5rem !important;}
 
-  /* Tasks & Notes list */
+  /* Tasks & Notes */
   .page-header{flex-direction:column;gap:.75rem;}
   .header-actions{width:100%;display:flex;gap:.5rem;}
   .header-actions a{flex:1;justify-content:center;}
   .task-card{grid-template-columns:auto 1fr;grid-template-rows:auto auto;}
   .task-actions{grid-column:2;grid-row:2;justify-content:flex-end;}
-
-  /* Edit profile */
   .changed-badge{margin-bottom:.6rem;}
 }
 
 @media(max-width:480px){
-  /* Nav even smaller */
-  nav{padding:.65rem .9rem;}
-  .nav-logo{font-size:.85rem;gap:6px;}
-  .logo-icon{width:22px;height:22px;border-radius:5px;}
+  nav{padding:.75rem 1rem;}
+  .nav-logo{font-size:.95rem;gap:7px;}
+  .logo-icon{width:24px;height:24px;border-radius:6px;}
 
-  /* Dashboard */
+  /* Dashboard stats */
   .stats-grid{grid-template-columns:repeat(2,1fr);}
   .section-hd-actions{width:100%;display:grid;grid-template-columns:repeat(3,1fr);}
   .section-hd-actions .btn-sm{justify-content:center;font-size:.72rem;padding:.4rem .5rem;}
@@ -286,14 +354,13 @@ footer a:hover{color:#fff;}
   .form-h{font-size:1.25rem !important;}
   .form-sub{font-size:.8rem !important;}
 
-  /* Notes grid */
+  /* Notes */
   .notes-grid{grid-template-columns:1fr;}
   .count-pill{font-size:.72rem;}
 
   /* Tasks */
-  .task-card{grid-template-columns:auto 1fr;}
   .tc-meta{gap:.4rem;}
-  .tc-due{display:none;} /* hide date on tiny screens, status+type remain */
+  .tc-due{display:none;}
   .summary-row{gap:.4rem;}
   .sum-pill{font-size:.7rem;padding:.28rem .7rem;}
 
@@ -304,10 +371,13 @@ footer a:hover{color:#fff;}
 }
 
 @media(max-width:360px){
-  nav{padding:.6rem .75rem;}
-  .nav-logo{font-size:.78rem;}
-  .logo-icon{width:20px;height:20px;}
-  .nav-avatar{width:26px;height:26px;font-size:.65rem;}
+  nav{padding:.7rem .85rem;}
+  .nav-logo{font-size:.9rem;gap:6px;}
+  .logo-icon{width:22px;height:22px;border-radius:5px;}
+  .nav-avatar{width:28px;height:28px;font-size:.68rem;}
+  /* Crucially — keep avatar and ham close together */
+  .nav-right{gap:6px;}
+  .ham{padding:3px;}
   .task-check{width:22px;height:22px;}
   .nc-btn{font-size:.7rem;}
 }
@@ -318,7 +388,7 @@ footer a:hover{color:#fff;}
 
 <!-- ══ NAV ══ -->
 <nav>
-  <a href="{% url 'student_dashboard' %}" class="nav-logo">
+  <a href="{% url 'home' %}" class="nav-logo">
     <div class="logo-icon">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5.5" height="5.5" rx="1.5" fill="white"/><rect x="8.5" y="2" width="5.5" height="5.5" rx="1.5" fill="white" opacity=".6"/><rect x="2" y="8.5" width="5.5" height="5.5" rx="1.5" fill="white" opacity=".6"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5" fill="white"/></svg>
     </div>
@@ -401,11 +471,90 @@ footer a:hover{color:#fff;}
 
 <!-- ══ FOOTER ══ -->
 <footer>
-  <span class="footer-brand">StudyMate</span>
-  <span>© 2025 Academic Task Manager &nbsp;·&nbsp;
-    <a href="{% url 'student_dashboard' %}">Dashboard</a> &nbsp;·&nbsp;
-    <a href="{% url 'timetable_list' %}">Timetable</a>
-  </span>
+  <div class="footer-inner">
+
+    {# Brand column #}
+    <div class="footer-brand-col">
+      <a href="{% url 'student_dashboard' %}" class="footer-logo">
+        <div class="footer-logo-icon">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+            <rect x="2" y="2" width="5.5" height="5.5" rx="1.5" fill="white"/>
+            <rect x="8.5" y="2" width="5.5" height="5.5" rx="1.5" fill="white" opacity=".6"/>
+            <rect x="2" y="8.5" width="5.5" height="5.5" rx="1.5" fill="white" opacity=".6"/>
+            <rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5" fill="white"/>
+          </svg>
+        </div>
+        StudyMate
+      </a>
+      <p class="footer-tagline">Your personal academic OS — subjects, tasks, timetable, and reminders all in one place. Built for students who mean business.</p>
+      <div class="footer-badges">
+        <span class="fbadge green">
+          <span class="fd" style="background:#10b981;"></span>
+          Free forever
+        </span>
+        <span class="fbadge">
+          <span class="fd" style="background:#e8ff54;"></span>
+          No ads ever
+        </span>
+        <span class="fbadge">
+          <span class="fd" style="background:#5b4cdb;"></span>
+          Built for students
+        </span>
+      </div>
+    </div>
+
+    {# App links #}
+    <div>
+      <div class="footer-col-title">Navigate</div>
+      <div class="footer-links">
+        <a href="{% url 'student_dashboard' %}">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a href="{% url 'timetable_list' %}">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Timetable
+        </a>
+        <a href="{% url 'profile' %}">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Profile
+        </a>
+        <a href="{% url 'add_subject' %}">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Add Subject
+        </a>
+      </div>
+    </div>
+
+    {# Quick actions #}
+    <div>
+      <div class="footer-col-title">Quick Actions</div>
+      <div class="footer-links">
+        <a href="{% url 'add_task' %}">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12l2 2 4-4"/></svg>
+          Add Task
+        </a>
+        <a href="{% url 'add_learning' %}">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Add Study Note
+        </a>
+        <a href="{% url 'timetable_create' %}">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Class Slot
+        </a>
+        <a href="{% url 'logout' %}" style="color:rgba(239,68,68,.5);">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign out
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 <span>StudyMate</span> — Academic Task Manager</span>
+    <span class="footer-heart">Made with <span>♥</span> for students in Karachi &amp; beyond</span>
+  </div>
 </footer>
 
 <script>
@@ -416,3 +565,4 @@ function cm(){ham.classList.remove('open');mob.classList.remove('open');}
 {% block extra_js %}{% endblock %}
 </body>
 </html>
+

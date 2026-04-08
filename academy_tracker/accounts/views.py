@@ -8,14 +8,15 @@ from .forms import SignupForm, LoginForm, ProfileEditForm
 
 # 🔥 SIGNUP (Direct — no email nonsense)
 def register_user(request):
+    # If user is already logged in, send them to the dashboard immediately
+    if request.user.is_authenticated:
+        return redirect("student_dashboard")
+
     if request.method == "POST":
         form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
-
-            # auto login after signup
             login(request, user)
-
             return redirect("student_dashboard")
     else:
         form = SignupForm()

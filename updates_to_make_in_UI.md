@@ -7,3 +7,6 @@
 7. Make the footer correct and same for each page 
 8. Make the Dashboard Page responsive 
 9. Make the Add task, Add note back to its list page instead of dashboard page. 
+10. Make the logic correct while adding any task or notes from specific subject notes it should not ask the subject as this make it worse in term of logic and also show subject selection field if it is showed without the subject page 
+11. Complete all the logics features functionality code as soon as possible
+
