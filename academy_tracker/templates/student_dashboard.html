@@ -228,12 +228,34 @@ main{flex:1;padding:2.5rem 1.5rem;}
 }
 
 /* Very small — 2x2 still but ultra compact */
-@media(max-width: 380px) {
-  .stats-grid { gap: .5rem; }
-  .stat-card { padding: .85rem .75rem; gap: .5rem; flex-direction: column; align-items: flex-start; }
-  .stat-value { font-size: 1.5rem; }
-  .stat-icon-wrap { width: 32px; height: 32px; border-radius: 8px; }
-}   
+@media(max-width:380px){
+  .stats-grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:.5rem;
+  }
+  .stat-card{
+    padding:.9rem 1rem;        /* equal horizontal padding restored */
+    gap:.55rem;
+    flex-direction:row;        /* keep row layout — don't column */
+    align-items:center;        /* vertically centered */
+    min-width:0;               /* prevent overflow in grid cell */
+    overflow:hidden;
+  }
+  .stat-icon-wrap{
+    width:30px;height:30px;
+    border-radius:8px;
+    flex-shrink:0;             /* icon never squishes */
+  }
+  .stat-icon-wrap svg{width:15px;height:15px;}
+  .stat-label{
+    font-size:.62rem;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;    /* "Total Subjects" → "Total Sub…" if too long */
+  }
+  .stat-value{font-size:1.2rem;}
+  .stat-trend{display:none;}  /* hide trend text — no room */
+}
 </style>
 {% endblock %}
 

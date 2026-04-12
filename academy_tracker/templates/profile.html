@@ -3,84 +3,402 @@
 
 {% block extra_css %}
 <style>
-main{flex:1;padding:2.5rem 1.5rem;}
-.pc{max-width:760px;margin:0 auto;}
+/* ══════════════════════════════════
+   PROFILE PAGE — FULL REWRITE
+══════════════════════════════════ */
+main{flex:1;padding:0;min-height:calc(100vh - 62px);}
+.pc{max-width:900px;margin:0 auto;}
 
-/* PAGE HEADER */
-.page-eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem;display:flex;align-items:center;gap:7px;}
-.page-eyebrow::before{content:'';width:14px;height:2px;background:var(--accent);border-radius:2px;display:block;}
-.page-title{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;letter-spacing:-.025em;margin-bottom:2rem;}
+/* ── HERO ── */
+.profile-hero{
+  background:var(--ink);
+  padding:2.5rem 2.5rem 0;
+  position:relative;overflow:hidden;
+}
 
-/* PROFILE LAYOUT */
-.profile-layout{display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;}
+/* Decorative blobs */
+.ph-blob{position:absolute;border-radius:50%;pointer-events:none;}
+.ph-b1{width:340px;height:340px;top:-120px;right:-80px;background:var(--accent);opacity:.16;}
+.ph-b2{width:200px;height:200px;bottom:-70px;left:5%;background:var(--a2);opacity:.06;}
+.ph-b3{width:130px;height:130px;top:20%;left:-50px;background:var(--a3);opacity:.08;}
+
+/* Animated grid pattern overlay */
+.ph-grid{
+  position:absolute;inset:0;pointer-events:none;z-index:1;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:32px 32px;
+  mask-image:radial-gradient(ellipse 80% 100% at 50% 0%,black 40%,transparent 100%);
+}
+
+.ph-eyebrow{
+  font-size:.65rem;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--a2);
+  display:inline-flex;align-items:center;gap:7px;
+  margin-bottom:1.4rem;position:relative;z-index:2;
+}
+.ph-eyebrow::before{
+  content:'';width:16px;height:2px;
+  background:var(--a2);border-radius:2px;display:block;
+}
+
+/* ── Hero body: avatar left, info right ── */
+.ph-body{
+  display:grid;grid-template-columns:auto 1fr;
+  gap:2rem;align-items:flex-end;
+  position:relative;z-index:2;
+}
 
 /* Avatar */
-.avatar-col{display:flex;flex-direction:column;align-items:center;gap:.8rem;}
-.big-avatar{
-  width:96px;height:96px;border-radius:24px;background:var(--ink);
+.ph-avatar-wrap{
+  display:flex;flex-direction:column;
+  align-items:center;gap:.6rem;
+  padding-bottom:2rem;
+}
+.ph-avatar{
+  width:100px;height:100px;border-radius:28px;
+  background:linear-gradient(135deg,var(--accent) 0%,#9b8cff 100%);
   display:flex;align-items:center;justify-content:center;
-  font-family:'Syne',sans-serif;font-weight:800;font-size:2rem;color:#fff;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;color:#fff;
   position:relative;overflow:hidden;
+  box-shadow:0 16px 40px rgba(91,76,219,.4);
+  flex-shrink:0;
 }
-.big-avatar::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:var(--accent);opacity:.25;}
-.av-text{position:relative;z-index:1;}
-.avatar-sem{background:var(--al);color:var(--accent);font-size:.72rem;font-weight:700;padding:3px 12px;border-radius:50px;border:1px solid rgba(91,76,219,.2);text-align:center;white-space:nowrap;}
+.ph-avatar::before{
+  content:'';position:absolute;
+  width:70px;height:70px;border-radius:50%;
+  top:-20px;right:-20px;
+  background:rgba(255,255,255,.12);
+}
+.ph-avatar::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.2) 0%,transparent 60%);
+}
+.ph-av-text{position:relative;z-index:1;}
 
-/* Info card */
-.info-card{background:var(--card);border-radius:var(--rl);border:1px solid var(--border);overflow:hidden;}
-.info-card-header{
-  background:var(--ink);padding:1.5rem 2rem;
+/* Online indicator ring */
+.ph-avatar-online{position:relative;}
+.ph-avatar-online::after{
+  content:'';position:absolute;
+  bottom:-3px;right:-3px;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--ok);
+  border:2.5px solid var(--ink);
+  z-index:2;
+}
+
+.ph-sem-badge{
+  background:rgba(232,255,84,.1);color:var(--a2);
+  font-size:.66rem;font-weight:700;
+  padding:.25rem .8rem;border-radius:50px;
+  border:1px solid rgba(232,255,84,.2);
+  white-space:nowrap;letter-spacing:.04em;
+}
+
+/* Name + email + tags */
+.ph-info{padding-bottom:2rem;min-width:0;}
+.ph-name{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1.5rem,4vw,2.2rem);
+  font-weight:800;color:#fff;
+  line-height:1.05;letter-spacing:-.03em;
+  margin-bottom:.3rem;
+  word-break:break-word;
+}
+.ph-email{
+  font-size:.86rem;color:rgba(255,255,255,.38);
+  font-weight:300;margin-bottom:.85rem;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.ph-tags{display:flex;flex-wrap:wrap;gap:.4rem;}
+.ph-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:.26rem .78rem;border-radius:50px;
+  font-size:.68rem;font-weight:600;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.5);
+}
+.ph-tag .td{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+
+/* ── STAT STRIP ── */
+.ph-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  margin:0 -2.5rem;
+  border-top:1px solid rgba(255,255,255,.07);
+  position:relative;z-index:3;
+}
+.ph-stat{
+  padding:1.2rem 1.8rem;
+  border-right:1px solid rgba(255,255,255,.07);
+  position:relative;cursor:default;
+  transition:background .2s;overflow:hidden;
+}
+.ph-stat:last-child{border-right:none;}
+.ph-stat:hover{background:rgba(255,255,255,.04);}
+.ph-stat::before{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:2px;
+  background:var(--accent);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .3s ease;
+}
+.ph-stat:hover::before{transform:scaleX(1);}
+.ph-stat-val{
+  font-family:'Syne',sans-serif;
+  font-size:1.85rem;font-weight:800;
+  color:#fff;line-height:1;margin-bottom:.18rem;
+}
+.ph-stat-label{font-size:.68rem;color:rgba(255,255,255,.32);font-weight:400;letter-spacing:.02em;}
+.ph-stat-icon{
+  position:absolute;top:50%;right:1.4rem;
+  transform:translateY(-50%);opacity:.12;
+}
+
+/* ── BODY GRID ── */
+.profile-body{
+  background:var(--surface);
+  padding:1.8rem 2.5rem;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1rem;
+}
+
+/* ── SHARED CARD ── */
+.pcard{
+  background:var(--card);
+  border-radius:var(--rl);
+  border:1px solid var(--border);
+  overflow:hidden;
+}
+.pcard-header{
+  padding:.8rem 1.2rem;
+  border-bottom:1px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;
-  position:relative;overflow:hidden;
+  background:var(--card);
 }
-.info-card-header::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:var(--accent);opacity:.15;}
-.ich-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;position:relative;z-index:1;}
-.ich-joined{font-size:.75rem;color:rgba(255,255,255,.4);font-weight:300;position:relative;z-index:1;}
-.active-badge{display:flex;align-items:center;gap:6px;position:relative;z-index:1;}
-.active-dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 2px rgba(16,185,129,.25);}
-.active-label{font-size:.72rem;color:rgba(255,255,255,.5);}
-
-.info-card-body{padding:1.8rem 2rem;}
-.info-row{display:flex;align-items:center;gap:1rem;padding:.85rem 0;border-bottom:1px solid var(--border);}
-.info-row:last-child{border-bottom:none;}
-.ir-icon{width:36px;height:36px;border-radius:10px;background:var(--al);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.ir-label{font-size:.72rem;font-weight:600;color:var(--ink-muted);letter-spacing:.03em;margin-bottom:.15rem;}
-.ir-value{font-size:.95rem;font-weight:500;color:var(--ink);}
-
-.info-card-footer{
-  padding:1.2rem 2rem;background:var(--surface);
-  border-top:1px solid var(--border);
-  display:flex;gap:.75rem;flex-wrap:wrap;
+.pcard-title{
+  font-family:'Syne',sans-serif;font-size:.7rem;font-weight:800;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);
+}
+.pcard-badge{
+  font-size:.63rem;font-weight:700;padding:2px 8px;border-radius:50px;
+  background:var(--al);color:var(--accent);
+  border:1px solid rgba(91,76,219,.15);
+}
+.active-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:.2rem .7rem;border-radius:50px;
+  background:rgba(16,185,129,.1);
+  border:1px solid rgba(16,185,129,.2);
+  font-size:.66rem;font-weight:600;color:var(--ok);
+}
+.active-dot-sm{
+  width:6px;height:6px;border-radius:50%;background:var(--ok);
+  animation:adpulse 2s ease-in-out infinite;flex-shrink:0;
 }
 
-/* Buttons */
-.btn{display:inline-flex;align-items:center;gap:7px;padding:.65rem 1.4rem;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;text-decoration:none;cursor:pointer;border:2px solid transparent;transition:all .22s;}
-.btn-dark{background:var(--ink);color:#fff;border-color:var(--ink);}
-.btn-dark:hover{background:var(--accent);border-color:var(--accent);transform:translateY(-1px);}
-.btn-ghost{background:transparent;color:var(--ink);border-color:var(--borderS);}
-.btn-ghost:hover{border-color:var(--ink);transform:translateY(-1px);}
-.btn-danger{background:transparent;color:var(--err);border-color:rgba(239,68,68,.3);}
-.btn-danger:hover{background:var(--err);color:#fff;border-color:var(--err);transform:translateY(-1px);}
-
-/* Mini stats */
-.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:1.5rem;}
-.mini-stat{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:1rem;text-align:center;}
-.ms-val{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--accent);}
-.ms-label{font-size:.72rem;color:var(--ink-muted);margin-top:.2rem;font-weight:300;}
-
-/* RESPONSIVE */
-@media(max-width:640px){
-  main{padding:1.5rem 1rem;}
-  .profile-layout{grid-template-columns:1fr;}
-  .avatar-col{flex-direction:row;justify-content:flex-start;}
-  .info-card-header{flex-direction:column;align-items:flex-start;gap:.5rem;}
-  .info-card-footer{flex-direction:column;}
-  .btn{justify-content:center;}
-  .mini-stats{grid-template-columns:1fr 1fr;}
+/* ── DETAIL ROWS ── */
+.detail-row{
+  display:flex;align-items:center;gap:.8rem;
+  padding:.78rem 1.2rem;
+  border-bottom:1px solid var(--border);
+  transition:background .18s;
 }
+.detail-row:last-child{border-bottom:none;}
+.detail-row:hover{background:var(--surface);}
+.dr-icon{
+  width:30px;height:30px;border-radius:8px;
+  background:var(--al);display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.dr-label{
+  font-size:.65rem;font-weight:600;color:var(--ink-muted);
+  letter-spacing:.03em;margin-bottom:.08rem;
+}
+.dr-val{
+  font-size:.84rem;font-weight:500;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  max-width:200px;
+}
+
+/* ── ACTION ROWS ── */
+.action-row{
+  display:flex;align-items:center;gap:.8rem;
+  padding:.82rem 1.2rem;
+  border-bottom:1px solid var(--border);
+  text-decoration:none;transition:background .18s;position:relative;
+}
+.action-row:last-child{border-bottom:none;}
+.action-row::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:2px;transform:scaleY(0);
+  transition:transform .2s;
+}
+.action-row.edit-row::before{background:var(--accent);}
+.action-row.dash-row::before{background:var(--ok);}
+.action-row.time-row::before{background:#6366f1;}
+.action-row.danger::before{background:var(--err);}
+.action-row:hover{background:var(--surface);}
+.action-row:hover::before{transform:scaleY(1);}
+.ar-icon{
+  width:32px;height:32px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:transform .2s;
+}
+.action-row:hover .ar-icon{transform:scale(1.08);}
+.ar-icon.edit{background:rgba(91,76,219,.1);}
+.ar-icon.dash{background:rgba(16,185,129,.1);}
+.ar-icon.time{background:rgba(99,102,241,.1);}
+.ar-icon.out{background:rgba(239,68,68,.07);}
+.ar-body{flex:1;min-width:0;}
+.ar-title{font-size:.84rem;font-weight:600;color:var(--ink);line-height:1.2;}
+.ar-sub{font-size:.68rem;color:var(--ink-muted);font-weight:300;}
+.action-row.danger .ar-title{color:var(--err);}
+.ar-chev{
+  color:var(--ink-muted);flex-shrink:0;
+  opacity:.35;transition:opacity .18s,transform .18s;
+}
+.action-row:hover .ar-chev{opacity:1;transform:translateX(2px);}
+
+/* ── FUN: Semester progress card ── */
+.pcard.semester-card{grid-column:1/-1;}
+.sem-progress-wrap{padding:1.2rem;}
+.sem-info-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:.9rem;flex-wrap:wrap;gap:.5rem;
+}
+.sem-info-label{
+  font-size:.8rem;font-weight:600;color:var(--ink-soft);
+  display:flex;align-items:center;gap:6px;
+}
+.sem-info-label svg{color:var(--accent);}
+.sem-info-val{
+  font-family:'Syne',sans-serif;font-size:.88rem;font-weight:800;
+  color:var(--accent);
+}
+/* 8 semester dots */
+.sem-dots{display:flex;gap:.35rem;flex-wrap:wrap;}
+.sem-dot{
+  width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:.72rem;font-weight:800;
+  border:1.5px solid var(--border);
+  background:var(--surface);color:var(--ink-muted);
+  position:relative;transition:all .2s;
+}
+.sem-dot.completed{
+  background:rgba(91,76,219,.12);
+  border-color:rgba(91,76,219,.3);
+  color:var(--accent);
+}
+.sem-dot.current{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#fff;
+  box-shadow:0 0 0 3px rgba(91,76,219,.2);
+  transform:scale(1.1);
+}
+.sem-dot.upcoming{
+  background:var(--surface);
+  border-color:var(--border);
+  color:var(--ink-muted);
+  opacity:.45;
+}
+.sem-dot.current::after{
+  content:'';position:absolute;
+  bottom:-6px;left:50%;transform:translateX(-50%);
+  width:4px;height:4px;border-radius:50%;
+  background:var(--accent);
+}
+
+@keyframes adpulse{0%,100%{opacity:.5;}50%{opacity:1;}}
+
+/* ══ RESPONSIVE ══ */
+
+/* 768px */
+@media(max-width:768px){
+  .profile-hero{padding:2rem 1.75rem 0;}
+  .ph-stats{margin:0 -1.75rem;}
+  .ph-stat{padding:1rem 1.5rem;}
+  .ph-stat-icon{display:none;}
+  .ph-stat-val{font-size:1.6rem;}
+  .profile-body{padding:1.4rem 1.5rem;grid-template-columns:1fr;}
+  .pcard.semester-card{grid-column:1;}
+  .dr-val{max-width:100%;}
+}
+
+/* 600px */
+@media(max-width:600px){
+  .profile-hero{padding:1.6rem 1.25rem 0;}
+  .ph-body{gap:1.2rem;}
+  .ph-avatar{width:82px;height:82px;font-size:1.8rem;border-radius:22px;}
+  .ph-name{font-size:1.7rem;}
+  .ph-email{font-size:.8rem;margin-bottom:.7rem;}
+  .ph-stats{
+    margin:0 -1.25rem;
+    grid-template-columns:repeat(3,1fr);
+  }
+  .ph-stat{padding:.9rem 1rem;}
+  .ph-stat-val{font-size:1.4rem;}
+  .ph-stat-label{font-size:.62rem;}
+  .profile-body{padding:1.1rem 1rem;gap:.85rem;}
+  .sem-dots{gap:.28rem;}
+  .sem-dot{width:28px;height:28px;font-size:.66rem;border-radius:7px;}
+}
+
+/* 480px */
+@media(max-width:480px){
+  .profile-hero{padding:1.3rem 1rem 0;}
+  /* Stack avatar + info vertically on narrow screens */
+  .ph-body{grid-template-columns:1fr;gap:.8rem;}
+  .ph-avatar-wrap{
+    flex-direction:row;align-items:center;
+    padding-bottom:0;gap:.85rem;
+  }
+  .ph-avatar{width:68px;height:68px;font-size:1.5rem;border-radius:18px;}
+  .ph-info{padding-bottom:1.1rem;}
+  .ph-name{font-size:1.4rem;}
+  .ph-tags{gap:.35rem;}
+  .ph-tag{font-size:.64rem;padding:.22rem .65rem;}
+  .ph-stats{
+    margin:0 -1rem;
+    grid-template-columns:repeat(3,1fr);
+    border-top:1px solid rgba(255,255,255,.06);
+  }
+  .ph-stat{padding:.8rem .85rem;}
+  .ph-stat-val{font-size:1.3rem;}
+  .ph-stat-label{font-size:.6rem;}
+  .profile-body{padding:1rem .85rem;gap:.75rem;}
+  .pcard-header{padding:.72rem 1rem;}
+  .detail-row{padding:.7rem 1rem;gap:.65rem;}
+  .action-row{padding:.72rem 1rem;gap:.65rem;}
+  .dr-icon{width:28px;height:28px;border-radius:7px;}
+  .ar-icon{width:28px;height:28px;border-radius:8px;}
+  .ar-title{font-size:.8rem;}
+  .ar-sub{font-size:.65rem;}
+  .dr-val{font-size:.8rem;}
+  .sem-progress-wrap{padding:.9rem;}
+  .sem-dots{gap:.22rem;}
+  .sem-dot{width:26px;height:26px;font-size:.62rem;border-radius:6px;}
+}
+
+/* 380px */
 @media(max-width:380px){
-  .page-title{font-size:1.5rem;}
-  .big-avatar{width:80px;height:80px;font-size:1.6rem;border-radius:18px;}
+  .profile-hero{padding:1.1rem .85rem 0;}
+  .ph-avatar{width:58px;height:58px;font-size:1.25rem;border-radius:14px;}
+  .ph-name{font-size:1.2rem;}
+  .ph-email{font-size:.74rem;}
+  .ph-tags{display:none;}
+  .ph-stats{margin:0 -.85rem;}
+  .ph-stat{padding:.7rem .7rem;}
+  .ph-stat-val{font-size:1.15rem;}
+  .ph-stat-label{font-size:.58rem;}
+  .profile-body{padding:.85rem .7rem;gap:.65rem;}
+  .pcard-title{font-size:.62rem;}
+  .detail-row,.action-row{padding:.65rem .85rem;gap:.55rem;}
+  .dr-icon,.ar-icon{width:26px;height:26px;}
+  .sem-dot{width:24px;height:24px;font-size:.6rem;}
 }
 </style>
 {% endblock %}
@@ -89,107 +407,192 @@ main{flex:1;padding:2.5rem 1.5rem;}
 <main>
 <div class="pc">
 
-  <div class="page-eyebrow">Account</div>
-  <div class="page-title">My Profile</div>
+  {# ══ HERO ══ #}
+  <div class="profile-hero">
+    <div class="ph-blob ph-b1"></div>
+    <div class="ph-blob ph-b2"></div>
+    <div class="ph-blob ph-b3"></div>
+    <div class="ph-grid"></div>
 
-  <div class="profile-layout">
+    <div class="ph-eyebrow">My Account</div>
 
-    {# ── AVATAR COLUMN ── #}
-    <div class="avatar-col">
-      <div class="big-avatar">
-        {# First letters of first + last name #}
-        <span class="av-text">
-          {{ user.name|slice:":1"|upper }}{% with words=user.name.split %}{% if words|length > 1 %}{{ words.1|slice:":1"|upper }}{% endif %}{% endwith %}
-        </span>
+    <div class="ph-body">
+
+      {# Avatar with online indicator #}
+      <div class="ph-avatar-wrap">
+        <div class="ph-avatar ph-avatar-online">
+          <span class="ph-av-text">
+            {{ user.name|slice:":1"|upper }}{% with words=user.name.split %}{% if words|length > 1 %}{{ words.1|slice:":1"|upper }}{% endif %}{% endwith %}
+          </span>
+        </div>
+        <div class="ph-sem-badge">{{ user.get_semester_display }}</div>
       </div>
-      <div class="avatar-sem">{{ user.get_semester_display }}</div>
+
+      {# Name / email / tags #}
+      <div class="ph-info">
+        <div class="ph-name">{{ user.name }}</div>
+        <div class="ph-email">{{ user.email }}</div>
+        <div class="ph-tags">
+          <span class="ph-tag">
+            <span class="td" style="background:var(--ok);"></span>Active
+          </span>
+          <span class="ph-tag">
+            <span class="td" style="background:var(--a2);"></span>{{ user.get_semester_display }}
+          </span>
+          <span class="ph-tag">
+            <span class="td" style="background:var(--accent);"></span>Since {{ user.created_at|date:"Y" }}
+          </span>
+        </div>
+      </div>
+
     </div>
 
-    {# ── INFO CARD ── #}
-    <div class="info-card">
-      <div class="info-card-header">
-        <div>
-          <div class="ich-title">{{ user.name }}</div>
-          <div class="ich-joined">Member since {{ user.created_at|date:"F Y" }}</div>
-        </div>
-        <div class="active-badge">
-          <span class="active-dot"></span>
-          <span class="active-label">Active</span>
+    {# Stats strip #}
+    <div class="ph-stats">
+      <div class="ph-stat">
+        <div class="ph-stat-val">{{ subjects_count|default:0 }}</div>
+        <div class="ph-stat-label">Subjects</div>
+        <div class="ph-stat-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         </div>
       </div>
-
-      <div class="info-card-body">
-        <div class="info-row">
-          <div class="ir-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5b4cdb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </div>
-          <div>
-            <div class="ir-label">Full Name</div>
-            <div class="ir-value">{{ user.name }}</div>
-          </div>
-        </div>
-        <div class="info-row">
-          <div class="ir-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5b4cdb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          </div>
-          <div>
-            <div class="ir-label">Email Address</div>
-            <div class="ir-value">{{ user.email }}</div>
-          </div>
-        </div>
-        <div class="info-row">
-          <div class="ir-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5b4cdb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-          </div>
-          <div>
-            <div class="ir-label">Current Semester</div>
-            <div class="ir-value">{{ user.get_semester_display }}</div>
-          </div>
-        </div>
-        <div class="info-row">
-          <div class="ir-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5b4cdb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          </div>
-          <div>
-            <div class="ir-label">Joined</div>
-            <div class="ir-value">{{ user.created_at|date:"F j, Y" }}</div>
-          </div>
+      <div class="ph-stat">
+        <div class="ph-stat-val">{{ total_tasks|default:0 }}</div>
+        <div class="ph-stat-label">Total Tasks</div>
+        <div class="ph-stat-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12l2 2 4-4"/></svg>
         </div>
       </div>
-
-      <div class="info-card-footer">
-        <a href="{% url 'edit_profile' %}" class="btn btn-dark">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          Edit Profile
-        </a>
-        <a href="{% url 'student_dashboard' %}" class="btn btn-ghost">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          Dashboard
-        </a>
-        <a href="{% url 'logout' %}" class="btn btn-danger" style="margin-left:auto;">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          Sign out
-        </a>
+      <div class="ph-stat">
+        <div class="ph-stat-val">{{ learning_items_count|default:0 }}</div>
+        <div class="ph-stat-label">Study Notes</div>
+        <div class="ph-stat-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
       </div>
     </div>
   </div>
 
-  {# MINI STATS — pass these from your view context #}
-  <div class="mini-stats">
-    <div class="mini-stat">
-      <div class="ms-val">{{ subjects_count|default:0 }}</div>
-      <div class="ms-label">Subjects</div>
-    </div>
-    <div class="mini-stat">
-      <div class="ms-val">{{ total_tasks|default:0 }}</div>
-      <div class="ms-label">Total Tasks</div>
-    </div>
-    <div class="mini-stat">
-      <div class="ms-val">{{ learning_items_count|default:0 }}</div>
-      <div class="ms-label">Study Notes</div>
-    </div>
-  </div>
+  {# ══ BODY ══ #}
+  <div class="profile-body">
 
+    {# Account details #}
+    <div class="pcard">
+      <div class="pcard-header">
+        <span class="pcard-title">Account Details</span>
+        <span class="pcard-badge">Verified</span>
+      </div>
+      <div class="detail-row">
+        <div class="dr-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5b4cdb" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div><div class="dr-label">Full Name</div><div class="dr-val">{{ user.name }}</div></div>
+      </div>
+      <div class="detail-row">
+        <div class="dr-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5b4cdb" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div><div class="dr-label">Email Address</div><div class="dr-val">{{ user.email }}</div></div>
+      </div>
+      <div class="detail-row">
+        <div class="dr-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5b4cdb" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        </div>
+        <div><div class="dr-label">Current Semester</div><div class="dr-val">{{ user.get_semester_display }}</div></div>
+      </div>
+      <div class="detail-row">
+        <div class="dr-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5b4cdb" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div><div class="dr-label">Member Since</div><div class="dr-val">{{ user.created_at|date:"F j, Y" }}</div></div>
+      </div>
+    </div>
+
+    {# Actions #}
+    <div class="pcard">
+      <div class="pcard-header">
+        <span class="pcard-title">Quick Actions</span>
+        <div class="active-chip">
+          <span class="active-dot-sm"></span>Online
+        </div>
+      </div>
+      <a href="{% url 'edit_profile' %}" class="action-row edit-row">
+        <div class="ar-icon edit">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5b4cdb" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <div class="ar-body">
+          <div class="ar-title">Edit Profile</div>
+          <div class="ar-sub">Update name, email or semester</div>
+        </div>
+        <svg class="ar-chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a href="{% url 'student_dashboard' %}" class="action-row dash-row">
+        <div class="ar-icon dash">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <div class="ar-body">
+          <div class="ar-title">Go to Dashboard</div>
+          <div class="ar-sub">View subjects and tasks</div>
+        </div>
+        <svg class="ar-chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a href="{% url 'timetable_list' %}" class="action-row time-row">
+        <div class="ar-icon time">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div class="ar-body">
+          <div class="ar-title">View Timetable</div>
+          <div class="ar-sub">Check today's class schedule</div>
+        </div>
+        <svg class="ar-chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a href="{% url 'logout' %}" class="action-row danger">
+        <div class="ar-icon out">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </div>
+        <div class="ar-body">
+          <div class="ar-title">Sign Out</div>
+          <div class="ar-sub">End your current session</div>
+        </div>
+        <svg class="ar-chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+
+    {# Semester journey card — full width, interesting! #}
+    <div class="pcard semester-card">
+      <div class="pcard-header">
+        <span class="pcard-title">Semester Journey</span>
+        <span class="pcard-badge">{{ user.get_semester_display }}</span>
+      </div>
+      <div class="sem-progress-wrap">
+        <div class="sem-info-row">
+          <span class="sem-info-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/></svg>
+            Your progress through the program
+          </span>
+          <span class="sem-info-val">
+            {{ user.semester }} of 8 semesters
+          </span>
+        </div>
+        <div class="sem-dots">
+          {% for i in "12345678" %}
+            {% with sem_num=forloop.counter %}
+              {% if sem_num < user.semester %}
+                <div class="sem-dot completed" title="Semester {{ sem_num }} — Completed">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+              {% elif sem_num == user.semester %}
+                <div class="sem-dot current" title="Semester {{ sem_num }} — Current">{{ sem_num }}</div>
+              {% else %}
+                <div class="sem-dot upcoming" title="Semester {{ sem_num }} — Upcoming">{{ sem_num }}</div>
+              {% endif %}
+            {% endwith %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 </main>
 {% endblock %}
