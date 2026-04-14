@@ -37,7 +37,8 @@ hostname = socket.gethostname()
 
 # DEBUG automatically set
 if "liveconsole" in hostname or "euconsole" in hostname:
-    DEBUG = False
+    # DEBUG = False
+    DEBUG = True  # because deployment causing issue 
 else:
     DEBUG = True
 
