@@ -40,17 +40,17 @@ class TaskForm(forms.ModelForm):
 class SubjectForm(forms.ModelForm):
     class Meta:
         model = Subject
-        # fields = ['name', "course_code"]
-        fields = ["name",  "course_code",  "semester"]
-    
+        fields = ["name", "course_code"]   # Semester field remove kar diya
+
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)  # Get the user from kwargs
+        self.user = kwargs.pop('user', None)   # User ko capture kar rahe hain
         super().__init__(*args, **kwargs)
-        
-        if user and not self.instance.pk:  # Ensure the user is only set when creating a new subject
-            self.instance.user = user    
 
+        # Naya subject banate waqt automatically semester set ho jayega
+        if self.user and not self.instance.pk:
+            self.instance.semester = self.user.semester
 
+            
 from django import forms
 from .models import LearningItem, Subject
 

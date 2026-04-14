@@ -80,7 +80,7 @@ def student_dashboard(request):
             completed_tasks=Count("task", filter=Q(task__status="Completed")),
             learning_items_count=Count("learning_items", distinct=True),  # uses related_name on LearningItem
         )
-        .order_by("name")
+        .order_by("name", 'id')
     )
 
     # Global counts for badges / dashboard summary
@@ -138,22 +138,46 @@ def add_or_update_learningItem(request, pk=None):
 
 ## Subject CRUD : 
 # Create New Subject :
+# =====================================================================================================================================================
+# =====================================================================================================================================================
+# =====================================================================================================================================================
+# @login_required
+# def add_or_update__subject(request, pk=None):
+#     subject = Subject.objects.filter(pk=pk, user= request.user) if pk else None 
+#     if request.method == "POST":
+#         form = SubjectForm(request.POST, instance=subject, user=request.user)
+#         if form.is_valid():
+#             subject = form.save(commit=False)
+#             subject.user = request.user
+#             subject.save()
+#             return redirect("student_dashboard")
+#     else :
+#         form = SubjectForm(instance=subject, user=request.user)
+    
+#     return render(request, "subject_form.html", {"form": form})
+from django.contrib import messages
+
 @login_required
 def add_or_update__subject(request, pk=None):
-    subject = Subject.objects.filter(pk=pk, user= request.user) if pk else None 
+    # Existing subject ko fetch karo (sirf current user ka)
+    subject = Subject.objects.filter(pk=pk, user=request.user).first() if pk else None
+
     if request.method == "POST":
         form = SubjectForm(request.POST, instance=subject, user=request.user)
+        
         if form.is_valid():
             subject = form.save(commit=False)
             subject.user = request.user
+            subject.semester = request.user.semester   # Safety ke liye again set kar rahe hain
             subject.save()
+            
+            messages.success(request, "Subject saved successfully!")
             return redirect("student_dashboard")
-    else :
+    
+    else:
         form = SubjectForm(instance=subject, user=request.user)
     
     return render(request, "subject_form.html", {"form": form})
-
-
 
 
 @login_required

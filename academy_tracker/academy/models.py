@@ -11,7 +11,7 @@ class Subject(models.Model):
         blank=True, 
         help_text="Assign to a specific user (optional)"
     )
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     course_code = models.CharField(max_length=20, null=True, blank=True)
     std_id = models.CharField(max_length=15, default="BSE-25S-006")
     semester = models.IntegerField(choices=SEMESTER_CHOICES, null=True, blank=True)
