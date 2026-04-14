@@ -177,7 +177,7 @@ def add_or_update__subject(request, pk=None):
     else:
         form = SubjectForm(instance=subject, user=request.user)
     
-    return render(request, "subject_form.html", {"form": form})
+    return render(request, "subject_form.html", {"form": form, "subject": subject})
 
 
 @login_required
@@ -271,3 +271,7 @@ def timetable_delete(request, pk):
     timetable.delete()
     return redirect("timetable_list")
 
+def subject_delete(request, pk):
+    subject = get_object_or_404(Subject, pk=pk, user=request.user)
+    subject.delete()
+    return redirect('student_dashboard')

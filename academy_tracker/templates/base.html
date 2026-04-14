@@ -267,6 +267,7 @@ footer{
 }
 .ff-name{font-size:.70rem;font-weight:500;color:#fff;line-height:1.2;margin-bottom:.35rem;  }
 .ff-desc{font-size:.7rem;color:#fff;font-weight:300;line-height:1.4; margin-bottom:0.5rem}
+.flash{transition: opacity .4s ease, transform .4s ease;}
 
 .footer-about-text{
   font-size:.8rem;color:#fff;
@@ -613,6 +614,23 @@ footer{
 const ham=document.getElementById('ham'),mob=document.getElementById('mob');
 ham.addEventListener('click',()=>{ham.classList.toggle('open');mob.classList.toggle('open');});
 function cm(){ham.classList.remove('open');mob.classList.remove('open');}
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const messages = document.querySelectorAll('.flash');
+
+  messages.forEach(msg => {
+    setTimeout(() => {
+      msg.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+      msg.style.opacity = "0";
+      msg.style.transform = "translateY(-10px)";
+
+      setTimeout(() => msg.remove(), 400);
+    }, 2500);
+  });
+});
+
 </script>
 {% block extra_js %}{% endblock %}
 </body>
