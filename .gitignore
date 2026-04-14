@@ -33,5 +33,9 @@ __pycache__/
 # Virtual environment
 myenv/
 
+.env 
+.gitignore
 # SQLite database
 *.sqlite3
+
+

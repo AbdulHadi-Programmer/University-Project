@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+{% block title %}Verify Email — StudyMate{% endblock %}
+
+{% block extra_css %}
+<style>
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:2.5rem 1.5rem;min-height:calc(100vh - 62px);}
+
+/* ── CARD ── */
+.otp-card{
+  background:var(--card);border-radius:var(--rl);
+  border:1px solid var(--border);
+  box-shadow:0 24px 60px rgba(0,0,0,.1);
+  width:100%;max-width:460px;
+  overflow:hidden;
+}
+
+/* Header */
+.otp-header{
+  background:var(--ink);padding:2.4rem 2.5rem 2rem;
+  position:relative;overflow:hidden;
+}
+.otp-header::before{content:'';position:absolute;width:240px;height:240px;top:-80px;right:-60px;border-radius:50%;background:var(--accent);opacity:.16;pointer-events:none;}
+.otp-header::after{content:'';position:absolute;width:130px;height:130px;bottom:-50px;left:-30px;border-radius:50%;background:var(--a2);opacity:.07;pointer-events:none;}
+.oh-tag{display:inline-flex;align-items:center;gap:7px;font-size:.66rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--a2);margin-bottom:.8rem;position:relative;z-index:2;}
+.oh-tag::before{content:'';width:14px;height:2px;background:var(--a2);border-radius:2px;display:block;}
+.oh-title{font-family:'Poppins',sans-serif;font-size:1.45rem;font-weight:800;color:#fff;line-height:1.15;letter-spacing:-.02em;margin-bottom:.35rem;position:relative;z-index:2;}
+.oh-sub{font-size:.82rem;color:rgba(255,255,255,.4);font-weight:300;position:relative;z-index:2;}
+
+/* email badge */
+.email-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  border-radius:50px;padding:.3rem .9rem;
+  font-size:.78rem;font-weight:500;color:rgba(255,255,255,.7);
+  margin-top:.75rem;position:relative;z-index:2;
+}
+.email-badge svg{flex-shrink:0;opacity:.6;}
+
+/* Body */
+.otp-body{padding:2.2rem 2.5rem 1.8rem;}
+
+/* OTP input boxes */
+.otp-boxes{display:flex;gap:.55rem;justify-content:center;margin-bottom:.6rem;}
+.otp-box{
+  width:52px;height:60px;
+  border:1.5px solid var(--borderS);
+  border-radius:12px;
+  background:var(--surface);
+  font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:800;
+  color:var(--ink);text-align:center;
+  outline:none;transition:all .2s;
+  caret-color:var(--accent);
+}
+.otp-box:focus{
+  border-color:var(--accent);
+  background:var(--card);
+  box-shadow:0 0 0 3px var(--al);
+}
+.otp-box.filled{
+  border-color:rgba(91,76,219,.4);
+  background:rgba(91,76,219,.04);
+  color:var(--accent);
+}
+.otp-box.error{
+  border-color:var(--err);
+  background:rgba(239,68,68,.04);
+  box-shadow:0 0 0 3px rgba(239,68,68,.1);
+}
+
+/* Hidden actual input — submitted with form */
+.otp-hidden{
+  width:100%;padding:.72rem 1rem;
+  border:1.5px solid var(--borderS);border-radius:var(--r);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;color:var(--ink);
+  background:var(--surface);outline:none;
+  transition:border-color .2s,box-shadow .2s;
+  text-align:center;letter-spacing:.5em;font-weight:700;
+  display:none; /* hidden — JS fills it from boxes */
+}
+
+/* Timer */
+.otp-timer{
+  text-align:center;font-size:.78rem;color:var(--ink-muted);
+  margin-bottom:1.6rem;display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.timer-dot{width:6px;height:6px;border-radius:50%;background:var(--warn);flex-shrink:0;animation:tdpulse 2s ease-in-out infinite;}
+
+/* Error */
+.otp-error{
+  font-size:.78rem;color:var(--err);text-align:center;
+  margin-bottom:.8rem;min-height:1.1em;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+
+/* Submit */
+.btn-verify{
+  width:100%;padding:.88rem;border-radius:50px;
+  background:var(--accent);color:#fff;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.92rem;font-weight:600;
+  border:2px solid var(--accent);cursor:pointer;
+  transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-verify:hover{background:var(--ink);border-color:var(--ink);transform:translateY(-1px);}
+.btn-verify:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+
+/* Footer links */
+.otp-footer{
+  padding:1.2rem 2.5rem 1.8rem;
+  border-top:1px solid var(--border);
+  text-align:center;
+  display:flex;flex-direction:column;gap:.55rem;
+}
+.resend-row{font-size:.84rem;color:var(--ink-muted);}
+.resend-row a{color:var(--accent);font-weight:600;text-decoration:none;}
+.resend-row a:hover{text-decoration:underline;}
+.back-row{font-size:.8rem;color:var(--ink-muted);}
+.back-row a{color:var(--ink-soft);font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:4px;}
+.back-row a:hover{color:var(--ink);}
+
+@keyframes tdpulse{0%,100%{opacity:.5;}50%{opacity:1;}}
+
+/* Responsive */
+@media(max-width:480px){
+  main{padding:1rem .75rem;}
+  .otp-header{padding:1.8rem 1.5rem 1.6rem;}
+  .otp-body{padding:1.8rem 1.5rem 1.4rem;}
+  .otp-footer{padding:1rem 1.5rem 1.5rem;}
+  .otp-box{width:44px;height:52px;font-size:1.4rem;border-radius:10px;}
+  .otp-boxes{gap:.4rem;}
+}
+@media(max-width:360px){
+  .otp-box{width:38px;height:46px;font-size:1.2rem;}
+  .otp-boxes{gap:.3rem;}
+  .oh-title{font-size:1.25rem;}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<main>
+<div class="otp-card">
+
+  {# HEADER #}
+  <div class="otp-header">
+    <div class="oh-tag">Email Verification</div>
+    <div class="oh-title">
+      {% if otp_type == 'register' %}Verify your email{% else %}Confirm it's you{% endif %}
+    </div>
+    <div class="oh-sub">
+      {% if otp_type == 'register' %}
+        We sent a 6-digit code to activate your account.
+      {% else %}
+        We sent a 6-digit code to log you in securely.
+      {% endif %}
+    </div>
+    <div class="email-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      {{ email }}
+    </div>
+  </div>
+
+  {# BODY #}
+  <div class="otp-body">
+
+    {# Non-field errors from form #}
+    {% if form.non_field_errors %}
+      <div class="otp-error">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        {% for e in form.non_field_errors %}{{ e }}{% endfor %}
+      </div>
+    {% endif %}
+
+    {% if form.otp.errors %}
+      <div class="otp-error">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        {% for e in form.otp.errors %}{{ e }}{% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" id="otp-form" novalidate>
+      {% csrf_token %}
+
+      {# 6 visual boxes — JS fills hidden input #}
+      <div class="otp-boxes" id="otp-boxes">
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" data-index="0" autocomplete="off">
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" data-index="1" autocomplete="off">
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" data-index="2" autocomplete="off">
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" data-index="3" autocomplete="off">
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" data-index="4" autocomplete="off">
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" data-index="5" autocomplete="off">
+      </div>
+
+      {# Hidden input that Django form reads #}
+      <input type="hidden" name="otp" id="otp-value">
+
+      <div class="otp-timer" id="otp-timer">
+        <span class="timer-dot"></span>
+        Code expires in <span id="countdown">10:00</span>
+      </div>
+
+      <button type="submit" class="btn-verify" id="verify-btn" disabled>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Verify &amp; Continue
+      </button>
+    </form>
+
+  </div>
+
+  {# FOOTER #}
+  <div class="otp-footer">
+    <div class="resend-row">
+      Didn't receive the code?
+      <a href="{% url 'resend_otp' %}">Resend OTP</a>
+    </div>
+    <div class="back-row">
+      <a href="{% if otp_type == 'register' %}{% url 'register' %}{% else %}{% url 'login' %}{% endif %}">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to {% if otp_type == 'register' %}register{% else %}login{% endif %}
+      </a>
+    </div>
+  </div>
+
+</div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const boxes     = document.querySelectorAll('.otp-box');
+const otpValue  = document.getElementById('otp-value');
+const verifyBtn = document.getElementById('verify-btn');
+const form      = document.getElementById('otp-form');
+
+// ── Box navigation ──────────────────────────────────────
+boxes.forEach((box, i) => {
+  box.addEventListener('input', e => {
+    const val = e.target.value.replace(/\D/g, '');
+    e.target.value = val.slice(-1);             // keep only last digit
+    box.classList.toggle('filled', val !== '');
+
+    if (val && i < 5) boxes[i + 1].focus();    // auto-advance
+    syncHidden();
+  });
+
+  box.addEventListener('keydown', e => {
+    if (e.key === 'Backspace' && !box.value && i > 0) {
+      boxes[i - 1].focus();
+      boxes[i - 1].value = '';
+      boxes[i - 1].classList.remove('filled');
+      syncHidden();
+    }
+    // Allow paste
+    if (e.key === 'v' && (e.ctrlKey || e.metaKey)) return;
+  });
+
+  // Handle paste — spread across boxes
+  box.addEventListener('paste', e => {
+    e.preventDefault();
+    const pasted = (e.clipboardData || window.clipboardData)
+      .getData('text').replace(/\D/g, '').slice(0, 6);
+    pasted.split('').forEach((ch, j) => {
+      if (boxes[j]) {
+        boxes[j].value = ch;
+        boxes[j].classList.add('filled');
+      }
+    });
+    if (pasted.length < 6) boxes[pasted.length]?.focus();
+    else boxes[5].focus();
+    syncHidden();
+  });
+});
+
+function syncHidden() {
+  const code = Array.from(boxes).map(b => b.value).join('');
+  otpValue.value  = code;
+  verifyBtn.disabled = code.length < 6;
+}
+
+// Focus first box on load
+boxes[0].focus();
+
+// Validate on submit — mark error boxes
+form.addEventListener('submit', e => {
+  const code = otpValue.value;
+  if (code.length < 6 || !/^\d{6}$/.test(code)) {
+    e.preventDefault();
+    boxes.forEach(b => b.classList.add('error'));
+    setTimeout(() => boxes.forEach(b => b.classList.remove('error')), 1200);
+    return;
+  }
+  verifyBtn.disabled = true;
+  verifyBtn.innerHTML = `
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+         style="animation:spin .7s linear infinite">
+      <line x1="12" y1="2" x2="12" y2="6"/>
+      <line x1="12" y1="18" x2="12" y2="22"/>
+      <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/>
+      <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+      <line x1="2" y1="12" x2="6" y2="12"/>
+      <line x1="18" y1="12" x2="22" y2="12"/>
+    </svg>
+    Verifying…`;
+});
+
+// ── Countdown timer ─────────────────────────────────────
+let seconds = 10 * 60;
+const countEl = document.getElementById('countdown');
+const timerEl = document.getElementById('otp-timer');
+
+const tick = setInterval(() => {
+  seconds--;
+  if (seconds <= 0) {
+    clearInterval(tick);
+    countEl.textContent = '00:00';
+    countEl.style.color = 'var(--err)';
+    timerEl.style.color = 'var(--err)';
+    return;
+  }
+  const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+  const s = String(seconds % 60).padStart(2, '0');
+  countEl.textContent = `${m}:${s}`;
+  if (seconds <= 60) {
+    countEl.style.color = 'var(--err)';
+    document.querySelector('.timer-dot').style.background = 'var(--err)';
+  }
+}, 1000);
+</script>
+<style>
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+</style>
+{% endblock %}

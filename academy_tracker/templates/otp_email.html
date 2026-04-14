@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyMate — Verification Code</title>
+<style>
+  /* Reset */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background: #f6f5f1;
+    color: #0a0a0f;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* Wrapper */
+  .wrapper {
+    max-width: 560px;
+    margin: 40px auto;
+    padding: 0 16px;
+  }
+
+  /* Logo bar */
+  .logo-bar {
+    text-align: center;
+    padding: 28px 0 20px;
+  }
+  .logo-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #0a0a0f;
+    letter-spacing: -.02em;
+  }
+  .logo-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: #5b4cdb;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Card */
+  .card {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 32px rgba(10,10,15,.09);
+    border: 1px solid rgba(10,10,15,.08);
+  }
+
+  /* Card header — dark gradient */
+  .card-header {
+    background: #0a0a0f;
+    padding: 36px 40px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-header::before {
+    content: '';
+    position: absolute;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    top: -100px; right: -60px;
+    background: #5b4cdb;
+    opacity: .2;
+  }
+  .card-header::after {
+    content: '';
+    position: absolute;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    bottom: -60px; left: -30px;
+    background: #e8ff54;
+    opacity: .06;
+  }
+  .header-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: #e8ff54;
+    margin-bottom: 10px;
+    position: relative; z-index: 1;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .header-tag::before {
+    content: '';
+    display: block;
+    width: 16px; height: 2px;
+    background: #e8ff54;
+    border-radius: 2px;
+  }
+  .header-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.2;
+    letter-spacing: -.025em;
+    position: relative; z-index: 1;
+    margin-bottom: 6px;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,.42);
+    font-weight: 300;
+    position: relative; z-index: 1;
+  }
+
+  /* Card body */
+  .card-body {
+    padding: 36px 40px 32px;
+  }
+  .greeting {
+    font-size: 15px;
+    color: #3a3a4a;
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+  .greeting strong { color: #0a0a0f; font-weight: 600; }
+  .intro-text {
+    font-size: 14px;
+    color: #8a8a9a;
+    line-height: 1.65;
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+
+  /* OTP box */
+  .otp-section {
+    background: #f6f5f1;
+    border-radius: 14px;
+    border: 1px solid rgba(10,10,15,.08);
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .otp-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #8a8a9a;
+    margin-bottom: 14px;
+  }
+  .otp-digits {
+    display: inline-flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .otp-digit {
+    width: 48px; height: 56px;
+    background: #ffffff;
+    border: 1.5px solid rgba(91,76,219,.25);
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 800;
+    color: #5b4cdb;
+    letter-spacing: 0;
+    box-shadow: 0 2px 8px rgba(91,76,219,.08);
+  }
+  .otp-expiry {
+    font-size: 12px;
+    color: #8a8a9a;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  .expiry-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #f59e0b;
+    display: inline-block;
+  }
+
+  /* Info box */
+  .info-box {
+    background: rgba(91,76,219,.06);
+    border: 1px solid rgba(91,76,219,.14);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #3d2fa0;
+    line-height: 1.55;
+    margin-bottom: 24px;
+    font-weight: 400;
+  }
+  .info-box strong { font-weight: 600; }
+
+  /* Security notice */
+  .security-notice {
+    background: rgba(245,158,11,.07);
+    border: 1px solid rgba(245,158,11,.2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 12.5px;
+    color: #92600a;
+    line-height: 1.55;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 28px;
+  }
+  .security-icon { flex-shrink: 0; margin-top: 1px; }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: rgba(10,10,15,.08);
+    margin-bottom: 22px;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    font-size: 12px;
+    color: #8a8a9a;
+    font-weight: 300;
+    padding: 0 40px 32px;
+  }
+  .footer a { color: #5b4cdb; }
+  .footer strong { color: #0a0a0f; font-weight: 600; }
+
+  /* Bottom bar */
+  .bottom-bar {
+    text-align: center;
+    padding: 20px 0 32px;
+    font-size: 11.5px;
+    color: #8a8a9a;
+  }
+  .bottom-bar a { color: #5b4cdb; }
+
+  /* Mobile */
+  @media(max-width:600px) {
+    .wrapper { margin: 16px auto; }
+    .card-header, .card-body { padding: 28px 24px; }
+    .footer { padding: 0 24px 24px; }
+    .otp-digit { width: 38px; height: 46px; font-size: 18px; }
+    .otp-digits { gap: 5px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- Logo -->
+  <div class="logo-bar">
+    <div class="logo-inner">
+      <div class="logo-icon">
+        <!-- 4-square grid icon -->
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+          <rect x="2" y="2" width="5" height="5" rx="1.2" fill="white"/>
+          <rect x="9" y="2" width="5" height="5" rx="1.2" fill="white" opacity=".6"/>
+          <rect x="2" y="9" width="5" height="5" rx="1.2" fill="white" opacity=".6"/>
+          <rect x="9" y="9" width="5" height="5" rx="1.2" fill="white"/>
+        </svg>
+      </div>
+      StudyMate
+    </div>
+  </div>
+
+  <!-- Main card -->
+  <div class="card">
+
+    <!-- Header -->
+    <div class="card-header">
+      <div class="header-tag">
+        {% if otp_type == 'register' %}New Account{% else %}Verification{% endif %}
+      </div>
+      <div class="header-title">
+        {% if otp_type == 'register' %}
+          Verify your email address
+        {% else %}
+          Confirm it's really you
+        {% endif %}
+      </div>
+      <div class="header-sub">
+        {% if otp_type == 'register' %}
+          One step away from organizing your semester.
+        {% else %}
+          Enter this code to log in to StudyMate.
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="card-body">
+
+      <p class="greeting">Hi <strong>{{ name }}</strong>,</p>
+      <p class="intro-text">
+        {% if otp_type == 'register' %}
+          Thanks for signing up! Use the code below to verify your email
+          and activate your StudyMate account. It expires in 10 minutes.
+        {% else %}
+          Here's your one-time login code for StudyMate.
+          Enter it on the verification page to access your account.
+        {% endif %}
+      </p>
+
+      <!-- OTP digits -->
+      <div class="otp-section">
+        <div class="otp-label">Your verification code</div>
+        <div class="otp-digits">
+          {% for digit in otp %}
+            <div class="otp-digit">{{ digit }}</div>
+          {% endfor %}
+        </div>
+        <div class="otp-expiry">
+          <span class="expiry-dot"></span>
+          Expires in 10 minutes
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="info-box">
+        <strong>How to use:</strong> Open the StudyMate verification page
+        and enter all 6 digits in order. The code is case-insensitive and
+        works only once.
+      </div>
+
+      <!-- Security warning -->
+      <div class="security-notice">
+        <span class="security-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+               stroke="#92600a" stroke-width="2" stroke-linecap="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </span>
+        <span>
+          <strong>Never share this code.</strong> StudyMate will never ask
+          for your OTP over email, phone, or chat. If you didn't request
+          this, you can safely ignore this email.
+        </span>
+      </div>
+
+      <div class="divider"></div>
+
+    </div><!-- /card-body -->
+
+    <!-- Footer inside card -->
+    <div class="footer">
+      <p style="margin-bottom:6px;">
+        This email was sent to <strong>{{ otp|slice:"0:0" }}{{ "..." }}</strong>
+        because {% if otp_type == 'register' %}someone registered{% else %}a login was attempted{% endif %}
+        with this address on StudyMate.
+      </p>
+      <p>
+        If this wasn't you, no action is needed — your account is safe.
+      </p>
+    </div>
+
+  </div><!-- /card -->
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+    © 2025 <strong style="color:#0a0a0f;">StudyMate</strong> &nbsp;·&nbsp;
+    Academic Task Manager &nbsp;·&nbsp;
+    Built with ♥ for students in Karachi
+  </div>
+
+</div>
+</body>
+</html>
