@@ -51,6 +51,11 @@ def logout_view(request):
     logout(request)
     return redirect("home")
 
+# 🔥 HOME
+def home(request):
+    return render(request, "home.html")
+
+
 #  Explicitly import ALL models used in this file
 from academy.models import TimeTable, Task, LearningItem, Subject 
 from academy.forms import TimeTableForm, TaskForm, SubjectForm, LearningItemForm
@@ -97,9 +102,4 @@ def edit_profile(request):
     return render(request, "edit_profile.html", {"form": form})
 
 
-# 🔥 HOME
-def home(request):
-    return render(request, "home.html")
 
-
-# 🔥 TIMETABLE (unchanged — it's fine)
