@@ -56,12 +56,25 @@ from academy.models import TimeTable, Task, LearningItem, Subject
 from academy.forms import TimeTableForm, TaskForm, SubjectForm, LearningItemForm
 # from academy.views import 
 # 🔥 PROFILE VIEW
+
+from django.db.models import Count
+
 @login_required
 def profile(request):
     # subject_count = Subject.objects.filter(user=user)
     total_tasks = Task.objects.filter(user=request.user).count() or 0
     notes_count = LearningItem.objects.filter(user=request.user).count()  or 0
-    subjects_count = Subject.objects.filter(user=request.user).count() or 0
+    subjects_count = (
+        Subject.objects
+        .filter(semester=request.user.semester)
+        .annotate(
+            total_tasks=Count("task", distinct=True),  # total tasks related to this subject
+            pending_tasks=Count("task", filter=Q(task__status="Pending")),
+            completed_tasks=Count("task", filter=Q(task__status="Completed")),
+            learning_items_count=Count("learning_items", distinct=True),  # uses related_name on LearningItem
+        )
+        .order_by("name", 'id')
+    )
 
     return render(request, "profile.html", {"user": request.user, "total_tasks": total_tasks, "learning_items_count": notes_count, "subjects_count": subjects_count})
 
