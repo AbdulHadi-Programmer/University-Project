@@ -57,7 +57,7 @@ from academy.forms import TimeTableForm, TaskForm, SubjectForm, LearningItemForm
 # from academy.views import 
 # 🔥 PROFILE VIEW
 
-from django.db.models import Count
+from django.db.models import Count, Q
 
 @login_required
 def profile(request):

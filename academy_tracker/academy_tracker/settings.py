@@ -41,7 +41,7 @@ if "liveconsole" in hostname or "euconsole" in hostname:
 else:
     DEBUG = True
 
-DEBUG= False
+# DEBUG= False
 
 # Allowed Hosts
 ALLOWED_HOSTS = [
