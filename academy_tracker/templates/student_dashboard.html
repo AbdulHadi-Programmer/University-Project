@@ -418,12 +418,20 @@ main{flex:1;padding:2.5rem 1.5rem;}
   <div class="greeting-banner">
     <div class="greet-left">
       <div class="greet-tag">{{ user.get_semester_display }}</div>
-      <div class="greet-name">
+      {% comment %}
+      <!-- <div class="greet-name">
         {# Time-based greeting #}
         {% now "G" as hr %}
         {% if hr < "12" %}Good morning{% elif hr < "17" %}Good afternoon{% else %}Good evening{% endif %},
         {{ user.name }} 👋
+      </div> -->
+      {% endcomment %}
+            
+      <div class="greet-name">
+         Welcome Back, {{ user.name }} 👋
       </div>
+
+
       <div class="greet-sub">
         {% if task_pending_count > 0 %}
           You have {{ task_pending_count }} pending task{{ task_pending_count|pluralize }} — let's knock them out.
@@ -431,6 +439,7 @@ main{flex:1;padding:2.5rem 1.5rem;}
           All caught up! Great work this semester.
         {% endif %}
       </div>
+
     </div>
     <div class="greet-right">
       <a href="{% url 'add_subject' %}" class="greet-btn gb-primary">
