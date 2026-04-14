@@ -30,17 +30,31 @@ SECRET_KEY = 'django-insecure--@)tkovv!&la)(f37@il)7x7^l=u%wdo#g01nsbppq8!d!cwf&
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 import socket
+import os
 
+# Better way to detect PythonAnywhere
 hostname = socket.gethostname()
 
-if "pythonanywhere" in hostname:
+# DEBUG automatically set
+if "liveconsole" in hostname or "euconsole" in hostname:
     DEBUG = False
 else:
     DEBUG = True
 
-# ALLOWED_HOSTS = ["studymate.pythonanywhere.com", "*"]
-ALLOWED_HOSTS = ['www.studymate.pythonanywhere.com', 'studymate.pythonanywhere.com', 'localhost', '127.0.0.1']
- 
+# Allowed Hosts
+ALLOWED_HOSTS = [
+    'studymate.pythonanywhere.com',
+    'www.studymate.pythonanywhere.com',
+    'localhost',
+    '127.0.0.1',
+]
+
+# Extra Safety (Optional but Recommended)
+# if not DEBUG:
+#     SECURE_SSL_REDIRECT = True
+#     SESSION_COOKIE_SECURE = True
+#     CSRF_COOKIE_SECURE = True
+
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'  
 
