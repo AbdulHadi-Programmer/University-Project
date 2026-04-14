@@ -48,7 +48,7 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
 .nav-logout:hover{border-color:var(--err);color:var(--err);}
 .mob-menu{display:none;position:fixed;top:59px;left:0;right:0;z-index:190;background:var(--card);border-bottom:1px solid var(--border);flex-direction:column;padding:1rem 1.25rem 1.25rem;gap:3px;box-shadow:0 8px 30px rgba(0,0,0,.08);}
 .mob-menu.open{display:flex;}
-.mob-menu a{padding:.6rem 1rem;border-radius:10px;font-size:.9rem;text-decoration:none;font-weight:500;color:var(--ink-soft);display:flex;align-items:center;gap:8px;}
+.mob-menu a{padding:.6rem 1rem;border-radius:10px;font-size:.8rem;text-decoration:none;font-weight:500;color:var(--ink-soft);display:flex;align-items:center;gap:8px;}
 .mob-menu a:hover{background:var(--surface);}
 .mob-menu a.active{background:var(--al);color:var(--accent);}
 .mob-menu .mob-logout{color:var(--err);}
@@ -203,6 +203,36 @@ main{flex:1;padding:2.5rem 1.5rem;}
 .thu .class-card:not(.is-today)::before{background:rgba(244,63,94,.4);}
 .fri .class-card:not(.is-today)::before{background:rgba(139,92,246,.4);}
 
+.mob-menu{
+  display:none;
+  position:fixed;
+  top:59px;
+  left:0;
+  right:0;
+  z-index:190;
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+  flex-direction:column;
+  padding:1rem 1.25rem 1.25rem;
+  gap:3px;
+  box-shadow:0 8px 30px rgba(0,0,0,.08);
+}
+.mob-menu.open{display:flex;}
+.mob-menu a{
+  padding:.6rem 1rem;
+  border-radius:10px;
+  font-size:.9rem;
+  text-decoration:none;
+  font-weight:500;
+  color:var(--ink-soft);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.mob-menu a:hover{background:var(--surface);}
+.mob-menu a.active{background:var(--al);color:var(--accent);}
+.mob-menu .mob-logout{color:var(--err);}
+.mob-menu .mob-logout:hover{background:rgba(239,68,68,.06);}
 /* ── FOOTER ── */
 footer{
   background:var(--ink);
@@ -373,6 +403,19 @@ footer{
   .task-actions{grid-column:2;grid-row:2;justify-content:flex-end;}
   .changed-badge{margin-bottom:.6rem;}
 }
+@media(max-width:768px){
+  .nav-right .nav-logout {
+    display: none !important;
+  }
+  .nav-right {
+    gap: 8px;
+  }
+  .nav-avatar {
+    width: 34px;
+    height: 34px;
+    font-size: 0.85rem;
+  }
+}
 
 @media(max-width:480px){
   nav{padding:.75rem 1rem;}
@@ -465,35 +508,28 @@ footer{
   
 
   <!-- RIGHT NAV (FIXED STABLE STRUCTURE) -->
-  <div class="nav-right">
-
-    <div class="nav-auth">
-      {% if user.is_authenticated %}
-
-        <a href="{% url 'profile' %}" class="nav-avatar" title="{{ user.username }}">
-          {{ user.username|slice:":1"|upper }}
-          {% with words=user.username.split %}
-            {% if words|length > 1 %}
-              {{ words.1|slice:":1"|upper }}
-            {% endif %}
-          {% endwith %}
-        </a>
-
-        <a href="{% url 'logout' %}" class="nav-logout">Sign out</a>
-
+<div class="nav-right">
+  {% if user.is_authenticated %}
+    <!-- Avatar with proper initials -->
+    <a href="{% url 'profile' %}" class="nav-avatar" title="{{ user.get_full_name|default:user.email }}">
+      {% if user.get_full_name %}
+        {{ user.get_full_name|slice:":1"|upper }}
       {% else %}
-
-        <a href="{% url 'login' %}" class="nav-logout">Login</a>
-        <a href="{% url 'register' %}" class="nav-logout">Register</a>
-
+        {{ user.email|slice:":1"|upper }}
       {% endif %}
-    </div>
-
-  </div>
+    </a>
+    
+    <!-- Sign out button (hidden on mobile via CSS) -->
+    <a href="{% url 'logout' %}" class="nav-logout">Sign out</a>
+  {% else %}
+    <a href="{% url 'login' %}" class="nav-logout">Login</a>
+    <a href="{% url 'register' %}" class="nav-logout">Register</a>
+  {% endif %}
+</div>
 
   <!-- HAMBURGER -->
   <button class="ham" id="ham" aria-label="Toggle menu">
-    <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
   </button>
 </nav>
 
@@ -514,6 +550,66 @@ footer{
   {% endfor %}
 </div>
 {% endif %}
+
+<!-- MOBILE MENU - ADD THIS -->
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mob">
+  {% if user.is_authenticated %}
+    <a href="{% url 'student_dashboard' %}" class="{% if request.resolver_match.url_name == 'student_dashboard' %}active{% endif %}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2h-5v-7H9v7H4a2 2 0 0 1-2-2z"/>
+      </svg>
+      Dashboard
+    </a>
+    
+    <a href="{% url 'timetable_list' %}" class="{% if request.resolver_match.url_name == 'timetable_list' %}active{% endif %}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+        <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/>
+      </svg>
+      Timetable
+    </a>
+    
+    <a href="{% url 'profile' %}" class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      Profile
+    </a>
+
+    <a href="{% url 'logout' %}" class="mob-logout">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      Sign out
+    </a>
+  {% else %}
+    <a href="{% url 'login' %}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+        <polyline points="10 17 15 12 10 7"/>
+        <line x1="15" y1="12" x2="3" y2="12"/>
+      </svg>
+      Login
+    </a>
+    
+    <a href="{% url 'register' %}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="8.5" cy="7" r="4"/>
+        <line x1="20" y1="8" x2="20" y2="14"/>
+        <line x1="23" y1="11" x2="17" y2="11"/>
+      </svg>
+      Register
+    </a>
+  {% endif %}
+</div>
 
 {# ── PAGE CONTENT ── #}
 {% block content %}{% endblock %}
