@@ -1,0 +1,37 @@
+# Virtual Environment
+venv/
+myenv/
+env/
+ENV/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Database
+db.sqlite3
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+
+# Django
+*.log
+/staticfiles/
+/static/
+/media/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Local development
+*.local
+academy_tracker/.gitignore
