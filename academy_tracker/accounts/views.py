@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect
+from django.db.models import Count, Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
+#  Explicitly import ALL models used in this file
+from academy.models import TimeTable, Task, LearningItem, Subject 
+from academy.forms import TimeTableForm, TaskForm, SubjectForm, LearningItemForm
  
 from .forms import SignupForm, LoginForm, ProfileEditForm, OTPVerifyForm
 from .models import CustomUser, OTPVerification, generate_otp
@@ -257,14 +261,8 @@ def home(request):
     return render(request, "home.html")
  
 
-#  Explicitly import ALL models used in this file
-from academy.models import TimeTable, Task, LearningItem, Subject 
-from academy.forms import TimeTableForm, TaskForm, SubjectForm, LearningItemForm
 # from academy.views import 
 # 🔥 PROFILE VIEW
-
-from django.db.models import Count, Q
-
 @login_required
 def profile(request):
     # subject_count = Subject.objects.filter(user=user)
