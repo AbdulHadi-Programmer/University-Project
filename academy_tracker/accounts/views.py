@@ -64,17 +64,19 @@ def profile(request):
     # subject_count = Subject.objects.filter(user=user)
     total_tasks = Task.objects.filter(user=request.user).count() or 0
     notes_count = LearningItem.objects.filter(user=request.user).count()  or 0
-    subjects_count = (
+    # Subjects ka queryset
+    subjects = (   # ← naam badal diya subjects_count se
         Subject.objects
         .filter(semester=request.user.semester)
         .annotate(
-            total_tasks=Count("task", distinct=True),  # total tasks related to this subject
+            total_tasks=Count("task", distinct=True),
             pending_tasks=Count("task", filter=Q(task__status="Pending")),
             completed_tasks=Count("task", filter=Q(task__status="Completed")),
-            learning_items_count=Count("learning_items", distinct=True),  # uses related_name on LearningItem
+            learning_items_count=Count("learning_items", distinct=True),
         )
-        .order_by("name", 'id')
+        .order_by("name", "id")
     )
+    subjects_count = subjects.count()   # ← Yeh sirf number dega
 
     return render(request, "profile.html", {"user": request.user, "total_tasks": total_tasks, "learning_items_count": notes_count, "subjects_count": subjects_count})
 
