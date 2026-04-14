@@ -303,9 +303,112 @@ main{flex:1;padding:2.5rem 1.5rem;}
 .pf-ok{background:var(--ok);}
 .pf-mid{background:var(--accent);}
 .pf-low{background:var(--warn);}
+/* ── DELETE MODAL (SAFE VERSION) ── */
+.confirm-modal{
+  position:fixed;
+  top:0;left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .25s ease;
+  z-index:9999;
+}
+
+.confirm-modal.active{
+  opacity:1;
+  visibility:visible;
+}
+
+.confirm-box{
+  background:var(--card);
+  border-radius:16px; /* fixed value instead of var */
+  padding:1.6rem;
+  width:90%;
+  max-width:300px;
+  text-align:center;
+  border:1px solid var(--border);
+  box-shadow:0 18px 40px rgba(0,0,0,.12);
+  transform:translateY(8px);
+  transition:transform .25s ease;
+}
+
+.confirm-modal.active .confirm-box{
+  transform:translateY(0);
+}
+
+.confirm-actions{
+  display:flex;
+  gap:.5rem;
+  margin-top:1rem;
+}
+
+/* .btn-cancel-modal, */
+/* .btn-delete-modal{flex:1;padding:.55rem;border-radius:50px;font-size:.8rem;font-weight:600;text-align:center;border:1.5px solid var(--border);background:var(--surface);color:var(--ink-soft);cursor:pointer;text-decoration:none;} */
+/* .btn-delete-modal{background:var(--err); border-color:var(--err); color:#fff;} */
+/* .btn-delete-modal:hover{filter:brightness(.92);} */
+/* .btn-cancel-modal:hover{border-color:var(--ink-soft);color:var(--ink);} */
+/* ── MODAL UPGRADED DESIGN ── */
+.confirm-modal{position:fixed;inset:0;background:rgba(10,10,20,.55);backdrop-filter: blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:.25s ease;z-index:9999;}
+.confirm-modal.active{opacity:1;visibility:visible;}
+
+/* main card */
+.confirm-box.pro{width:92%;max-width:340px;background:linear-gradient(145deg, var(--card), var(--surface));border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:1.6rem;box-shadow:0 25px 70px rgba(0,0,0,.35);transform:translateY(10px);transition:.25s ease;}
+.confirm-modal.active .confirm-box.pro{transform:translateY(0);}
+
+/* top row */
+.confirm-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;}
+.confirm-icon.danger{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(239,68,68,.12);color:var(--err);}
+
+/* badge */
+.confirm-badge{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--err);background:rgba(239,68,68,.08);padding:4px 10px;border-radius:50px;}
+
+/* text */
+.confirm-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--ink);margin-bottom:.4rem;}
+.confirm-text{font-size:.84rem;color:var(--ink-muted);line-height:1.5;margin-bottom:1.2rem;}
+
+/* buttons */
+.confirm-actions{display:flex;gap:.6rem;}
+.btn-cancel-modal,
+.btn-delete-modal{flex:1;padding:.65rem;border-radius:50px;font-size:.82rem;font-weight:600;text-align:center;cursor:pointer;text-decoration:none;transition:.2s;}
+.btn-cancel-modal{background:var(--surface);border:1px solid var(--border);color:var(--ink-soft);}
+.btn-cancel-modal:hover{border-color:var(--ink);color:var(--ink);}
+.btn-delete-modal{background:var(--err);border:1px solid var(--err);color:#fff;}
+.btn-delete-modal:hover{filter:brightness(.92);transform:translateY(-1px);}
+
+
+/* ── MODAL RESPONSIVE ── */
+
+/* tablets */
+@media(max-width:768px){
+.confirm-box.pro{width:90%;max-width:320px;padding:1.4rem;}
+.confirm-title{font-size:1rem;}
+.confirm-text{font-size:.82rem;}
+.confirm-icon.danger{width:40px;height:40px;}
+}
+
+/* mobile */
+@media(max-width:480px){
+.confirm-box.pro{width:92%;max-width:300px;padding:1.2rem;border-radius:16px;}
+.confirm-top{margin-bottom:.7rem;}
+.confirm-badge{font-size:.6rem;padding:3px 8px;}
+.confirm-actions{flex-direction:column;}
+.btn-cancel-modal,.btn-delete-modal{width:100%;}
+}
+
+/* very small devices */
+@media(max-width:360px){
+.confirm-box.pro{width:94%;padding:1rem;}
+.confirm-title{font-size:.95rem;}
+.confirm-text{font-size:.78rem;}
+.confirm-icon.danger{width:36px;height:36px;}
+}
 </style>
 {% endblock %}
-
 
 {% block content %}
 <main>
@@ -494,14 +597,19 @@ main{flex:1;padding:2.5rem 1.5rem;}
         </a>
       
         <div class="subj-actions">
+          <!-- EDIT -->
           <a href="{% url 'update_subject' subject.id %}" class="subj-act-btn edit">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 20h9"/>
               <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
             </svg>
           </a>
-
-          <a href="{% url 'delete_subject' subject.id %}" class="subj-act-btn delete">
+        
+          <!-- DELETE (TRIGGERS MODAL) -->
+          <a href="#"
+              class="subj-act-btn delete open-delete-modal"
+              data-url="{% url 'delete_subject' subject.id %}"
+              data-id="{{ subject.id }}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="3 6 5 6 21 6"/>
               <path d="M19 6l-1 14H6L5 6"/>
@@ -535,9 +643,123 @@ main{flex:1;padding:2.5rem 1.5rem;}
     </a>
   </div>
   {% endif %}
-
 </div>
+
+<!-- Confirm Delete Pop Up  -->
+<div class="confirm-modal" id="deleteModal">
+  <div class="confirm-box pro">
+
+    <div class="confirm-top">
+      <div class="confirm-icon danger">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18"/>
+          <path d="M19 6l-1 14H6L5 6"/>
+          <path d="M10 11v6M14 11v6"/>
+        </svg>
+      </div>
+
+      <div class="confirm-badge">Danger Action</div>
+    </div>
+
+    <div class="confirm-title">Delete this subject?</div>
+    <div class="confirm-text">
+      This will permanently remove all tasks, notes, and progress linked to it.
+    </div>
+
+    <div class="confirm-actions">
+      <button type="button" class="btn-cancel-modal" id="cancelDelete">
+        Cancel
+      </button>
+
+      <a href="#" class="btn-delete-modal" id="confirmDelete">
+        Yes, delete
+      </a>
+    </div>
+
+  </div>
+</div>
+
 </main>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const messages = document.querySelectorAll('.alert, .alert-danger, .alert-success');
+
+  messages.forEach(msg => {
+    setTimeout(() => {
+      msg.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+      msg.style.opacity = "0";
+      msg.style.transform = "translateY(-10px)";
+      
+      setTimeout(() => msg.remove(), 400); // remove after animation
+    }, 3500); // ⏱ 3.5 seconds
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function(){
+
+  const modal = document.getElementById('deleteModal');
+  const confirmBtn = document.getElementById('confirmDelete');
+  const cancelBtn = document.getElementById('cancelDelete');
+
+  let deleteUrl = null;
+  let targetCard = null;
+
+  document.querySelectorAll('.open-delete-modal').forEach(btn => {
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+
+      deleteUrl = this.dataset.url;
+      targetCard = this.closest('.subj-card');
+
+      modal.classList.add('active');
+    });
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    modal.classList.remove('active');
+  });
+
+  confirmBtn.addEventListener('click', async function(e){
+    e.preventDefault();
+
+    try {
+      const res = await fetch(deleteUrl, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": csrftoken,
+          "X-Requested-With": "XMLHttpRequest"
+        }
+      });
+
+      if(res.ok){
+        modal.classList.remove('active');
+
+        // smooth remove animation
+        if(targetCard){
+          targetCard.style.transition = "all .3s ease";
+          targetCard.style.opacity = "0";
+          targetCard.style.transform = "scale(.95)";
+
+          setTimeout(() => {
+            targetCard.remove();
+          }, 300);
+        }
+      }
+
+    } catch(err){
+      console.log("Delete failed:", err);
+    }
+
+  });
+
+  modal.addEventListener('click', (e) => {
+    if(e.target === modal){
+      modal.classList.remove('active');
+    }
+  });
+
+});
+</script>
 
 {% endblock %}

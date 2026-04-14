@@ -226,7 +226,9 @@ footer a:hover{color:#fff;}
   .hero{padding:5.5rem 1.25rem 3.5rem;}
   .hero-graphic{margin-top:2rem;}
   .float-badge{display:none;}
-  section{padding:4rem 1.25rem;}
+  .hero-ctas{gap:8px;}
+  .btn-primary,.btn-outline{font-size:.82rem;padding:.65rem 1.25rem;}}
+  section{padding:4rem 1.25rem;
 }
 @media(max-width:600px){
   .features-grid{grid-template-columns:1fr;}
@@ -234,11 +236,15 @@ footer a:hover{color:#fff;}
 }
 @media(max-width:500px){
   .hero-ctas{flex-direction:column;align-items:center;}
-  .btn-primary,.btn-outline{width:100%;max-width:280px;text-align:center;}
+  .btn-primary,.btn-outline{width:100% !important ;text-align:center;}
   .pain-vs{flex-direction:column;}
   .pv-col.after{border-left:none;border-top:1px solid rgba(10,10,15,.1);}
   .proof-grid{grid-template-columns:1fr 1fr;}
   .hero-sub {font-size: 0.78rem;}
+  .hero-ctas{gap:10px;}
+  .btn-special{width:55% !important; max-width: 280px !important; }
+  .btn-primary,.btn-outline{font-size:.8rem;padding:.7rem 1.1rem;width:100%;max-width:260px;}
+
   /* .hero-badge {font-size: 0.55rem;} */
   /* .hero-badge .pill{font-size: 0.55rem;} */
 }
@@ -295,10 +301,8 @@ footer a:hover{color:#fff;}
   {% if user.is_authenticated %}
     <span class="mob-section-label">Your account</span>
     <a href="{% url 'student_dashboard' %}" onclick="closeMob()">Dashboard</a>
-    <a href="{% url 'timetable_list' %}" onclick="closeMob()">Timetable</a>
-    <a href="{% url 'profile' %}" onclick="closeMob()">Profile</a>
-    <a href="{% url 'logout' %}" onclick="closeMob()" style="color:var(--err);">Sign out</a>
-  {% else %}
+
+    {% else %}
     <span class="mob-section-label">Get started</span>
     <a href="{% url 'login' %}" onclick="closeMob()">Login</a>
     <a href="{% url 'register' %}" class="cta" onclick="closeMob()">Sign up free →</a>
@@ -525,7 +529,7 @@ footer a:hover{color:#fff;}
             <div><div class="how-step-title">Stay ahead, every day</div><div class="how-step-desc">Check your dashboard daily. Get automatic email reminders before deadlines. Finish the semester in control.</div></div>
           </div>
         </div>
-        <a href="{% url 'register' %}" class="btn-primary" style="display:inline-flex;margin-top:2rem;">Start now — it's free →</a>
+        <a href="{% url 'register' %}" class="btn-primary btn-special" style="display:inline-flex;margin-top:2rem;">Start now — it's free →</a>
       </div>
       <div class="how-visual reveal d2">
         <svg viewBox="0 0 340 360" xmlns="http://www.w3.org/2000/svg">
@@ -666,13 +670,17 @@ footer a:hover{color:#fff;}
   </div>
 </section>
 
-<!-- FOOTER -->
+
 <footer>
-  <p>© 2025 StudyMate &nbsp;·&nbsp; Academic Task Manager &nbsp;·&nbsp;
-  <a href="{% url 'login' %}">Login</a> &nbsp;·&nbsp;
-  <a href="{% url 'register' %}">Register</a> &nbsp;·&nbsp;
-  Built with 💜 for students</p>
+  <p>
+    © 2025 StudyMate &nbsp;·&nbsp; Academic Task Manager &nbsp;·&nbsp;
+  </p>
+
+  <p style="margin-top:12px;">
+    Built with 💜 for students
+  </p>
 </footer>
+
 
 <script>
 // Hamburger

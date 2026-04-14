@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required 
 from .models import TimeTable, Task, LearningItem
@@ -271,7 +272,15 @@ def timetable_delete(request, pk):
     timetable.delete()
     return redirect("timetable_list")
 
+# def subject_delete(request, pk):
+#     subject = get_object_or_404(Subject, pk=pk, user=request.user)
+#     subject.delete()
+#     return redirect('student_dashboard')
+
+
 def subject_delete(request, pk):
-    subject = get_object_or_404(Subject, pk=pk, user=request.user)
-    subject.delete()
-    return redirect('student_dashboard')
+    if request.method == "POST":
+        Subject.objects.filter(id=pk).delete()
+        return JsonResponse({"success": True})
+
+    return JsonResponse({"success": False}, status=400)
