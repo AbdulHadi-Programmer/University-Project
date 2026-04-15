@@ -37,8 +37,8 @@ hostname = socket.gethostname()
 
 # DEBUG automatically set
 if "liveconsole" in hostname or "euconsole" in hostname:
-    # DEBUG = False
-    DEBUG = True  # because deployment causing issue 
+    DEBUG = False
+    # DEBUG = True  # because deployment causing issue 
 else:
     DEBUG = True
 
@@ -69,7 +69,7 @@ STATICFILES_DIRS = [
 # In production (when you run collectstatic), files will go here
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Application definition
+# Application definitionSTATIC_URL
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/student_dashboard/'
 LOGOUT_REDIRECT_URL = '/'
