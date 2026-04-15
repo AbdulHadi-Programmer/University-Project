@@ -120,8 +120,8 @@ EMAIL_HOST_USER = 'studymate378@gmail.com'
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = 'studymate378@gmail.com'
 
-# from django.conf import settings
-# print(settings.EMAIL_HOST_PASSWORD, 4545)
+from django.conf import settings
+print(settings.EMAIL_HOST_PASSWORD, 4545)
 
 
 TEMPLATES = [
