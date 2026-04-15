@@ -110,17 +110,34 @@ from decouple import config
 # EMAIL_HOST = config('EMAIL_HOST', default="smtp.gmail.com")
 # EMAIL_PORT = config('EMAIL_PORT', cast=int)
 # EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+# EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
-EMAIL_HOST_USER = 'studymate378@gmail.com'
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'studymate378@gmail.com'
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+# DEFAULT_FROM_EMAIL = 'studymate378@gmail.com'
 
-from django.conf import settings
-print(settings.EMAIL_HOST_PASSWORD)
+# from django.conf import settings
+# print(settings.EMAIL_HOST_PASSWORD, 4545)
+
+
+import environ
+from pathlib import Path
+
+# Initialize environ
+env = environ.Env()
+
+# Read .env file (IMPORTANT - don't forget this line!)
+environ.Env.read_env()
+
+# Email configuration in one line!
+EMAIL_CONFIG = env.email_url('EMAIL_URL', default='smtp://user:pass@localhost:25')
+vars().update(EMAIL_CONFIG)
+
+
 
 TEMPLATES = [
     {
