@@ -85,6 +85,15 @@ INSTALLED_APPS = [
     'accounts',
     'academy',
 ]
+# from django.core.mail import send_mail
+
+# send_mail(
+#     'abdulhadistmstudent@gmail.com',
+#     'This is a test email from Django.',
+#     'studymate378@gmail.com',
+#     ['studymate378@gmail.com'],
+#     fail_silently=False,
+# )
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -122,12 +131,16 @@ EMAIL_HOST_USER = 'studymate378@gmail.com'
 # EMAIL_HOST_PASSWORD = "byty ucjd lmpv ilnz bsog"
 # EMAIL_HOST_PASSWORD = "srnq btym bgkr apf"
 # EMAIL_HOST_PASSWORD = "srnqbtymbgkrapf"
-EMAIL_HOST_PASSWORD = "hsdc ozkj rhvo hjcx" # new created passkey
+
+## Latest Passkey 
+# EMAIL_HOST_PASSWORD = "hsdc ozkj rhvo hjcx" # new created passkey
+# EMAIL_HOST_PASSWORD = "hsdcozkjrhvohjcx" # new created passkey
 DEFAULT_FROM_EMAIL = 'studymate378@gmail.com'
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
 
 from django.conf import settings
-print(settings.EMAIL_HOST_PASSWORD, 4545)
-
+print(settings.EMAIL_HOST_PASSWORD)
 
 TEMPLATES = [
     {
