@@ -121,7 +121,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'studymate378@gmail.com'
 # EMAIL_HOST_PASSWORD = "byty ucjd lmpv ilnz bsog"
 # EMAIL_HOST_PASSWORD = "srnq btym bgkr apf"
-EMAIL_HOST_PASSWORD = "srnqbtymbgkrapf"
+# EMAIL_HOST_PASSWORD = "srnqbtymbgkrapf"
+EMAIL_HOST_PASSWORD = "hsdc ozkj rhvo hjcx" # new created passkey
 DEFAULT_FROM_EMAIL = 'studymate378@gmail.com'
 
 from django.conf import settings
