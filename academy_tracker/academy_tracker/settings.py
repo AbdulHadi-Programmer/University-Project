@@ -125,9 +125,8 @@ EMAIL_HOST_USER = 'studymate378@gmail.com'
 DEFAULT_FROM_EMAIL = 'studymate378@gmail.com'
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-
 from django.conf import settings
-# print(settings.EMAIL_HOST_PASSWORD, 45)
+# print(settings.EMAIL_HOST_PASSWORD, "Abdu")
 
 TEMPLATES = [
     {
@@ -210,4 +209,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-print(settings.EMAIL_HOST_PASSWORD)
+# print(settings.EMAIL_HOST_PASSWORD)
