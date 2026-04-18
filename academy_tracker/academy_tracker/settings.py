@@ -113,25 +113,12 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 from decouple import config
-# EMAIL_BACKEND = config('EMAIL_BACKEND')
-# Use this with a default:
-# EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
-# EMAIL_HOST = config('EMAIL_HOST', default="smtp.gmail.com")
-# EMAIL_PORT = config('EMAIL_PORT', cast=int)
-# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-# EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
-# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'studymate378@gmail.com'
-# EMAIL_HOST_PASSWORD = "byty ucjd lmpv ilnz bsog"
-# EMAIL_HOST_PASSWORD = "srnq btym bgkr apf"
-# EMAIL_HOST_PASSWORD = "srnqbtymbgkrapf"
-
 ## Latest Passkey 
 # EMAIL_HOST_PASSWORD = "hsdc ozkj rhvo hjcx" # new created passkey
 # EMAIL_HOST_PASSWORD = "hsdcozkjrhvohjcx" # new created passkey
@@ -140,7 +127,7 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 
 from django.conf import settings
-print(settings.EMAIL_HOST_PASSWORD)
+# print(settings.EMAIL_HOST_PASSWORD, 45)
 
 TEMPLATES = [
     {
@@ -190,14 +177,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Email :
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 # "studymate@password_2024"
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 
@@ -222,3 +209,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+print(settings.EMAIL_HOST_PASSWORD)
