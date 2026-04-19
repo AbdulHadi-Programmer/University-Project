@@ -123,7 +123,7 @@ main{flex:1;padding:2.5rem 1.5rem;}
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
         Dashboard
       </a>
-      <a href="{% url 'add_task' %}" class="btn-add-task">
+      <a href="{% url 'add_task_subject' subject.id %}" class="btn-add-task">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Add Task
       </a>
@@ -219,7 +219,7 @@ main{flex:1;padding:2.5rem 1.5rem;}
       </div>
       <div class="empty-title">No tasks yet</div>
       <p class="empty-desc">Add assignments, quizzes, or exams for {{ subject.name }} — StudyMate will remind you before deadlines.</p>
-      <a href="{% url 'add_task' %}" class="btn-add-task" style="display:inline-flex;">
+      <a href="{% url 'add_task_subject' subject.id %}" class="btn-add-task" style="display:inline-flex;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Add your first task
       </a>

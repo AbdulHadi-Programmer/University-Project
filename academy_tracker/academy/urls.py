@@ -6,6 +6,8 @@ urlpatterns = [
     path("dashboard/", student_dashboard, name="student_dashboard"),
     path("tasks/", task_list_all, name="task_list"),
     path("tasks/add/", add_or_update_task, name="add_task"),
+    path("subjects/<int:subject_id>/tasks/add/", add_or_update_task, name="add_task_subject"),
+    
     path("tasks/update/<int:pk>/", add_or_update_task, name="update_task"),
     path("tasks/delete/<int:pk>/", delete_task, name="delete_task"),
 

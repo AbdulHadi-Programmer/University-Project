@@ -15,25 +15,34 @@ from .models import TimeTable, Task, LearningItem, Subject
 from .forms import TimeTableForm, TaskForm, SubjectForm, LearningItemForm
 
 @login_required
-def add_or_update_task(request, pk=None):
+def add_or_update_task(request, pk=None, subject_id=None):
     task = get_object_or_404(Task, pk=pk, user=request.user) if pk else None
 
+    subject = None
+    if subject_id:
+        subject = get_object_or_404(Subject, id=subject_id, user=request.user)
+
     if request.method == "POST":
-        form = TaskForm(request.POST, instance=task, user=request.user)
+        form = TaskForm(request.POST, instance=task, user=request.user, subject=subject)
+
         if form.is_valid():
             task = form.save(commit=False)
             task.user = request.user
-            task.save()
-            return redirect("student_dashboard")  # better redirect here
-    else:
-        form = TaskForm(instance=task, user=request.user)
 
-    context = {
+            if subject:
+                task.subject = subject  # 🔥 auto assign
+
+            task.save()
+            return redirect("student_dashboard")
+
+    else:
+        form = TaskForm(instance=task, user=request.user, subject=subject)
+
+    return render(request, "task_form.html", {
         "form": form,
         "task_id": pk,
-    }
-    return render(request, "task_form.html", context)
-
+        "subject": subject
+    })
 
 @login_required
 def task_list_all(request):
@@ -161,7 +170,18 @@ from django.contrib import messages
 @login_required
 def add_or_update__subject(request, pk=None):
     # Existing subject ko fetch karo (sirf current user ka)
-    subject = Subject.objects.filter(pk=pk, user=request.user).first() if pk else None
+    # subject = Subject.objects.filter(pk=pk, user=request.user).first() if pk else None
+    subject = get_object_or_404(Subject, pk=pk, user=request.user) if pk else None
+
+    print("PK:", pk)
+    # print("PK:", pk)
+    print("User:", request.user)
+    print("All subjects of user:", Subject.objects.filter(user=request.user))
+    print("Matching subject:", Subject.objects.filter(pk=pk, user=request.user))
+
+    print("request.user.id:", request.user.id)
+    print("request.user:", request.user)
+    print("Subjects:", Subject.objects.values('id', 'user'))
 
     if request.method == "POST":
         form = SubjectForm(request.POST, instance=subject, user=request.user)
@@ -280,7 +300,7 @@ def timetable_delete(request, pk):
 
 def subject_delete(request, pk):
     if request.method == "POST":
-        Subject.objects.filter(id=pk).delete()
+        Subject.objects.filter(id=pk, user=request.user).delete()
         return JsonResponse({"success": True})
 
     return JsonResponse({"success": False}, status=400)

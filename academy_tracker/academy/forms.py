@@ -15,27 +15,50 @@ from .models import Task, Subject, LearningItem, TimeTable
 #         for field_name, field in self.fields.items():
 #             field.widget.attrs.update({"class": field_name})
 from django import forms
-from .models import Task, Subject
+# from .models import Task, Subject
 
+# class TaskForm(forms.ModelForm):
+#     class Meta:
+#         model = Task
+#         fields = ["title", "task_type", "subject", "due_date", "status"]
+
+#     def __init__(self, *args, **kwargs):
+#         user = kwargs.pop("user")  # extract user
+#         super().__init__(*args, **kwargs)
+
+#         # Filter subjects based on the logged-in user's semester
+#         self.fields["subject"].queryset = Subject.objects.filter(semester=user.semester)
+
+#         # Apply Bootstrap classes to fields
+#         self.fields["title"].widget.attrs.update({"class": "form-control"})
+#         self.fields["task_type"].widget.attrs.update({"class": "form-select"})
+#         self.fields["subject"].widget.attrs.update({"class": "form-select"})
+#         self.fields["due_date"].widget.attrs.update({"class": "form-control", "type": "date"})
+#         self.fields["status"].widget.attrs.update({"class": "form-control"})
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ["title", "task_type", "subject", "due_date", "status"]
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user")  # extract user
+        user = kwargs.pop("user", None)
+        subject = kwargs.pop("subject", None)
         super().__init__(*args, **kwargs)
 
-        # Filter subjects based on the logged-in user's semester
-        self.fields["subject"].queryset = Subject.objects.filter(semester=user.semester)
+        # 🔴 FIX: filter by user (NOT semester)
+        self.fields["subject"].queryset = Subject.objects.filter(user=user)
 
-        # Apply Bootstrap classes to fields
+        # 🔥 If subject is pre-selected (coming from subject page)
+        if subject:
+            self.fields["subject"].initial = subject
+            self.fields["subject"].widget = forms.HiddenInput()
+
+        # UI classes (unchanged)
         self.fields["title"].widget.attrs.update({"class": "form-control"})
         self.fields["task_type"].widget.attrs.update({"class": "form-select"})
         self.fields["subject"].widget.attrs.update({"class": "form-select"})
         self.fields["due_date"].widget.attrs.update({"class": "form-control", "type": "date"})
         self.fields["status"].widget.attrs.update({"class": "form-control"})
-
 
 class SubjectForm(forms.ModelForm):
     class Meta:
