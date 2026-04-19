@@ -43,7 +43,7 @@ else:
     DEBUG = True
     # DEBUG = False 
 
-DEBUG= False
+# DEBUG= False
 
 # Allowed Hosts
 ALLOWED_HOSTS = [
