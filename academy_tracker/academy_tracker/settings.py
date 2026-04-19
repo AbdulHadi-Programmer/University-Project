@@ -37,11 +37,11 @@ hostname = socket.gethostname()
 
 # DEBUG automatically set
 if "liveconsole" in hostname or "euconsole" in hostname:
-    DEBUG = False
-    # DEBUG = True  # because deployment causing issue 
+    # DEBUG = False
+    DEBUG = True  # because deployment causing issue 
 else:
-    # DEBUG = True
-    DEBUG = False 
+    DEBUG = True
+    # DEBUG = False 
 
 DEBUG= False
 
@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     "widget_tweaks",
     'accounts',
     'academy',
+    'core',
 ]
 # from django.core.mail import send_mail
 

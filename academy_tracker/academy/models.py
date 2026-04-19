@@ -44,6 +44,8 @@ class Task(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Pending")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    reminder_7_sent = models.BooleanField(default=False)
+    reminder_4_sent = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.title} ({self.task_type})"
