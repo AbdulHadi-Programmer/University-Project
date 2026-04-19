@@ -4,7 +4,7 @@ from .models import Subject, Task, LearningItem
 # Register Subject with a simple layout
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ("name", "course_code", "std_id")  # columns in list view
+    list_display = ("name", "course_code", "std_id", "user")  # columns in list view
     search_fields = ("name", "course_code", "std_id")  # add search box
     list_filter = ("name",)  # filter sidebar
     ordering = ("name",)  # default ordering
