@@ -40,9 +40,10 @@ if "liveconsole" in hostname or "euconsole" in hostname:
     DEBUG = False
     # DEBUG = True  # because deployment causing issue 
 else:
-    DEBUG = True
+    # DEBUG = True
+    DEBUG = False 
 
-# DEBUG= False
+DEBUG= False
 
 # Allowed Hosts
 ALLOWED_HOSTS = [
