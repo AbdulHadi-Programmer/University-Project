@@ -151,7 +151,10 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:2.5r
 
         {% else %}
         <!-- Update this if subject id appear then hide it  -->
-          <div class="field {% if field.errors %}has-error{% endif %}">
+        {% if field.name == "subject" and field.is_hidden %}
+            {{ field }}   {# only render hidden input, nothing else #}
+        {% else %}  
+        <div class="field {% if field.errors %}has-error{% endif %}">
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
             <div class="field-inner" style="position:relative;">
 
