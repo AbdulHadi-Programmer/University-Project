@@ -151,6 +151,8 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:2.5r
 
         {% else %}
         <!-- Update this if subject id appear then hide it  -->
+        {% comment %}
+
         {% if field.name == "subject" and field.is_hidden %}
             {{ field }}   {# only render hidden input, nothing else #}
         {% endif %}  
@@ -165,11 +167,7 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:2.5r
               {% elif field.name == "task_type" %}
                 <span class="field-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
                 
-                {% comment %}
-                <!-- {% elif field.name == "subject" %}
-                <span class="field-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span> -->
-                {% endcomment %}
-
+                
               {% elif field.name == "due_date" %}
                 <span class="field-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
               {% else %}
@@ -186,6 +184,51 @@ main{flex:1;display:flex;align-items:stretch;justify-content:center;padding:2.5r
             </div>
             {% for e in field.errors %}<span class="field-error">⚠ {{ e }}</span>{% endfor %}
           </div>
+          {% endcomment %}
+ <!-- ================================================================================================================================================================================================================================== -->
+ <!-- ================================================================================================================================================================================================================================== -->
+ <!-- New Code for replacing -->
+ <!-- ================================================================================================================================================================================================================================== -->
+ <!-- ================================================================================================================================================================================================================================== -->
+          {% if field.name == "subject" and field.is_hidden %}
+
+              {{ field }}  {# only hidden input, nothing else #}
+
+          {% else %}
+
+          <div class="field {% if field.errors %}has-error{% endif %}">
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              <div class="field-inner" style="position:relative;">
+
+                  {# Icons #}
+                  {% if field.name == "title" %}
+                      <span class="field-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12l2 2 4-4"/></svg></span>
+
+                  {% elif field.name == "task_type" %}
+                      <span class="field-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+
+                  {% elif field.name == "due_date" %}
+                      <span class="field-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+
+                  {% else %}
+                      <span class="field-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span>
+                  {% endif %}
+
+                  {{ field }}
+
+                  {% if field.field.widget.input_type == "select" or field.name == "task_type" or field.name == "subject" %}
+                      <span class="sel-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+                  {% endif %}
+
+              </div>
+
+              {% for e in field.errors %}
+                  <span class="field-error">⚠ {{ e }}</span>
+              {% endfor %}
+          </div>
+
+          {% endif %}
+
         {% endif %}
       {% endfor %}
 

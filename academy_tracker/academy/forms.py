@@ -49,9 +49,12 @@ class TaskForm(forms.ModelForm):
         self.fields["subject"].queryset = Subject.objects.filter(user=user)
 
         # 🔥 If subject is pre-selected (coming from subject page)
+        # if subject:
+            # self.fields["subject"].initial = subject
+            # self.fields["subject"].widget = forms.HiddenInput()
         if subject:
-            self.fields["subject"].initial = subject
             self.fields["subject"].widget = forms.HiddenInput()
+            self.fields["subject"].initial = subject.id
 
         # UI classes (unchanged)
         self.fields["title"].widget.attrs.update({"class": "form-control"})
