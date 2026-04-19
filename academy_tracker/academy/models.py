@@ -6,15 +6,19 @@ SEMESTER_CHOICES = [(i, f"Semester {i}") for i in range(1, 9)]
 class Subject(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
-        on_delete=models.CASCADE, 
-        null=True, 
-        blank=True, 
-        help_text="Assign to a specific user (optional)"
-    )
-    name = models.CharField(max_length=50, unique=True)
+        on_delete=models.CASCADE 
+        )
+    name = models.CharField(max_length=50) #, unique=True)
     course_code = models.CharField(max_length=20, null=True, blank=True)
     std_id = models.CharField(max_length=15, default="BSE-25S-006")
     semester = models.IntegerField(choices=SEMESTER_CHOICES, null=True, blank=True)
+
+    # class Meta: 
+        # unique_together = ('user', 'name')
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'name'], name='unique_subject_per_user')
+        ]
 
     def __str__(self):
         return self.name
