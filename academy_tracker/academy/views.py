@@ -13,7 +13,27 @@ from .models import Task
 #  Explicitly import ALL models used in this file
 from .models import TimeTable, Task, LearningItem, Subject 
 from .forms import TimeTableForm, TaskForm, SubjectForm, LearningItemForm
-
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
+# ===============================================================================================
 @login_required
 def add_or_update_task(request, pk=None, subject_id=None):
     task = get_object_or_404(Task, pk=pk, user=request.user) if pk else None
@@ -37,6 +57,7 @@ def add_or_update_task(request, pk=None, subject_id=None):
 
     else:
         form = TaskForm(instance=task, user=request.user, subject=subject)
+    # print(subject, 454545)
 
     return render(request, "task_form.html", {
         "form": form,
@@ -171,16 +192,17 @@ def student_dashboard(request):
     return render(request, "student_dashboard.html", context)
 
 ## Learning list:
-@login_required
-def learning(request):
-    user = request.user
-    learning_items = LearningItem.objects.filter(subject__semester=user.semester)
-    return render(request, "learning_item.html", {"learn": learning_items })
+# @login_required
+# def learning(request):
+    # user = request.user
+    # learning_items = LearningItem.objects.filter(subject__semester=user.semester)
+    # return render(request, "learning_item.html", {"learn": learning_items })
 
 
 @login_required
 def learning_item_list(request, subject_id):
-    subject = get_object_or_404(Subject, id=subject_id, semester=request.user.semester)
+    # subject = get_object_or_404(Subject, id=subject_id, semester=request.user.semester)
+    subject = get_object_or_404(Subject, id=subject_id, user=request.user)
     learning_items = LearningItem.objects.filter(subject=subject, user=request.user)
     return render(request, "learning_items.html", {
         "subject": subject,
@@ -188,21 +210,77 @@ def learning_item_list(request, subject_id):
     })
 
 
+# @login_required
+# def add_or_update_learningItem(request, pk=None):
+#     item = LearningItem.objects.filter(pk=pk, user=request.user).first() if pk else None
+
+#     if request.method == "POST":
+#         form = LearningItemForm(request.POST, instance=item, user=request.user)
+#         if form.is_valid():
+#             learning_item = form.save(commit=False)
+#             learning_item.user = request.user  # link user automatically
+#             learning_item.save()
+#             return redirect("student_dashboard")
+#     else:
+#         form = LearningItemForm(instance=item, user=request.user)
+
+#     return render(request, "learning_form.html", {"form": form})
+
+# @login_required
+# def add_or_update_learningItem(request, pk=None, subject_id=None):
+#     item = get_object_or_404(LearningItem, pk=pk, user=request.user) if pk else None
+
+#     subject = None
+#     if subject_id:
+#         subject = get_object_or_404(Subject, id=subject_id, user=request.user)
+
+#     if request.method == "POST":
+#         form = LearningItemForm(request.POST, instance=item, user=request.user, subject=subject)
+
+#         if form.is_valid():
+#             learning_item = form.save(commit=False)
+#             learning_item.user = request.user
+
+#             if subject:
+#                 learning_item.subject = subject
+
+#             learning_item.save()
+#             return redirect("student_dashboard")
+
+#     else:
+#         form = LearningItemForm(instance=item, user=request.user, subject=subject)
+
+#     return render(request, "learning_form.html", {"form": form})
 @login_required
-def add_or_update_learningItem(request, pk=None):
-    item = LearningItem.objects.filter(pk=pk, user=request.user).first() if pk else None
+def add_or_update_learningItem(request, pk=None, subject_id=None):
+    item = None
+    if pk:
+        item = get_object_or_404(LearningItem, pk=pk, user=request.user)
+
+    subject = None
+    if subject_id:
+        subject = get_object_or_404(Subject, id=subject_id, user=request.user)
 
     if request.method == "POST":
-        form = LearningItemForm(request.POST, instance=item, user=request.user)
+        form = LearningItemForm(request.POST, instance=item, user=request.user, subject=subject)
+
         if form.is_valid():
             learning_item = form.save(commit=False)
-            learning_item.user = request.user  # link user automatically
+            learning_item.user = request.user
+            if subject:
+                learning_item.subject = subject
             learning_item.save()
             return redirect("student_dashboard")
+    
     else:
-        form = LearningItemForm(instance=item, user=request.user)
+        form = LearningItemForm(instance=item, user=request.user, subject=subject)
 
-    return render(request, "learning_form.html", {"form": form})
+    return render(request, "learning_form.html", {
+        "form": form,
+        "subject": subject,      # debug ke liye
+        "item_id": pk,
+    })
+
 
 ## Subject CRUD : 
 # Create New Subject :
@@ -271,7 +349,8 @@ def delete_item(request, pk):
 
 @login_required
 def task_list_by_subject(request, subject_id):
-    subject = get_object_or_404(Subject, id=subject_id, semester=request.user.semester)
+    # subject = get_object_or_404(Subject, id=subject_id, semester=request.user.semester)
+    subject = get_object_or_404(Subject, id=subject_id, user=request.user)
     tasks = Task.objects.filter(subject=subject, user=request.user).order_by("due_date")
     return render(request, "tasks.html", {
         "subject": subject,

@@ -48,13 +48,13 @@ class TaskForm(forms.ModelForm):
         # 🔴 FIX: filter by user (NOT semester)
         self.fields["subject"].queryset = Subject.objects.filter(user=user)
 
+        if subject:
+            self.fields["subject"].widget = forms.HiddenInput()
+            self.fields["subject"].initial = subject.id
         # 🔥 If subject is pre-selected (coming from subject page)
         # if subject:
             # self.fields["subject"].initial = subject
             # self.fields["subject"].widget = forms.HiddenInput()
-        if subject:
-            self.fields["subject"].widget = forms.HiddenInput()
-            self.fields["subject"].initial = subject.id
 
         # UI classes (unchanged)
         self.fields["title"].widget.attrs.update({"class": "form-control"})
@@ -80,23 +80,51 @@ class SubjectForm(forms.ModelForm):
 from django import forms
 from .models import LearningItem, Subject
 
+# class LearningItemForm(forms.ModelForm):
+#     class Meta:
+#         model = LearningItem
+#         fields = ["subject", "title", "description"]  # exclude 'user'
+
+#     def __init__(self, *args, **kwargs):
+#         # Pop the user from kwargs (mandatory)
+#         # user = kwargs.pop("user", None)
+#         # super().__init__(*args, **kwargs)
+#         user = kwargs.pop("user")
+#         subject = kwargs.pop("subject", None)
+#         super().__init__(*args, **kwargs)
+
+#         # Filter subjects for this user based on their semester
+#         # self.fields["subject"].queryset = Subject.objects.filter(semester=self.user.semester)
+#         self.fields["subject"].queryset = Subject.objects.filter(user=user)
+
+#         if subject:
+#             self.fields["subject"].widget = forms.HiddenInput()
+#             self.fields["subject"].initial = subject.id
+        
+
+#         # Add CSS class same as field name
+#         for field_name, field in self.fields.items():
+#             field.widget.attrs.update({"class": field_name})
 class LearningItemForm(forms.ModelForm):
     class Meta:
         model = LearningItem
-        fields = ["subject", "title", "description"]  # exclude 'user'
+        fields = ["subject", "title", "description"]
 
     def __init__(self, *args, **kwargs):
-        # Pop the user from kwargs (mandatory)
-        self.user = kwargs.pop("user")
+        user = kwargs.pop("user", None)
+        subject = kwargs.pop("subject", None)
+        
         super().__init__(*args, **kwargs)
 
-        # Filter subjects for this user based on their semester
-        self.fields["subject"].queryset = Subject.objects.filter(semester=self.user.semester)
+        if user:
+            self.fields["subject"].queryset = Subject.objects.filter(user=user)
 
-        # Add CSS class same as field name
-        for field_name, field in self.fields.items():
-            field.widget.attrs.update({"class": field_name})
-
+        # 🔥🔥 YE SABSE IMPORTANT HAI
+        if subject is not None:
+            self.fields["subject"].widget = forms.HiddenInput()
+            self.fields["subject"].initial = subject.id
+            self.fields["subject"].required = False
+            
 
 # # Time Table Form: 
 # class TimeTableForm(forms.ModelForm):
