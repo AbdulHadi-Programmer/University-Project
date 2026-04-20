@@ -66,51 +66,109 @@ def delete_subject(request, pk):
     return redirect("student_dashboard")
 
 
+# from django.contrib.auth.decorators import login_required
+# from django.shortcuts import render
+# from django.db.models import Count, Q
+# # from .models import Subject, Task, LearningItem
+
+# @login_required
+# def student_dashboard(request):
+#     user = request.user
+
+#     # Total :
+#     tasks_count = Task.objects.filter(user=request.user).count() or 0
+#     notes_count = LearningItem.objects.filter(user=request.user).count()  or 0
+#     timetable_count = TimeTable.objects.filter(user=request.user).count() or 0
+
+#     # Subjects for this user/semester, annotated with counts
+#     subjects = (
+#         Subject.objects
+#         .filter(semester=user.semester)
+#         .annotate(
+#             total_tasks=Count("task", distinct=True),  # total tasks related to this subject
+#             pending_tasks=Count("task", filter=Q(task__status="Pending")),
+#             completed_tasks=Count("task", filter=Q(task__status="Completed")),
+#             learning_items_count=Count("learning_items", distinct=True),  # uses related_name on LearningItem
+#         )
+#         .order_by("name", 'id')
+#     )
+
+#     # Global counts for badges / dashboard summary
+#     task_pending_count = Task.objects.filter(user=user, status="Pending").count() 
+#     task_completed_count = Task.objects.filter(user=user, status="Completed").count() 
+#     learning_items_count = LearningItem.objects.filter(subject__semester=user.semester).count()
+
+#     context = {
+#         "subjects": subjects,
+#         "task_pending_count": task_pending_count,
+#         "task_completed_count": task_completed_count,
+#         "learning_items_count": learning_items_count,
+#         # Total Count :
+#         "tasks_count": tasks_count,
+#         "notes_count": notes_count,
+#         "timetable_count": timetable_count,
+#     }
+
+#     return render(request, "student_dashboard.html", context)
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.db.models import Count, Q
-# from .models import Subject, Task, LearningItem
 
 @login_required
 def student_dashboard(request):
     user = request.user
 
-    # Total :
-    tasks_count = Task.objects.filter(user=request.user).count() or 0
-    notes_count = LearningItem.objects.filter(user=request.user).count()  or 0
-    timetable_count = TimeTable.objects.filter(user=request.user).count() or 0
+    # -------------------------
+    # BASIC COUNTS (user only)
+    # -------------------------
+    tasks_count = Task.objects.filter(user=user).count()
+    notes_count = LearningItem.objects.filter(user=user).count()
+    timetable_count = TimeTable.objects.filter(user=user).count()
 
-    # Subjects for this user/semester, annotated with counts
+    # -------------------------
+    # SUBJECTS (ONLY USER'S)
+    # -------------------------
     subjects = (
         Subject.objects
-        .filter(semester=user.semester)
+        .filter(user=user)   # ✅ FIXED: only user's subjects
         .annotate(
-            total_tasks=Count("task", distinct=True),  # total tasks related to this subject
-            pending_tasks=Count("task", filter=Q(task__status="Pending")),
-            completed_tasks=Count("task", filter=Q(task__status="Completed")),
-            learning_items_count=Count("learning_items", distinct=True),  # uses related_name on LearningItem
+            total_tasks=Count("task", distinct=True),
+            pending_tasks=Count(
+                "task",
+                filter=Q(task__status="Pending")
+            ),
+            completed_tasks=Count(
+                "task",
+                filter=Q(task__status="Completed")
+            ),
+            learning_items_count=Count("learning_items", distinct=True),
         )
-        .order_by("name", 'id')
+        .order_by("name", "id")
     )
 
-    # Global counts for badges / dashboard summary
-    task_pending_count = Task.objects.filter(user=user, status="Pending").count() 
-    task_completed_count = Task.objects.filter(user=user, status="Completed").count() 
-    learning_items_count = LearningItem.objects.filter(subject__semester=user.semester).count()
+    # -------------------------
+    # GLOBAL TASK STATS
+    # -------------------------
+    task_pending_count = Task.objects.filter(user=user, status="Pending").count()
+    task_completed_count = Task.objects.filter(user=user, status="Completed").count()
 
+    # Only count learning items belonging to this user
+    learning_items_count = LearningItem.objects.filter(user=user).count()
+
+    # -------------------------
+    # CONTEXT
+    # -------------------------
     context = {
         "subjects": subjects,
         "task_pending_count": task_pending_count,
         "task_completed_count": task_completed_count,
         "learning_items_count": learning_items_count,
-        # Total Count :
         "tasks_count": tasks_count,
         "notes_count": notes_count,
         "timetable_count": timetable_count,
     }
 
     return render(request, "student_dashboard.html", context)
-
 
 ## Learning list:
 @login_required

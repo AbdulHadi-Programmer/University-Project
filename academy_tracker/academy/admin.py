@@ -7,7 +7,7 @@ class SubjectAdmin(admin.ModelAdmin):
     list_display = ("name", "course_code", "std_id", "user")  # columns in list view
     search_fields = ("name", "course_code", "std_id")  # add search box
     list_filter = ("name",)  # filter sidebar
-    ordering = ("name",)  # default ordering
+    ordering = ("name", "user")  # default ordering
 
 
 # Register Task with field grouping and better layout
