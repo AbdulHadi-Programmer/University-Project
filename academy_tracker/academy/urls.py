@@ -11,7 +11,7 @@ urlpatterns = [
     path("tasks/update/<int:pk>/", add_or_update_task, name="update_task"),
     path("tasks/delete/<int:pk>/", delete_task, name="delete_task"),
 
-    path("learnings/", learning, name="learning_list"),              # list view
+    # path("learnings/", learning, name="learning_list"),              # list view
     # path("learnings/add/", add_or_update_learningItem, name="add_learning"),  # add
     # path("learnings/update/<int:pk>/", add_or_update_learningItem, name="update_item"),  # update
     # path("learnings/delete/<int:pk>/", delete_item, name="delete_item"),  # del
